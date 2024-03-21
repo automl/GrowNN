@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "growing-with-experience"
+version = "0.1.0"
+description = "Implementation of Masters Thesis \"Growing with Experience: Growing Nerual Networks in Deep Reinforcement Learning\""
+authors = ["Lukas Fehring <lukas.fehring@stud.uni-hannover.de>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+stable-baselines3 = "^2.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -3,3 +3,4 @@ minihack
 matplotlib==3.5 # Needs to be installed for minihack to work properly
 shimmy[gym-v21]
 stable-baselines3
+pygame

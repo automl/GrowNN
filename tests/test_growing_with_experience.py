@@ -5,7 +5,7 @@
 import pytest
 
 
-from growing_with_experience import growing_with_experience
+from growing_with_experience import blackbox_ppo
 
 
 @pytest.fixture

@@ -14,7 +14,7 @@ class SMACSweeperConfig:
     budget_variable: Optional[str] = None
     loading_variable: Optional[str] = None
     saving_variable: Optional[str] = None
-    smac_kwargs: Optional[Dict] = field(default_factory=dict)
+    smac_kwargs: Optional[Dict] = field(default_factory=dict) # These get put into the sweeper
 
 
 ConfigStore.instance().store(

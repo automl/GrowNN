@@ -137,7 +137,6 @@ class SMACSweeperBackend(Sweeper):
         opt_class = HydraSMAC
 
         smac = opt_class(
-            global_config=self.config,
             global_overrides=arguments,
             launcher=self.launcher,
             budget_arg_name=self.budget_variable,

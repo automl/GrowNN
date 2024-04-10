@@ -5,7 +5,6 @@ import math
 import time
 import json
 import pickle
-import wandb
 import numpy as np
 from ConfigSpace.hyperparameters import (
     CategoricalHyperparameter,
@@ -26,13 +25,12 @@ log = logging.getLogger(__name__)
 class HydraSMAC:
     def __init__(
         self,
-        global_config,
         global_overrides,
         launcher,
         budget_arg_name,
-        save_arg_name,
-        n_trials,
-        cs,
+        save_arg_name, # TODO
+        n_trials, # TODO
+        cs, # TODO
         seeds=False,
         slurm=False,
         slurm_timeout=10,
@@ -43,56 +41,10 @@ class HydraSMAC:
         deterministic=True,
         base_dir=False,
         min_budget=None,
-        wandb_project=False,
-        wandb_entity=False,
-        wandb_tags=["smac"],
         maximize=False,
     ):
         """
-        Classic PBT Implementation.
-
-        Parameters
-        ----------
-        launcher: HydraLauncher
-            A hydra launcher (usually either for local runs or slurm)
-        budget_arg_name: str
-            Name of the argument controlling the budget, e.g. num_steps.
-        loading_arg_name: str
-            Name of the argument controlling the loading of agent parameters.
-        saving_arg_name: str
-            Name of the argument controlling the checkpointing.
-        total_budget: int
-            Total budget for a single population member.
-            This could be e.g. the total number of steps to train a single agent.
-        cs: ConfigSpace
-            Configspace object containing the hyperparameter search space.
-        seeds: List[int] | False
-            If not False, optimization will be run and averaged across the given seeds.
-        model_based: bool
-            Whether a model-based backend (such as BO) is used. Should always be false if using default PBT.
-        base_dir: str | None
-            Directory for logs.
-        population_size: int
-            Number of agents in the population.
-        config_interval: int | None
-            Number of steps before new configuration is chosen. Either this or num_config_changes must be given.
-        num_config_changes: int | None
-            Total number of times the configuration is changed. Either this or config_interval must be given.
-        quantiles: float
-            Upper/lower performance percentages beyond which agents are replaced.
-            Lower numbers correspond to more exploration, higher ones to more exploitation.
-        resample_probability: float
-            Probability of a hyperparameter being resampled.
-        perturbation_factors: List[int]
-            Hyperparamters are multiplied with the first factor when their value is increased
-            and with the second if their value is decreased.
-        categorical_fixed: bool
-            Whether categorical hyperparameters are ignored or optimized jointly.
-        categorical_prob: float
-            Probability of categorical values being resampled.
-        Returns
-        -------
-        None
+        # TODO for myself
         """
         self.global_overrides = global_overrides
         self.launcher = launcher
@@ -169,17 +121,6 @@ class HydraSMAC:
                 if n not in self.categorical_hps
             ]
         )
-
-        self.wandb_project = wandb_project
-        if self.wandb_project:
-            wandb_config = OmegaConf.to_container(global_config, resolve=False, throw_on_missing=False)
-            assert wandb_entity, "Please provide an entity to log to W&B."
-            wandb.init(
-                project=self.wandb_project,
-                entity=wandb_entity,
-                tags=wandb_tags,
-                config=wandb_config,
-            )
 
     def run_configs(self, configs, budgets, seeds):
         """
@@ -297,16 +238,6 @@ class HydraSMAC:
             self.history["performances"].append(performances[i])
             self.history["budgets"].append(budgets[i])
         self.iteration += 1
-
-        if self.wandb_project:
-            stats = {}
-            stats["iteration"] = self.iteration
-            stats["optimization_time"] = time.time() - self.start
-            stats["incumbent_performance"] = -min(performances)
-            best_config = configs[np.argmin(performances)]
-            for n in best_config.keys():
-                stats[f"incumbent_{n}"] = best_config.get(n)
-            wandb.log(stats)
 
     def _save_incumbent(self, name=None):
         """

@@ -1,0 +1,40 @@
+defaults:
+  - _self_
+  #- slurm
+  - override hydra/sweeper: SMAC
+
+hydra:
+  sweeper:
+    smac_kwargs:
+      intensifier: Not-HB
+    saving_variable: saved_neural_nets
+
+    budget: 5 # TODO what happens with this parameter    
+
+
+
+    search_space:  # TODO adjust search space
+      hyperparameters:
+        x0:
+          type: uniform_float
+          lower: -5
+          upper: 10
+          log: false
+        x1:
+          type: uniform_float
+          lower: 0
+          upper: 15
+          log: false
+          default_value: 2
+    
+  run:
+    dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+x0: 3
+x1: 4
+
+seed: None
+
+spurious_var: 3.14

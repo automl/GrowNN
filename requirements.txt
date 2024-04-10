@@ -8,3 +8,4 @@ pytest
 hydra-core
 hydra_colorlog
 hydra-submitit-launcher 
+rich

@@ -1,16 +1,18 @@
 defaults:
   - _self_
-  #- slurm
+  - slurm
   - override hydra/sweeper: SMAC
 
 hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
+      max_budget: 5
+      max_parallelization: .1
+    budget_variable: num_steps
+
     saving_variable: saved_neural_nets
-
-    budget: 5 # TODO what happens with this parameter    
-
+    budget: 10 # The amounts of jobs
 
 
     search_space:  # TODO adjust search space
@@ -36,5 +38,5 @@ x0: 3
 x1: 4
 
 seed: None
-
-spurious_var: 3.14
+num_steps: 10
+saved_neural_nets: blablabla

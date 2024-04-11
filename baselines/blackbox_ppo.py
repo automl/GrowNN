@@ -7,17 +7,19 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.ppo import PPO
 import hydra
 import logging
+import sys
 
 
-@hydra.main(config_path="configs", config_name="blackbox_ppo", version_base="1.1")
+@hydra.main(config_path="config", config_name="blackbox_ppo", version_base="1.1")
 def black_box_ppo(config: Configuration, seed: int = 0):
+    #TODO MIT THERESA ÜBER FOLGENDES REEDN
+    # Das problem scheinen die imports zu sein. Daher: gym findet minihack nur, wenn dieses vorher importiert wurde
+    # Meine vermutung ist, dass unser Problem ist, dass Minihack nie benutzt wurde und deswegen das pickled gym
+    # Das pickled minihack nicht findet
+    minihack
     # TODO use config
-    # TODO use 
-    with open('something_executed.txt', 'w') as file:
-        # Write some content into the file
-        file.write('Hello, world!\n')
-        file.write('This is a test file.\n')
-        file.write('Writing into files using Python is easy!\n')
+    # TODO How do we seed the problem
+    # TODO How do we continue training from a previous point, or do we simply restart training with a higher fidelity? To be determined in next version
     env = gym.make(
         "MiniHack-River-v0",
         observation_keys=("pixel", "glyphs", "colors", "chars"),

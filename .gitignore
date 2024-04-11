@@ -1,6 +1,6 @@
 growing_with_experience.egg-info/*
-*/__pycache__/
+__pycache__
 .vscode/settings.json
 .vscode/launch.json
-hydra_plugins/hydra_smac_sweeper/__pycache__/__init__.cpython-38.pyc
 smac3_output/*
+tmp/

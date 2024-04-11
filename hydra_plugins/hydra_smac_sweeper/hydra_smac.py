@@ -237,7 +237,7 @@ class HydraSMAC:
             self.history["configs"].append(configs[i])
             self.history["performances"].append(performances[i])
             self.history["budgets"].append(budgets[i])
-        self.iteration += 1
+            self.iteration += 1
 
     def _save_incumbent(self, name=None):
         """
@@ -282,21 +282,22 @@ class HydraSMAC:
         if verbose:
             log.info("Starting SMAC Sweep")
         self.start = time.time()
-        while self.iteration <= self.n_trials:
+        while self.iteration < self.n_trials:
             opt_time_start = time.time()
             configs = []
             budgets = []
             seeds = []
             for _ in range(self.max_parallel):
-                info = self.smac.ask()
-                configs.append(info.config)
-                if info.budget is not None:
-                    budgets.append(info.budget)
-                else:
-                    budgets.append(self.max_budget)
-                seeds.append(info.seed)
+                if len(configs) < self.n_trials:
+                    info = self.smac.ask()
+                    configs.append(info.config)
+                    if info.budget is not None:
+                        budgets.append(info.budget)
+                    else:
+                        budgets.append(self.max_budget)
+                    seeds.append(info.seed)
             self.opt_time += time.time() - opt_time_start
-            performances, costs = self.run_configs(configs, budgets, seeds)
+            performances, costs = self.run_configs(configs, budgets, seeds) 
             opt_time_start = time.time()
             if self.seeds and self.deterministic:
                 seeds = np.zeros(len(performances))

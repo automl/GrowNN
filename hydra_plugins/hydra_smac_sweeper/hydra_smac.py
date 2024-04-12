@@ -28,9 +28,9 @@ class HydraSMAC:
         global_overrides,
         launcher,
         budget_arg_name,
-        save_arg_name, # TODO
-        n_trials, # TODO
-        cs, # TODO
+        save_arg_name,
+        n_trials,
+        cs,
         seeds=False,
         slurm=False,
         slurm_timeout=10,
@@ -122,7 +122,7 @@ class HydraSMAC:
             ]
         )
 
-    def run_configs(self, configs, budgets, seeds):
+    def run_configs(self, configs, budgets, seeds): #TODO figure this out in the context of multiprocessing
         """
         Run a set of overrides
 
@@ -141,6 +141,11 @@ class HydraSMAC:
         # Generate overrides
         #TODO: handle budget correctly
         overrides = []
+        
+        if self.seeds: # If we have a seeded environment, each of the seeded runs needs the same 
+            # Budget
+            budgets = np.repeat(budgets, len(self.seeds))
+            
         for i in range(len(configs)):
             names = (list(configs[0].keys()) + [self.budget_arg_name] + [self.save_arg_name])
             if self.slurm:
@@ -185,7 +190,6 @@ class HydraSMAC:
         # Run overrides
         res = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
         self.job_idx += len(overrides)
-        costs = [budgets[i] for i in range(len(res))]
         done = False
         while not done:
             for j in range(len(overrides)):
@@ -195,13 +199,16 @@ class HydraSMAC:
                 except:
                     done = False
 
-        performances = []
+        performances = [] # Performance variable, filled with average value, if seeds used, otherwise fileld with normal value
+        costs = [] # Costs: Filled with max cost, if seeds used, standard cost otherwise
         if self.seeds and self.deterministic:
-            for j in range(0, self.population_size):
+            for j in range(0, len(configs)):
                 performances.append(np.mean([res[j * k + k].return_value for k in range(len(self.seeds))]))
+                costs.append(np.max([budgets[j * k + k] for k in range(len(self.seeds))]))
         else:
             for j in range(len(overrides)):
                 performances.append(res[j].return_value)
+                costs.append(budgets[i])
         if self.maximize:
             performances = [-p for p in performances]
         return performances, costs

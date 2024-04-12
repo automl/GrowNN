@@ -1,42 +1,58 @@
 defaults:
   - _self_
-  - slurm
+  # - slurm
+  - configspace: lr_only_config
   - override hydra/sweeper: SMAC
 
 hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 5
-      max_parallelization: .1
-    budget_variable: num_steps
+      max_budget: 5 # Internal Budget of one target function run
+      
+      # Parralelisation Parameters
+      job_array_size_limit: 5
+      max_parallelization: 5 
+      # at most min(job_array_size_limit, max(1, int(max_parallelization * n_trials))) target functions are executed in parrallel
 
-    saving_variable: saved_neural_nets
-    budget: 10 # The amounts of jobs
+      deterministic: True # whether or nto the env is deterministic
+      
+      seeds: [0,1,2,3,4] # seeds passed to each worker - so we alswa 
+      # TODO Assuming wokring with seeds makes sense, how do we go from here
+      # to plots that contain uncertainty? I assume that i need to log that myself, because
+      # there is no inbuilt function to do so
 
+    budget: 1 # The budget for SMAC
 
-    search_space:  # TODO adjust search space
-      hyperparameters:
-        x0:
-          type: uniform_float
-          lower: -5
-          upper: 10
-          log: false
-        x1:
-          type: uniform_float
-          lower: 0
-          upper: 15
-          log: false
-          default_value: 2
+    budget_variable: non_hyerparameters.n_steps
+    saving_variable: non_hyerparameters.saved_neural_nets
+
+    search_space: ${configspace}
+
     
   run:
     dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
     dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
-x0: 3
-x1: 4
+# Beloww are hyperparameters
+batch_size: 64
+clip_range: 0.2
+clip_range_vf: None  # If separate clipping is used for value function, otherwise can be the same as `clip_range`
+ent_coef: 0.01
+gae_lambda: 0.95
+learning_rate: 0.00025
+max_grad_norm: 0.5
+n_epochs: 10
+normalize_advantage: False
+vf_coef: 0.5
 
-seed: None
-num_steps: 10
-saved_neural_nets: blablabla
+# Below are not hpo parameters. Seed is currenlty not allowed to be outside of section
+seed: 0 
+non_hyerparameters:
+  env_id: MiniHack-Room-Random-5x5-v0
+  n_steps: 2048
+  saved_neural_nets: blablabla
+  observation_keys: [glyphs, chars, colors, specials, blstats]
+  max_episode_steps: 1000
+  parralel_vec_envs: 1

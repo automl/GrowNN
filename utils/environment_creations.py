@@ -1,7 +1,7 @@
 import gym
 from typing import List
 from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3.common.vec_env import DummyVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 import minihack
 
 
@@ -20,7 +20,7 @@ def make_env(env_id: str, observation_keys: List[str], max_episode_steps: int, e
     def _init():
         env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps=max_episode_steps)
         # env.reset(seed=environment_seed)
-        env.seed(environment_seed)
+        env.seed(environment_seed, environment_seed)
         return env
 
     return _init

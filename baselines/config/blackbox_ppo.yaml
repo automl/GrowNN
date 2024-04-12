@@ -55,4 +55,4 @@ non_hyerparameters:
   saved_neural_nets: blablabla
   observation_keys: [glyphs, chars, colors, specials, blstats]
   max_episode_steps: 1000
-  parralel_vec_envs: 1
+  parralel_vec_envs: 4

@@ -1,7 +1,6 @@
 import gym
 import minihack
 from ConfigSpace import Configuration, Float
-from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 import hydra
@@ -60,6 +59,7 @@ def black_box_ppo(config: Configuration, seed: int = 0):
             non_hyperparameters["max_episode_steps"],
             environment_seed=evaluation_seed,
         )()
+        evaluation_env.seed(evaluation_seed, evaluation_seed)
         obs = evaluation_env.reset()
 
         done = False

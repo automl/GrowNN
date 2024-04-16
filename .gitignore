@@ -4,3 +4,4 @@ __pycache__
 .vscode/launch.json
 smac3_output/*
 tmp/
+config/database_credentials.cfg

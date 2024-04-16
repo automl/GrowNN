@@ -5,13 +5,17 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 import hydra
 from utils import make_vec_env, make_env, extract_hyperparameters
+from py_experimenter.experimenter import PyExperimenter
+
 
 
 @hydra.main(config_path="config", config_name="blackbox_ppo", version_base="1.1")
 def black_box_ppo(config: Configuration, seed: int = 0):
     minihack
     gym
-    # TODO How do we seed the problem - Find out how the seeding is working internally, and whether there is a simple way to fix it.
+
+    # TODO Build Reward Manager https://minihack.readthedocs.io/en/latest/getting-started/reward.html
+
     # TODO How do we continue training from a previous point, or do we simply restart training with a higher fidelity? To be determined in next version
     non_hyperparameters = config["non_hyerparameters"]
     (batch_size, clip_range, clip_range_vf, ent_coef, gae_lambda, learning_rate, max_grad_norm, n_epochs, normalize_advantage, vf_coef) = (
@@ -44,15 +48,13 @@ def black_box_ppo(config: Configuration, seed: int = 0):
         n_epochs=n_epochs,
         normalize_advantage=normalize_advantage,
         vf_coef=vf_coef,
-        n_steps=non_hyperparameters["n_steps"],
+        n_steps=non_hyperparameters["n_steps"],  # The number of steps to run for each environment per update
         seed=seed,
     )
-    model.learn(total_timesteps=1000)
+    model.learn(total_timesteps=10000)
     total_rewards = []
 
-    # TODO Asser consisten average rewards with seeding
-    # TODO maybe add stable baseline seeding
-    for evaluation_seed in range(5):
+    for evaluation_seed in range(10):
         evaluation_env = make_env(
             non_hyperparameters["env_id"],
             non_hyperparameters["observation_keys"],
@@ -74,4 +76,11 @@ def black_box_ppo(config: Configuration, seed: int = 0):
 
 
 if __name__ == "__main__":
+    experimenter = PyExperimenter("baselines/config/blackbox_ppo.yaml", use_ssh_tunnel=True, use_codecarbon=False)
+
+    # Currenlty I always delete the table in the beginning, because I am in development and will therefore chagne the table a lot
+    experimenter.delete_table()
+    experimenter.create_table()
+
+    # Execute the Main Code
     black_box_ppo()

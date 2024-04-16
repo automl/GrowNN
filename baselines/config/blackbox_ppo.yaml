@@ -51,8 +51,58 @@ vf_coef: 0.5
 seed: 0 
 non_hyerparameters:
   env_id: MiniHack-Room-Random-5x5-v0
-  n_steps: 2048
+  n_steps: 2048 # TODO should this be a relevant HP
   saved_neural_nets: blablabla
   observation_keys: [glyphs, chars, colors, specials, blstats]
-  max_episode_steps: 1000
-  parralel_vec_envs: 4
+  max_episode_steps: 1000 # TODO should this be a relevant hp?
+  parralel_vec_envs: 5
+
+PY_EXPERIMENTER: 
+  n_jobs: 1
+
+  Database:
+    provider: mysql
+    database: fehring_growing_nn
+    table:
+      name: black_box_development
+      keyfields: 
+        envid:
+          type: VARCHAR(50)
+        n_steps:
+          type: INT
+        saved_neural_nets:
+          type: VARCHAR(50)
+        obseravtion_keys:
+          type: VARCHAR(200)
+        max_episode_steps:
+          type: INT
+        parralel_vec_envs:
+          type: INT
+        seed:
+          type: INT
+      lotables:
+        configurations:
+          configuration_number:
+            type: int
+          batch_size:
+            type: INT
+          clip_range:
+            type: FLOAT
+          clip_range_vf:
+            type: FLOAT
+          ent_coef:
+            type: FLOAT
+          gae_lambda:
+            type: FLOAT
+          learning_rate:
+            type: FLOAT
+          max_grad_norm:
+            type: FLOAT
+          n_epochs:
+            type: INT
+          normalize_advantage:
+            type: BOOLEAN
+          vf_coef:
+            type: FLOAT
+          cost:
+            type: Float

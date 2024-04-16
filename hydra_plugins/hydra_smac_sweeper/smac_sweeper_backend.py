@@ -98,9 +98,7 @@ class SMACSweeperBackend(Sweeper):
         """
         self.config = config
         self.hydra_context = hydra_context
-        self.launcher = Plugins.instance().instantiate_launcher(
-            config=config, hydra_context=hydra_context, task_function=task_function
-        )
+        self.launcher = Plugins.instance().instantiate_launcher(config=config, hydra_context=hydra_context, task_function=task_function)
         self.task_function = task_function
         self.sweep_dir = config.hydra.sweep.dir
 
@@ -133,10 +131,8 @@ class SMACSweeperBackend(Sweeper):
             log.info(f"Sweep overrides: {' '.join(arguments)}")
 
         configspace = search_space_to_config_space(search_space=self.search_space)
-
-        opt_class = HydraSMAC
-
-        smac = opt_class(
+        # Extract PyExperimenter KWARGS and givethem to HydraSmac - Theroretically, i would only need the path
+        smac = HydraSMAC(
             global_overrides=arguments,
             launcher=self.launcher,
             budget_arg_name=self.budget_variable,
@@ -144,6 +140,7 @@ class SMACSweeperBackend(Sweeper):
             n_trials=self.budget,
             base_dir=self.sweep_dir,
             cs=configspace,
+            pyexperimenter_config=self.config,
             **self.smac_kwargs,
         )
 

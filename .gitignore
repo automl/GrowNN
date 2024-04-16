@@ -5,3 +5,5 @@ __pycache__
 smac3_output/*
 tmp/
 config/database_credentials.cfg
+logs/py-experimenter.log
+config/database_credentials.yml

@@ -6,18 +6,21 @@ import time
 import json
 import pickle
 import numpy as np
+import tempfile
 from ConfigSpace.hyperparameters import (
     CategoricalHyperparameter,
     NormalIntegerHyperparameter,
     OrdinalHyperparameter,
     UniformIntegerHyperparameter,
 )
+from py_experimenter.experimenter import PyExperimenter
 from hydra.utils import to_absolute_path
-#from deepcave import Recorder, Objective
-from omegaconf import OmegaConf
+
+# from deepcave import Recorder, Objective
 from smac import HyperparameterOptimizationFacade, Scenario
 from smac.intensifier.hyperband import Hyperband
 from smac.runhistory.dataclasses import TrialValue, TrialInfo
+from utils.smac_callbacks import CustomCallback
 
 log = logging.getLogger(__name__)
 
@@ -31,6 +34,7 @@ class HydraSMAC:
         save_arg_name,
         n_trials,
         cs,
+        pyexperimenter_config,
         seeds=False,
         slurm=False,
         slurm_timeout=10,
@@ -51,6 +55,7 @@ class HydraSMAC:
         self.budget_arg_name = budget_arg_name
         self.save_arg_name = save_arg_name
         self.configspace = cs
+        self.pyexperimenter_config = pyexperimenter_config
         self.output_dir = to_absolute_path(base_dir) if base_dir else to_absolute_path("./")
         os.makedirs(self.output_dir, exist_ok=True)
         self.checkpoint_dir = os.path.join(self.output_dir, "checkpoints")
@@ -80,6 +85,8 @@ class HydraSMAC:
         self.deterministic = deterministic
         self.max_budget = max_budget
 
+        self.experimenter = self._create_pyexperimenter()
+
         self.scenario = Scenario(self.configspace, deterministic=deterministic, n_trials=n_trials, min_budget=min_budget, max_budget=max_budget)
         max_config_calls = len(self.seeds) if seeds and not deterministic else 1
         if intensifier == "HB":
@@ -96,19 +103,16 @@ class HydraSMAC:
         self.smac = HyperparameterOptimizationFacade(
             self.scenario,
             dummy,
+            callbacks=[CustomCallback()],
             intensifier=self.intensifier,
             overwrite=True,
         )
 
         self.categorical_hps = [
-            n
-            for n in list(self.configspace.keys())
-            if isinstance(self.configspace.get_hyperparameter(n), CategoricalHyperparameter)
+            n for n in list(self.configspace.keys()) if isinstance(self.configspace.get_hyperparameter(n), CategoricalHyperparameter)
         ]
         self.categorical_hps += [
-            n
-            for n in list(self.configspace.keys())
-            if isinstance(self.configspace.get_hyperparameter(n), OrdinalHyperparameter)
+            n for n in list(self.configspace.keys()) if isinstance(self.configspace.get_hyperparameter(n), OrdinalHyperparameter)
         ]
         self.continuous_hps = [n for n in list(self.configspace.keys()) if n not in self.categorical_hps]
         self.hp_bounds = np.array(
@@ -122,7 +126,14 @@ class HydraSMAC:
             ]
         )
 
-    def run_configs(self, configs, budgets, seeds): #TODO figure this out in the context of multiprocessing
+    def _create_pyexperimenter(self) -> PyExperimenter:
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".yaml") as tmpfile:
+            tmpfile.write(self.config)
+            tmpfile_path = tmpfile.name
+            experimenter = PyExperimenter(experiment_configuration_file_path=tmpfile_path)
+        return experimenter
+
+    def run_configs(self, configs, budgets, seeds):  # TODO figure this out in the context of multiprocessing
         """
         Run a set of overrides
 
@@ -139,52 +150,40 @@ class HydraSMAC:
             The incurred costs.
         """
         # Generate overrides
-        #TODO: handle budget correctly
+        # TODO: handle budget correctly
         overrides = []
-        
-        if self.seeds: # If we have a seeded environment, each of the seeded runs needs the same 
+
+        if self.seeds:  # If we have a seeded environment, each of the seeded runs needs the same
             # Budget
             budgets = np.repeat(budgets, len(self.seeds))
-            
+
         for i in range(len(configs)):
-            names = (list(configs[0].keys()) + [self.budget_arg_name] + [self.save_arg_name])
+            names = list(configs[0].keys()) + [self.budget_arg_name] + [self.save_arg_name]
             if self.slurm:
-               names += ["hydra.launcher.timeout_min"]
-               optimized_timeout = (
-                       self.slurm_timeout * 1 / (self.total_budget // budgets[i]) + 0.1 * self.slurm_timeout
-                   )
+                names += ["hydra.launcher.timeout_min"]
+                optimized_timeout = self.slurm_timeout * 1 / (self.total_budget // budgets[i]) + 0.1 * self.slurm_timeout
 
             if self.seeds and self.deterministic:
                 for s in self.seeds:
-                    save_path = os.path.join(
-                            self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt"
-                        )
+                    save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt")
                     values = list(configs[i].values()) + [budgets[i]] + [save_path]
                     if self.slurm:
-                            values += [int(optimized_timeout)]
-                    job_overrides = tuple(self.global_overrides) + tuple(
-                            f"{name}={val}" for name, val in zip(names + ["seed"], values + [s])
-                        )
+                        values += [int(optimized_timeout)]
+                    job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names + ["seed"], values + [s]))
                     overrides.append(job_overrides)
             elif not self.deterministic:
-                save_path = os.path.join(
-                            self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt"
-                        )
+                save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt")
                 values = list(configs[i].values()) + [budgets[i]] + [save_path]
                 if self.slurm:
-                            values += [int(optimized_timeout)]
-                job_overrides = tuple(self.global_overrides) + tuple(
-                            f"{name}={val}" for name, val in zip(names + ["seed"], values + [seeds[i]])
-                        )
+                    values += [int(optimized_timeout)]
+                job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names + ["seed"], values + [seeds[i]]))
                 overrides.append(job_overrides)
             else:
                 save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}.pt")
                 values = list(configs[i].values()) + [budgets[i]] + [save_path]
                 if self.slurm:
                     values += [int(optimized_timeout)]
-                job_overrides = tuple(self.global_overrides) + tuple(
-                        f"{name}={val}" for name, val in zip(names, values)
-                    )
+                job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names, values))
                 overrides.append(job_overrides)
 
         # Run overrides
@@ -199,8 +198,8 @@ class HydraSMAC:
                 except:
                     done = False
 
-        performances = [] # Performance variable, filled with average value, if seeds used, otherwise fileld with normal value
-        costs = [] # Costs: Filled with max cost, if seeds used, standard cost otherwise
+        performances = []  # Performance variable, filled with average value, if seeds used, otherwise fileld with normal value
+        costs = []  # Costs: Filled with max cost, if seeds used, standard cost otherwise
         if self.seeds and self.deterministic:
             for j in range(0, len(configs)):
                 performances.append(np.mean([res[j * k + k].return_value for k in range(len(self.seeds))]))
@@ -304,7 +303,7 @@ class HydraSMAC:
                         budgets.append(self.max_budget)
                     seeds.append(info.seed)
             self.opt_time += time.time() - opt_time_start
-            performances, costs = self.run_configs(configs, budgets, seeds) 
+            performances, costs = self.run_configs(configs, budgets, seeds)
             opt_time_start = time.time()
             if self.seeds and self.deterministic:
                 seeds = np.zeros(len(performances))

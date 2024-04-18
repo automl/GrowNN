@@ -1,7 +1,6 @@
 from smac.callback import Callback, MetadataCallback
 from py_experimenter.result_processor import ResultProcessor
 import json
-from __future__ import annotations
 from smac.main.config_selector import ConfigSelector
 from ConfigSpace import Configuration
 import json
@@ -25,15 +24,10 @@ class CustomMetaCallback(MetadataCallback):
 
 
 class CustomCallback(Callback):
-    def __init__(self) -> None:
+    def __init__(self, result_processor: ResultProcessor) -> None:
         super().__init__()
-        self.result_processor=None 
-    
-    def set_result_processor(self, result_processor: ResultProcessor):
         self.result_processor = result_processor
-    
-    
-    
+
     def on_start(self, smbo: SMBO) -> None:
         """Called before the optimization starts."""
         super().on_start(smbo)
@@ -70,13 +64,13 @@ class CustomCallback(Callback):
         """Called after the intensifier is asked for the next trial."""
         super().on_ask_end(smbo, info)
 
-    def on_tell_start(self, smbo: SMBO, info: TrialInfo, value: TrialValue) -> bool | None:
+    def on_tell_start(self, smbo: SMBO, info: TrialInfo, value: TrialValue):
         """Called before the stats are updated and the trial is added to the runhistory. Optionally, returns false
         to gracefully stop the optimization.
         """
         super().on_tell_start(smbo, info, value)
 
-    def on_tell_end(self, smbo: SMBO, info: TrialInfo, value: TrialValue) -> bool | None:
+    def on_tell_end(self, smbo: SMBO, info: TrialInfo, value: TrialValue):
         """Called after the stats are updated and the trial is added to the runhistory. Optionally, returns false
         to gracefully stop the optimization.
         """

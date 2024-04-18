@@ -6,21 +6,20 @@ import time
 import json
 import pickle
 import numpy as np
-import tempfile
+
 from ConfigSpace.hyperparameters import (
     CategoricalHyperparameter,
     NormalIntegerHyperparameter,
     OrdinalHyperparameter,
     UniformIntegerHyperparameter,
 )
-from py_experimenter.experimenter import PyExperimenter
+from py_experimenter.result_processor import ResultProcessor
 from hydra.utils import to_absolute_path
 
 # from deepcave import Recorder, Objective
 from smac import HyperparameterOptimizationFacade, Scenario
 from smac.intensifier.hyperband import Hyperband
 from smac.runhistory.dataclasses import TrialValue, TrialInfo
-from utils.smac_callbacks import CustomCallback
 
 log = logging.getLogger(__name__)
 
@@ -34,7 +33,7 @@ class HydraSMAC:
         save_arg_name,
         n_trials,
         cs,
-        pyexperimenter_config,
+        result_processor: ResultProcessor,
         seeds=False,
         slurm=False,
         slurm_timeout=10,
@@ -47,15 +46,12 @@ class HydraSMAC:
         min_budget=None,
         maximize=False,
     ):
-        """
-        # TODO for myself
-        """
+        """ """
         self.global_overrides = global_overrides
         self.launcher = launcher
         self.budget_arg_name = budget_arg_name
         self.save_arg_name = save_arg_name
         self.configspace = cs
-        self.pyexperimenter_config = pyexperimenter_config
         self.output_dir = to_absolute_path(base_dir) if base_dir else to_absolute_path("./")
         os.makedirs(self.output_dir, exist_ok=True)
         self.checkpoint_dir = os.path.join(self.output_dir, "checkpoints")
@@ -72,7 +68,6 @@ class HydraSMAC:
         self.slurm = slurm
         self.slurm_timeout = slurm_timeout
         self.max_parallel = min(job_array_size_limit, max(1, int(max_parallelization * n_trials)))
-
         self.min_budget = min_budget
         self.iteration = 0
         self.n_trials = n_trials
@@ -84,8 +79,6 @@ class HydraSMAC:
         self.history["budgets"] = []
         self.deterministic = deterministic
         self.max_budget = max_budget
-
-        self.experimenter = self._create_pyexperimenter()
 
         self.scenario = Scenario(self.configspace, deterministic=deterministic, n_trials=n_trials, min_budget=min_budget, max_budget=max_budget)
         max_config_calls = len(self.seeds) if seeds and not deterministic else 1
@@ -100,10 +93,12 @@ class HydraSMAC:
         def dummy(arg, seed, budget):
             pass
 
+        from utils.smac_callbacks import CustomCallback
+
         self.smac = HyperparameterOptimizationFacade(
             self.scenario,
             dummy,
-            callbacks=[CustomCallback()],
+            callbacks=[CustomCallback(result_processor)],
             intensifier=self.intensifier,
             overwrite=True,
         )
@@ -126,14 +121,7 @@ class HydraSMAC:
             ]
         )
 
-    def _create_pyexperimenter(self) -> PyExperimenter:
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".yaml") as tmpfile:
-            tmpfile.write(self.config)
-            tmpfile_path = tmpfile.name
-            experimenter = PyExperimenter(experiment_configuration_file_path=tmpfile_path)
-        return experimenter
-
-    def run_configs(self, configs, budgets, seeds):  # TODO figure this out in the context of multiprocessing
+    def run_configs(self, configs, budgets, seeds, experiment_id: int):  # TODO figure this out in the context of multiprocessing
         """
         Run a set of overrides
 
@@ -158,7 +146,7 @@ class HydraSMAC:
             budgets = np.repeat(budgets, len(self.seeds))
 
         for i in range(len(configs)):
-            names = list(configs[0].keys()) + [self.budget_arg_name] + [self.save_arg_name]
+            names = list(configs[0].keys()) + [self.budget_arg_name] + [self.save_arg_name] + ["non_hyperparameters.experiment_id"] # Add PyExperiemtner ID 
             if self.slurm:
                 names += ["hydra.launcher.timeout_min"]
                 optimized_timeout = self.slurm_timeout * 1 / (self.total_budget // budgets[i]) + 0.1 * self.slurm_timeout
@@ -166,21 +154,21 @@ class HydraSMAC:
             if self.seeds and self.deterministic:
                 for s in self.seeds:
                     save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt")
-                    values = list(configs[i].values()) + [budgets[i]] + [save_path]
+                    values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id] # Add PyExperiemtner ID 
                     if self.slurm:
                         values += [int(optimized_timeout)]
                     job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names + ["seed"], values + [s]))
                     overrides.append(job_overrides)
             elif not self.deterministic:
                 save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt")
-                values = list(configs[i].values()) + [budgets[i]] + [save_path]
+                values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id] # Add PyExperiemtner ID 
                 if self.slurm:
                     values += [int(optimized_timeout)]
                 job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names + ["seed"], values + [seeds[i]]))
                 overrides.append(job_overrides)
             else:
                 save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}.pt")
-                values = list(configs[i].values()) + [budgets[i]] + [save_path]
+                values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id] # Add PyExperiemtner ID 
                 if self.slurm:
                     values += [int(optimized_timeout)]
                 job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names, values))
@@ -267,7 +255,7 @@ class HydraSMAC:
             json.dump(res, f)
             f.write("\n")
 
-    def run(self, verbose=False):
+    def run(self, verbose, experiment_id: int):
         """
         Actual optimization loop.
         In each iteration:
@@ -303,7 +291,7 @@ class HydraSMAC:
                         budgets.append(self.max_budget)
                     seeds.append(info.seed)
             self.opt_time += time.time() - opt_time_start
-            performances, costs = self.run_configs(configs, budgets, seeds)
+            performances, costs = self.run_configs(configs, budgets, seeds, experiment_id)  # Add PyExperimetner ID
             opt_time_start = time.time()
             if self.seeds and self.deterministic:
                 seeds = np.zeros(len(performances))

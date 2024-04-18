@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  # - slurm
+  - slurm
   - configspace: lr_only_config
   - override hydra/sweeper: SMAC
 
@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 5 # Internal Budget of one target function run
+      max_budget: 100 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -17,15 +17,15 @@ hydra:
 
       deterministic: True # whether or nto the env is deterministic
       
-      seeds: [0,1,2,3,4] # seeds passed to each worker - so we alswa 
+      seeds: [0,1,2,3,4] # seeds passed to each worker - so we alsways have the same seeds
       # TODO Assuming wokring with seeds makes sense, how do we go from here
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
     budget: 1 # The budget for SMAC
 
-    budget_variable: non_hyerparameters.n_steps
-    saving_variable: non_hyerparameters.saved_neural_nets
+    budget_variable: non_hyperparameters.n_steps
+    saving_variable: non_hyperparameters.saved_neural_nets
 
     search_space: ${configspace}
 
@@ -38,7 +38,7 @@ hydra:
 # Beloww are hyperparameters
 batch_size: 64
 clip_range: 0.2
-clip_range_vf: None  # If separate clipping is used for value function, otherwise can be the same as `clip_range`
+clip_range_vf: Null  # If separate clipping is used for value function, otherwise can be the same as `clip_range`
 ent_coef: 0.01
 gae_lambda: 0.95
 learning_rate: 0.00025
@@ -49,13 +49,14 @@ vf_coef: 0.5
 
 # Below are not hpo parameters. Seed is currenlty not allowed to be outside of section
 seed: 0 
-non_hyerparameters:
+non_hyperparameters:
+  experiment_id: Null
   env_id: MiniHack-Room-Random-5x5-v0
   n_steps: 2048 # TODO should this be a relevant HP
   saved_neural_nets: blablabla
   observation_keys: [glyphs, chars, colors, specials, blstats]
   max_episode_steps: 1000 # TODO should this be a relevant hp?
-  parralel_vec_envs: 5
+  parallel_vec_envs: 5
 
 PY_EXPERIMENTER: 
   n_jobs: 1
@@ -66,43 +67,32 @@ PY_EXPERIMENTER:
     table:
       name: black_box_development
       keyfields: 
-        envid:
+        env_id:
           type: VARCHAR(50)
         n_steps:
           type: INT
         saved_neural_nets:
           type: VARCHAR(50)
-        obseravtion_keys:
+        observation_keys:
           type: VARCHAR(200)
         max_episode_steps:
           type: INT
-        parralel_vec_envs:
+        parallel_vec_envs:
           type: INT
         seed:
           type: INT
-      lotables:
-        configurations:
-          configuration_number:
-            type: int
-          batch_size:
-            type: INT
-          clip_range:
-            type: FLOAT
-          clip_range_vf:
-            type: FLOAT
-          ent_coef:
-            type: FLOAT
-          gae_lambda:
-            type: FLOAT
-          learning_rate:
-            type: FLOAT
-          max_grad_norm:
-            type: FLOAT
-          n_epochs:
-            type: INT
-          normalize_advantage:
-            type: BOOLEAN
-          vf_coef:
-            type: FLOAT
-          cost:
-            type: Float
+    logtables:
+      configurations:
+        worker_number: INT # The number of the worker used by hypersweeper to evaluate the current configuration
+        worker_seed: INT # The seed provided to the worker to evalaute the curernt configuration
+        batch_size: INT
+        clip_range: FLOAT
+        clip_range_vf: FLOAT
+        ent_coef: FLOAT
+        gae_lambda: FLOAT
+        learning_rate: FLOAT
+        max_grad_norm: FLOAT
+        n_epochs: INT
+        normalize_advantage: BOOLEAN
+        vf_coef: FLOAT
+        cost: Float

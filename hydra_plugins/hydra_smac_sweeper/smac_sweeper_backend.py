@@ -4,7 +4,9 @@ from __future__ import annotations
 import logging
 
 from typing import List
-
+from py_experimenter.experimenter import PyExperimenter
+from py_experimenter.result_processor import ResultProcessor
+import tempfile
 import os
 import operator
 from functools import reduce
@@ -14,7 +16,7 @@ from hydra.types import HydraContext, TaskFunction
 from hydra.utils import get_class
 from hydra_plugins.hydra_smac_sweeper.hydra_smac import HydraSMAC
 from hydra_plugins.utils.search_space_encoding import search_space_to_config_space
-
+from utils.py_experimenter_utils import create_pyexperimenter
 from omegaconf import DictConfig, OmegaConf, open_dict
 from rich import print as printr
 
@@ -121,6 +123,41 @@ class SMACSweeperBackend(Sweeper):
         assert self.launcher is not None
         assert self.hydra_context is not None
 
+        def _sweep(parameters: dict, result_processor: ResultProcessor, custom_config: dict):
+            smac = HydraSMAC(
+                global_overrides=arguments,
+                launcher=self.launcher,
+                budget_arg_name=self.budget_variable,
+                save_arg_name=self.saving_variable,
+                n_trials=self.budget,
+                base_dir=self.sweep_dir,
+                cs=configspace,
+                result_processor=result_processor,
+                **self.smac_kwargs,
+            )
+
+            incumbent = smac.run(True, result_processor.experiment_id)
+            final_config = self.config
+            with open_dict(final_config):
+                del final_config["hydra"]
+            for a in arguments:
+                n, v = a.split("=")
+                key_parts = n.split(".")
+                reduce(operator.getitem, key_parts[:-1], final_config)[key_parts[-1]] = v
+            schedules = {}
+            for i in range(len(incumbent)):
+                for k, v in incumbent[i].items():
+                    if k not in schedules.keys():
+                        schedules[k] = []
+                    schedules[k].append(v)
+            for k in schedules.keys():
+                key_parts = k.split(".")
+                reduce(operator.getitem, key_parts[:-1], final_config)[key_parts[-1]] = schedules[k]
+            with open(os.path.join(smac.output_dir, "final_config.yaml"), "w+") as fp:
+                OmegaConf.save(config=final_config, f=fp)
+
+            return incumbent
+
         printr("Config", self.config)
         printr("Hydra context", self.hydra_context)
 
@@ -131,38 +168,13 @@ class SMACSweeperBackend(Sweeper):
             log.info(f"Sweep overrides: {' '.join(arguments)}")
 
         configspace = search_space_to_config_space(search_space=self.search_space)
-        # Extract PyExperimenter KWARGS and givethem to HydraSmac - Theroretically, i would only need the path
-        smac = HydraSMAC(
-            global_overrides=arguments,
-            launcher=self.launcher,
-            budget_arg_name=self.budget_variable,
-            save_arg_name=self.saving_variable,
-            n_trials=self.budget,
-            base_dir=self.sweep_dir,
-            cs=configspace,
-            pyexperimenter_config=self.config,
-            **self.smac_kwargs,
-        )
 
-        incumbent = smac.run(verbose=True)
+        py_experimenter = create_pyexperimenter(self.config)
 
-        final_config = self.config
-        with open_dict(final_config):
-            del final_config["hydra"]
-        for a in arguments:
-            n, v = a.split("=")
-            key_parts = n.split(".")
-            reduce(operator.getitem, key_parts[:-1], final_config)[key_parts[-1]] = v
-        schedules = {}
-        for i in range(len(incumbent)):
-            for k, v in incumbent[i].items():
-                if k not in schedules.keys():
-                    schedules[k] = []
-                schedules[k].append(v)
-        for k in schedules.keys():
-            key_parts = k.split(".")
-            reduce(operator.getitem, key_parts[:-1], final_config)[key_parts[-1]] = schedules[k]
-        with open(os.path.join(smac.output_dir, "final_config.yaml"), "w+") as fp:
-            OmegaConf.save(config=final_config, f=fp)
+        keyfield_values = dict(self.config["non_hyperparameters"])
 
-        return incumbent
+        # Dont write PyExperimetner Experimentid
+        del keyfield_values["experiment_id"]
+
+        keyfield_values["observation_keys"] = ",".join(keyfield_values["observation_keys"])
+        py_experimenter.add_experiment_and_execute(keyfield_values, experiment_function=_sweep)

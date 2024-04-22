@@ -1,7 +1,7 @@
 defaults:
   - _self_
   - slurm
-  - configspace: lr_only_config
+  - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
 hydra:
@@ -12,7 +12,7 @@ hydra:
       
       # Parralelisation Parameters
       job_array_size_limit: 5
-      max_parallelization: 5 
+      max_parallelization: .001 
       # at most min(job_array_size_limit, max(1, int(max_parallelization * n_trials))) target functions are executed in parrallel
 
       deterministic: True # whether or nto the env is deterministic
@@ -22,9 +22,9 @@ hydra:
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 1 # The budget for SMAC
+    budget: 500 # The budget for SMAC
 
-    budget_variable: non_hyperparameters.n_steps
+    budget_variable: non_hyperparameters.total_timesteps
     saving_variable: non_hyperparameters.saved_neural_nets
 
     search_space: ${configspace}
@@ -44,6 +44,7 @@ gae_lambda: 0.95
 learning_rate: 0.00025
 max_grad_norm: 0.5
 n_epochs: 10
+n_steps: 2048
 normalize_advantage: False
 vf_coef: 0.5
 
@@ -51,12 +52,15 @@ vf_coef: 0.5
 seed: 0 
 non_hyperparameters:
   experiment_id: Null
-  env_id: MiniHack-Room-Random-5x5-v0
-  n_steps: 2048 # TODO should this be a relevant HP
+  environment_id: MiniHack-Room-Random-5x5-v0
+  env_seed: 0
   saved_neural_nets: blablabla
   observation_keys: [glyphs, chars, colors, specials, blstats]
-  max_episode_steps: 1000 # TODO should this be a relevant hp?
+  max_episode_steps: 500 # TODO should this be a relevant hp?
   parallel_vec_envs: 5
+  n_evaluation_episodes: 10
+  n_evaluation_rounds: 20
+  total_timesteps: 500000
 
 PY_EXPERIMENTER: 
   n_jobs: 1
@@ -67,9 +71,9 @@ PY_EXPERIMENTER:
     table:
       name: black_box_development
       keyfields: 
-        env_id:
+        environment_id:
           type: VARCHAR(50)
-        n_steps:
+        env_seed:
           type: INT
         saved_neural_nets:
           type: VARCHAR(50)
@@ -81,8 +85,15 @@ PY_EXPERIMENTER:
           type: INT
         seed:
           type: INT
+        n_evaluation_episodes:
+          type: INT
+        n_evaluation_rounds:
+          type: int
+        total_timesteps: 
+          type: int
     logtables:
       configurations:
+        environment_id: VARCHAR(50)
         worker_number: INT # The number of the worker used by hypersweeper to evaluate the current configuration
         worker_seed: INT # The seed provided to the worker to evalaute the curernt configuration
         batch_size: INT
@@ -93,6 +104,13 @@ PY_EXPERIMENTER:
         learning_rate: FLOAT
         max_grad_norm: FLOAT
         n_epochs: INT
+        n_steps: INT
         normalize_advantage: BOOLEAN
         vf_coef: FLOAT
         cost: Float
+      training_process:
+        worker_id: INT
+        timestep: INT
+        evaluated_cost: FLOAT
+        evaluated_stdev: FLOAT
+

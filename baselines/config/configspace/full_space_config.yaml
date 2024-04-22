@@ -32,7 +32,7 @@ hyperparameters:
     lower: 0.0
     upper: 0.5
   n_epochs:
-    type: uniform_integer
+    type: uniform_int
     lower: 5
     upper: 20
   n_steps:

@@ -10,5 +10,12 @@ hyperparameters:
     upper: 0.01
   n_epochs:
     lower: 5
-    type: uniform_integer
+    type: uniform_int
     upper: 20
+  batch_size:
+    choices:
+    - 32
+    - 64
+    - 128
+    - 256
+    type: categorical

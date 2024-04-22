@@ -7,3 +7,7 @@ tmp/
 config/database_credentials.cfg
 logs/py-experimenter.log
 config/database_credentials.yml
+ssh_files/error_on_ai-n001.err
+ssh_files/error_on_ai-n002.err
+ssh_files/result_on_ai-n001.out
+ssh_files/result_on_ai-n002.out

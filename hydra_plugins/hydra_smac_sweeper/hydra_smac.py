@@ -146,7 +146,9 @@ class HydraSMAC:
             budgets = np.repeat(budgets, len(self.seeds))
 
         for i in range(len(configs)):
-            names = list(configs[0].keys()) + [self.budget_arg_name] + [self.save_arg_name] + ["non_hyperparameters.experiment_id"] # Add PyExperiemtner ID 
+            names = (
+                list(configs[0].keys()) + [self.budget_arg_name] + [self.save_arg_name] + ["non_hyperparameters.experiment_id"]
+            )  # Add PyExperiemtner ID
             if self.slurm:
                 names += ["hydra.launcher.timeout_min"]
                 optimized_timeout = self.slurm_timeout * 1 / (self.total_budget // budgets[i]) + 0.1 * self.slurm_timeout
@@ -154,21 +156,21 @@ class HydraSMAC:
             if self.seeds and self.deterministic:
                 for s in self.seeds:
                     save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt")
-                    values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id] # Add PyExperiemtner ID 
+                    values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id]  # Add PyExperiemtner ID
                     if self.slurm:
                         values += [int(optimized_timeout)]
                     job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names + ["seed"], values + [s]))
                     overrides.append(job_overrides)
             elif not self.deterministic:
                 save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt")
-                values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id] # Add PyExperiemtner ID 
+                values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id]  # Add PyExperiemtner ID
                 if self.slurm:
                     values += [int(optimized_timeout)]
                 job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names + ["seed"], values + [seeds[i]]))
                 overrides.append(job_overrides)
             else:
                 save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}.pt")
-                values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id] # Add PyExperiemtner ID 
+                values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id]  # Add PyExperiemtner ID
                 if self.slurm:
                     values += [int(optimized_timeout)]
                 job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names, values))

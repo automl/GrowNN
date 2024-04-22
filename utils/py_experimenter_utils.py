@@ -1,6 +1,7 @@
 import tempfile
-from py_experimenter.experimenter import PyExperimenter
+from py_experimenter.experimenter import PyExperimenter, ResultProcessor
 from omegaconf import OmegaConf
+from typing import Dict
 
 
 def create_pyexperimenter(
@@ -18,3 +19,16 @@ def create_pyexperimenter(
         )
         experimenter.create_table()
     return experimenter
+
+
+def log_results(result_processor: ResultProcessor, logs: Dict, max_counter: int = 10, counter=0):
+    # I need to wrap the funciton, becaue the executed jobs may be distributed on various nodes
+    # If so there needs to be a seperate ssh passthrough on every node, however they might be
+    # closed in one thread finishes before the other, meaning I need to reclose them
+    try:
+        result_processor.process_logs(logs)
+
+    except Exception as e:
+        if counter > max_counter:
+            raise e
+        log_results(result_processor, logs, max_counter, counter + 1)

@@ -125,12 +125,12 @@ def black_box_ppo_configure(config: Configuration):
                 }
             },
         )
-        return final_score
+        return float(-final_score)
 
     # Attach Execution to pyExperimetner to then enable logging
     experimenter = create_pyexperimenter(config, use_ssh_tunnel=True)
     result = experimenter.attach(black_box_ppo_execute, config.non_hyperparameters.experiment_id)
-    return result
+    return float(result)
 
 
 if __name__ == "__main__":

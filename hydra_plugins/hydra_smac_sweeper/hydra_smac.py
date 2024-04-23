@@ -193,11 +193,11 @@ class HydraSMAC:
         if self.seeds and self.deterministic:
             for j in range(0, len(configs)):
                 performances.append(np.mean([res[j * k + k].return_value for k in range(len(self.seeds))]))
-                costs.append(np.max([budgets[j * k + k] for k in range(len(self.seeds))]))
+                costs.append(int(np.max([budgets[j * k + k] for k in range(len(self.seeds))])))
         else:
             for j in range(len(overrides)):
                 performances.append(res[j].return_value)
-                costs.append(budgets[i])
+                costs.append(int(budgets[i]))
         if self.maximize:
             performances = [-p for p in performances]
         return performances, costs
@@ -299,7 +299,7 @@ class HydraSMAC:
                 seeds = np.zeros(len(performances))
             for config, performance, budget, seed, cost in zip(configs, performances, budgets, seeds, costs):
                 info = TrialInfo(budget=budget, seed=seed, config=config)
-                value = TrialValue(cost=-performance if self.maximize else performance, time=cost)
+                value = TrialValue(cost=float(-performance) if self.maximize else float(performance), time=cost)
                 self.smac.tell(info=info, value=value)
             self.record_iteration(performances, configs, budgets)
             if verbose:

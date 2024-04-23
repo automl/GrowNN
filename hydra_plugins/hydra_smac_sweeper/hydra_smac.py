@@ -41,7 +41,7 @@ class HydraSMAC:
         job_array_size_limit=100,
         intensifier="HB",
         max_budget=None,
-        deterministic=True,
+        deterministic=True,  # TODO was heisst der deterministic parameter here?
         base_dir=False,
         min_budget=None,
         maximize=False,
@@ -280,12 +280,14 @@ class HydraSMAC:
         self.start = time.time()
         while self.iteration < self.n_trials:
             opt_time_start = time.time()
+            trial_infos = []
             configs = []
             budgets = []
             seeds = []
             for _ in range(self.max_parallel):
                 if len(configs) < self.n_trials:
                     info = self.smac.ask()
+                    trial_infos.append(info)
                     configs.append(info.config)
                     if info.budget is not None:
                         budgets.append(info.budget)
@@ -297,8 +299,7 @@ class HydraSMAC:
             opt_time_start = time.time()
             if self.seeds and self.deterministic:
                 seeds = np.zeros(len(performances))
-            for config, performance, budget, seed, cost in zip(configs, performances, budgets, seeds, costs):
-                info = TrialInfo(budget=budget, seed=seed, config=config)
+            for info, performance, cost in zip(trial_infos, performances, costs):
                 value = TrialValue(cost=float(-performance) if self.maximize else float(performance), time=cost)
                 self.smac.tell(info=info, value=value)
             self.record_iteration(performances, configs, budgets)

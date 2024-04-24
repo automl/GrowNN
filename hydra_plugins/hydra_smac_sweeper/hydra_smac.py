@@ -6,7 +6,7 @@ import time
 import json
 import pickle
 import numpy as np
-
+from typing import List
 from ConfigSpace.hyperparameters import (
     CategoricalHyperparameter,
     NormalIntegerHyperparameter,
@@ -121,7 +121,7 @@ class HydraSMAC:
             ]
         )
 
-    def run_configs(self, configs, budgets, seeds, experiment_id: int):  # TODO figure this out in the context of multiprocessing
+    def run_configs(self, configs, budgets, seeds, experiment_id: int, trial_numbers: List):  # TODO figure this out in the context of multiprocessing
         """
         Run a set of overrides
 
@@ -147,7 +147,12 @@ class HydraSMAC:
 
         for i in range(len(configs)):
             names = (
-                list(configs[0].keys()) + [self.budget_arg_name] + [self.save_arg_name] + ["non_hyperparameters.experiment_id"]
+                list(configs[0].keys())
+                + [self.budget_arg_name]
+                + [self.save_arg_name]
+                + ["non_hyperparameters.experiment_id"]
+                + ["seed"]
+                + ["non_hyperparameters.trial_number"]
             )  # Add PyExperiemtner ID
             if self.slurm:
                 names += ["hydra.launcher.timeout_min"]
@@ -156,17 +161,21 @@ class HydraSMAC:
             if self.seeds and self.deterministic:
                 for s in self.seeds:
                     save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt")
-                    values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id]  # Add PyExperiemtner ID
+                    values = (
+                        list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id] + [s] + [trial_numbers[i]]
+                    )  # Add PyExperiemtner ID
                     if self.slurm:
+                        raise ValueError("Not Supported")
                         values += [int(optimized_timeout)]
-                    job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names + ["seed"], values + [s]))
+                    job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names, values))
                     overrides.append(job_overrides)
             elif not self.deterministic:
+                raise ValueError("Not Supported")
                 save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt")
-                values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id]  # Add PyExperiemtner ID
+                values = list(configs[i].values()) + [budgets[i]] + [save_path] + [experiment_id] + [s]  # Add PyExperiemtner ID
                 if self.slurm:
                     values += [int(optimized_timeout)]
-                job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names + ["seed"], values + [seeds[i]]))
+                job_overrides = tuple(self.global_overrides) + tuple(f"{name}={val}" for name, val in zip(names, values + [seeds[i]]))
                 overrides.append(job_overrides)
             else:
                 save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}.pt")
@@ -284,10 +293,12 @@ class HydraSMAC:
             configs = []
             budgets = []
             seeds = []
+            trial_numbers = []
             for _ in range(self.max_parallel):
                 if len(configs) < self.n_trials:
                     info = self.smac.ask()
                     trial_infos.append(info)
+                    trial_numbers.append(self.iteration)
                     configs.append(info.config)
                     if info.budget is not None:
                         budgets.append(info.budget)
@@ -295,7 +306,7 @@ class HydraSMAC:
                         budgets.append(self.max_budget)
                     seeds.append(info.seed)
             self.opt_time += time.time() - opt_time_start
-            performances, costs = self.run_configs(configs, budgets, seeds, experiment_id)  # Add PyExperimetner ID
+            performances, costs = self.run_configs(configs, budgets, seeds, experiment_id, trial_numbers)  # Add PyExperimetner ID
             opt_time_start = time.time()
             if self.seeds and self.deterministic:
                 seeds = np.zeros(len(performances))

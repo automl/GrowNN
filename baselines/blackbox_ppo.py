@@ -8,14 +8,23 @@ import hydra
 from utils import make_vec_env, make_env, extract_hyperparameters, create_pyexperimenter, log_results
 from py_experimenter.result_processor import ResultProcessor
 import numpy as np
+from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.logger import configure
+from utils.stable_baseliens_callback import custom_callback
 
 
 @hydra.main(config_path="config", config_name="blackbox_ppo", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
+    def evaluation_callback(locals_dict, globals_dict):
+        # Access step number and rewards from locals_dict
+        step = locals_dict["step"]
+        reward = locals_dict["rewards"][-1]
+        print(f"Step: {step}, Reward: {reward}")
+
     def black_box_ppo_execute(result_processor: ResultProcessor):
-        # TODO the seed is constant
         minihack
         gym
+        # TODO are the inptu features noramlized?
 
         seed = config["seed"]
         # TODO Build Reward Manager https://minihack.readthedocs.io/en/latest/getting-started/reward.html
@@ -63,7 +72,7 @@ def black_box_ppo_configure(config: Configuration):
         model = PPO(
             "MultiInputPolicy",
             training_vec_env,
-            verbose=1,
+            verbose=2,
             device="cuda",
             batch_size=batch_size,
             clip_range=clip_range,
@@ -86,11 +95,14 @@ def black_box_ppo_configure(config: Configuration):
             eval_freq=non_hyperparameters["total_timesteps"] / non_hyperparameters["n_evaluation_rounds"],
             deterministic=True,
             render=False,
-            log_path="./evaluation_callback",
+            log_path="./logs",
         )
+        new_logger = configure("logs", ["stdout", "csv"])
 
-        model.learn(total_timesteps=5000, callback=evaluation_callback)  # TODO determine this based on the config
-        callback_data = np.load("evaluation_callback/evaluations.npz")
+        model.set_logger(new_logger)
+
+        model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
+        callback_data = np.load("logs/evaluations.npz")
 
         for timestep, result, _ in zip(*callback_data.values()):
             # Check whether we evalaute 10 episodes
@@ -98,11 +110,34 @@ def black_box_ppo_configure(config: Configuration):
             evalauted_stdev = np.std(result)
             log_results(
                 result_processor,
-                {"training_process": {"worker_id": seed, "timestep": timestep, "evaluated_cost": evaluated_cost, "evaluated_stdev": evalauted_stdev}},
+                {
+                    "training_process": {
+                        "worker_id": seed,
+                        "trial_number": non_hyperparameters["trial_number"],
+                        "timestep": timestep,
+                        "evaluated_cost": evaluated_cost,
+                        "evaluated_stdev": evalauted_stdev,
+                    }
+                },
             )
 
+        # TODO track solutionrate during learning
+        # TODO Evaluation Videos
+        # TODO Track solutionrate
+        # TODO track loss components
+        # TODO check reward conversion
         # TODO I think that is actually correct to have as final cost the lsat evalauted cost.
-        final_score = evaluated_cost
+
+        evaluation_vec_env = make_vec_env(
+            non_hyperparameters["environment_id"],
+            non_hyperparameters["observation_keys"],
+            non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
+            non_hyperparameters["parallel_vec_envs"],
+            non_hyperparameters["max_episode_steps"],
+        )
+        final_score, final_std = evaluate_policy(
+            model, evaluation_vec_env, n_eval_episodes=10, deterministic=True, render=False, callback=evaluation_callback
+        )
 
         log_results(
             result_processor,
@@ -110,6 +145,7 @@ def black_box_ppo_configure(config: Configuration):
                 "configurations": {
                     "worker_number": seed,  # Currently the same as the workerseed
                     "worker_seed": seed,
+                    "trial_number": non_hyperparameters["trial_number"],
                     "environment_id": non_hyperparameters["environment_id"],
                     "batch_size": batch_size,
                     "clip_range": clip_range,
@@ -121,7 +157,8 @@ def black_box_ppo_configure(config: Configuration):
                     "n_epochs": n_epochs,
                     "normalize_advantage": normalize_advantage,
                     "vf_coef": vf_coef,
-                    "cost": -final_score,
+                    "final_score": final_score,
+                    "final_std": final_std,
                 }
             },
         )
@@ -131,6 +168,7 @@ def black_box_ppo_configure(config: Configuration):
     experimenter = create_pyexperimenter(config, use_ssh_tunnel=True)
     result = experimenter.attach(black_box_ppo_execute, config.non_hyperparameters.experiment_id)
     return float(result)
+    # TODO check calback
 
 
 if __name__ == "__main__":

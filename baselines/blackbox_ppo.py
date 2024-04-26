@@ -10,17 +10,17 @@ from py_experimenter.result_processor import ResultProcessor
 import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.logger import configure
-from utils.stable_baseliens_callback import custom_callback
+from utils.stable_baseliens_callback import FinalEvaluationWrapper
+
+# Next step is the callback during training
+# Also keep an eye on the data that we generate in the currently running job
+# Mit Theresa darüber reden ob es eine art liit an der menge an jobs gibt ,die submitted werden können. Denn gestern hat 3113145_0 nicht gestartet
+# Obwohl ressourcen verfügbar schienen
+# TODO plots über den learning process erstellen
 
 
 @hydra.main(config_path="config", config_name="blackbox_ppo", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
-    def evaluation_callback(locals_dict, globals_dict):
-        # Access step number and rewards from locals_dict
-        step = locals_dict["step"]
-        reward = locals_dict["rewards"][-1]
-        print(f"Step: {step}, Reward: {reward}")
-
     def black_box_ppo_execute(result_processor: ResultProcessor):
         minihack
         gym
@@ -126,7 +126,6 @@ def black_box_ppo_configure(config: Configuration):
         # TODO Track solutionrate
         # TODO track loss components
         # TODO check reward conversion
-        # TODO I think that is actually correct to have as final cost the lsat evalauted cost.
 
         evaluation_vec_env = make_vec_env(
             non_hyperparameters["environment_id"],
@@ -135,9 +134,23 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["max_episode_steps"],
         )
-        final_score, final_std = evaluate_policy(
-            model, evaluation_vec_env, n_eval_episodes=10, deterministic=True, render=False, callback=evaluation_callback
+
+        # TODO use a not vectorized environemnt here
+        callback_wrapper = FinalEvaluationWrapper(
+            result_processor,
+            non_hyperparameters["parallel_vec_envs"],
+            non_hyperparameters["n_evaluation_episodes"],
         )
+        final_score, final_std = evaluate_policy(
+            model,
+            evaluation_vec_env,
+            n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
+            deterministic=True,
+            render=False,
+            callback=callback_wrapper.get_callback(),
+        )
+
+        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std)
 
         log_results(
             result_processor,

@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - slurm
+  # - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -57,7 +57,7 @@ non_hyperparameters:
   env_seed: 0
   saved_neural_nets: blablabla
   observation_keys: [glyphs, chars, colors, specials, blstats]
-  max_episode_steps: 500 # TODO should this be a relevant hp?
+  max_episode_steps: 25 # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10
   n_evaluation_rounds: 20
@@ -68,7 +68,7 @@ PY_EXPERIMENTER:
 
   Database:
     provider: mysql
-    database: fehring_growing_nn
+    database: fehring_growing_nn_test
     table:
       name: black_box_development
       keyfields: 
@@ -120,4 +120,14 @@ PY_EXPERIMENTER:
 
       smac_callbacks:
         trial_number: INT
-        cost: INT
+        cost: FLOAT
+
+      final_evaluation_callback:
+        trial_number: INT
+        worker_number: INT
+        final_score: FLOAT
+        final_std: FLOAT
+        episode_lengths: TEXT
+        average_episode_lengths: FLOAT
+        successfull: FLOAT
+        rewards_per_episode: LONGTEXT

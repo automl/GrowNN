@@ -131,3 +131,18 @@ PY_EXPERIMENTER:
         average_episode_lengths: FLOAT
         successfull: FLOAT
         rewards_per_episode: LONGTEXT
+      
+      training_losses:
+        trial_number: INT
+        worker_number: INT
+        n_rollout: INT
+        train/learning_rate': FLOAT
+        train/entropy_loss': FLOAT
+        train/policy_gradient_loss': FLOAT
+        train/value_loss': FLOAT
+        train/approx_kl': FLOAT
+        train/clip_fraction': FLOAT
+        train/loss': FLOAT
+        train/explained_variance': FLOAT
+        train/clip_range': FLOAT
+        train/n_updates': INT

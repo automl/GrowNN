@@ -10,7 +10,7 @@ from py_experimenter.result_processor import ResultProcessor
 import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.logger import configure
-from utils.stable_baseliens_callback import FinalEvaluationWrapper
+from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
 
 # Next step is the callback during training
 # Also keep an eye on the data that we generate in the currently running job
@@ -89,7 +89,7 @@ def black_box_ppo_configure(config: Configuration):
         )
 
         # TODO set eval_freq on parameters
-        evaluation_callback = EvalCallback(
+        evaluation_callback = CustomEvaluationCallback(
             evaluation_vec_env,
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
             eval_freq=non_hyperparameters["total_timesteps"] / non_hyperparameters["n_evaluation_rounds"],
@@ -97,11 +97,10 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
-        new_logger = configure("logs", ["stdout", "csv"])
-
-        model.set_logger(new_logger)
 
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
+        evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
+
         callback_data = np.load("logs/evaluations.npz")
 
         for timestep, result, _ in zip(*callback_data.values()):

@@ -7,6 +7,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv, VecEnv, sync_envs_norm
 from stable_baselines3.common.evaluation import evaluate_policy
 from typing import Dict
 import os
+from typing import Any
 
 
 class CustomEvaluationCallback(EvalCallback):
@@ -17,6 +18,12 @@ class CustomEvaluationCallback(EvalCallback):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.losses = list()
+
+    def _log_success_callback(self, locals_: Dict[str, Any], globals_: Dict[str, Any], env_id: int) -> None:
+        """
+        Wrapepr of superclass method without the env_id parameter
+        """
+        super()._log_success_callback(locals_, globals_)
 
     def _on_step(self) -> bool:
         continue_training = True
@@ -107,7 +114,8 @@ class CustomEvaluationCallback(EvalCallback):
 
     def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int):
         for n_rollout, rollout_losses in enumerate(self.losses):
-            result_processor.process_results(
+            rollout_losses = {key[6:]: value for key, value in rollout_losses.items()}
+            result_processor.process_logs(
                 {
                     "training_losses": {
                         "trial_number": trial_number,

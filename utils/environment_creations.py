@@ -18,11 +18,6 @@ def make_env(env_id: str, observation_keys: List[str], max_episode_steps: int, e
     """
     minihack
     MOVE_ACTIONS = tuple(nethack.CompassDirection)
-    NAVIGATE_ACTIONS = MOVE_ACTIONS + (
-        nethack.Command.OPEN,
-        nethack.Command.KICK,
-        nethack.Command.SEARCH,
-    )
 
     def _init():
         env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps=max_episode_steps, actions=MOVE_ACTIONS)

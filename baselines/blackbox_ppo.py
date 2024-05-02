@@ -91,7 +91,7 @@ def black_box_ppo_configure(config: Configuration):
         evaluation_callback = CustomEvaluationCallback(
             evaluation_vec_env,
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
-            eval_freq=non_hyperparameters["total_timesteps"] / non_hyperparameters["n_evaluation_rounds"],
+            eval_freq=non_hyperparameters["total_timesteps"] / non_hyperparameters["n_evaluation_rounds"] / non_hyperparameters["parallel_vec_envs"],
             deterministic=True,
             render=False,
             log_path="./logs",

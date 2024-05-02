@@ -127,7 +127,7 @@ class CustomEvaluationCallback(EvalCallback):
             )
 
     def _on_rollout_end(self) -> None:
-        return self.losses.append(self.logger.name_to_value)
+        return self.losses.append(deepcopy(self.logger.name_to_value))
 
 
 class FinalEvaluationWrapper:

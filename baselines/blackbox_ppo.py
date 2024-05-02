@@ -88,7 +88,6 @@ def black_box_ppo_configure(config: Configuration):
             seed=seed,
         )
 
-        # TODO set eval_freq on parameters
         evaluation_callback = CustomEvaluationCallback(
             evaluation_vec_env,
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],

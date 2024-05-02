@@ -155,8 +155,12 @@ class SMACSweeperBackend(Sweeper):
                 reduce(operator.getitem, key_parts[:-1], final_config)[key_parts[-1]] = schedules[k]
             with open(os.path.join(smac.output_dir, "final_config.yaml"), "w+") as fp:
                 OmegaConf.save(config=final_config, f=fp)
-
-            return incumbent
+            result_processor.process_results(
+                {
+                    "final_cost": incumbent["cost"],
+                    "final_config": final_config,
+                }
+            )
 
         printr("Config", self.config)
         printr("Hydra context", self.hydra_context)

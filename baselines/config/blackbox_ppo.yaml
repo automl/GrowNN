@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  # - slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 500000 # Internal Budget of one target function run
+      max_budget: 1000000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -22,7 +22,7 @@ hydra:
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 20 # The budget for SMAC
+    budget: 50 # The budget for SMAC
 
     budget_variable: non_hyperparameters.total_timesteps
     saving_variable: non_hyperparameters.saved_neural_nets
@@ -57,7 +57,7 @@ non_hyperparameters:
   env_seed: 0
   saved_neural_nets: blablabla
   observation_keys: [glyphs, chars, colors, specials, blstats]
-  max_episode_steps: 25 # TODO should this be a relevant hp?
+  max_episode_steps: 100 # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10
   n_evaluation_rounds: 20
@@ -68,9 +68,9 @@ PY_EXPERIMENTER:
 
   Database:
     provider: mysql
-    database: fehring_growing_nn_test
+    database: fehring_growing_nn
     table:
-      name: black_box_development
+      name: hpo_baseline
       keyfields: 
         environment_id:
           type: VARCHAR(50)
@@ -92,6 +92,9 @@ PY_EXPERIMENTER:
           type: int
         total_timesteps: 
           type: int
+      resultfields:
+        final_cost: FLOAT
+        config: TEXT
     logtables:
       configurations:
         environment_id: VARCHAR(50)

@@ -18,6 +18,8 @@ from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvalua
 # Obwohl ressourcen verfügbar schienen
 # TODO plots über den learning process erstellen
 
+debug_mode = False
+
 
 @hydra.main(config_path="config", config_name="blackbox_ppo", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
@@ -98,7 +100,8 @@ def black_box_ppo_configure(config: Configuration):
         )
 
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
-        evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
+        if not debug_mode:
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
 
         callback_data = np.load("logs/evaluations.npz")
 
@@ -106,18 +109,19 @@ def black_box_ppo_configure(config: Configuration):
             # Check whether we evalaute 10 episodes
             evaluated_cost = np.mean(result)
             evalauted_stdev = np.std(result)
-            log_results(
-                result_processor,
-                {
-                    "training_process": {
-                        "worker_id": seed,
-                        "trial_number": non_hyperparameters["trial_number"],
-                        "timestep": timestep,
-                        "evaluated_cost": evaluated_cost,
-                        "evaluated_stdev": evalauted_stdev,
-                    }
-                },
-            )
+            if not debug_mode:
+                log_results(
+                    result_processor,
+                    {
+                        "training_process": {
+                            "worker_id": seed,
+                            "trial_number": non_hyperparameters["trial_number"],
+                            "timestep": timestep,
+                            "evaluated_cost": evaluated_cost,
+                            "evaluated_stdev": evalauted_stdev,
+                        }
+                    },
+                )
 
         # TODO track solutionrate during learning
         # TODO Evaluation Videos
@@ -149,37 +153,41 @@ def black_box_ppo_configure(config: Configuration):
         )
 
         callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std)
-
-        log_results(
-            result_processor,
-            {
-                "configurations": {
-                    "worker_number": seed,  # Currently the same as the workerseed
-                    "worker_seed": seed,
-                    "trial_number": non_hyperparameters["trial_number"],
-                    "environment_id": non_hyperparameters["environment_id"],
-                    "batch_size": batch_size,
-                    "clip_range": clip_range,
-                    "clip_range_vf": clip_range_vf,
-                    "ent_coef": ent_coef,
-                    "gae_lambda": gae_lambda,
-                    "learning_rate": learning_rate,
-                    "max_grad_norm": max_grad_norm,
-                    "n_epochs": n_epochs,
-                    "normalize_advantage": normalize_advantage,
-                    "vf_coef": vf_coef,
-                    "final_score": final_score,
-                    "final_std": final_std,
-                }
-            },
-        )
+        if not debug_mode:
+            log_results(
+                result_processor,
+                {
+                    "configurations": {
+                        "worker_number": seed,  # Currently the same as the workerseed
+                        "worker_seed": seed,
+                        "trial_number": non_hyperparameters["trial_number"],
+                        "environment_id": non_hyperparameters["environment_id"],
+                        "batch_size": batch_size,
+                        "clip_range": clip_range,
+                        "clip_range_vf": clip_range_vf,
+                        "ent_coef": ent_coef,
+                        "gae_lambda": gae_lambda,
+                        "learning_rate": learning_rate,
+                        "max_grad_norm": max_grad_norm,
+                        "n_epochs": n_epochs,
+                        "n_steps": n_steps,
+                        "normalize_advantage": normalize_advantage,
+                        "vf_coef": vf_coef,
+                        "final_score": final_score,
+                        "final_std": final_std,
+                    }
+                },
+            )
         return float(-final_score)
 
-    # Attach Execution to pyExperimetner to then enable logging
-    experimenter = create_pyexperimenter(config, use_ssh_tunnel=True)
-    result = experimenter.attach(black_box_ppo_execute, config.non_hyperparameters.experiment_id)
-    return float(result)
-    # TODO check calback
+    if debug_mode:
+        return black_box_ppo_execute(None)
+    else:
+
+        # Attach Execution to pyExperimetner to then enable logging
+        experimenter = create_pyexperimenter(config, use_ssh_tunnel=True)
+        result = experimenter.attach(black_box_ppo_execute, config.non_hyperparameters.experiment_id)
+        return float(result)
 
 
 if __name__ == "__main__":

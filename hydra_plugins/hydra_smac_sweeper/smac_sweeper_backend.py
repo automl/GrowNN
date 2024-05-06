@@ -180,6 +180,7 @@ class SMACSweeperBackend(Sweeper):
         # Dont write PyExperimetner Experimentid
         del keyfield_values["experiment_id"]
         del keyfield_values["trial_number"]
+        keyfield_values["smac_budget"] = self.budget
 
         keyfield_values["observation_keys"] = ",".join(keyfield_values["observation_keys"])
         py_experimenter.add_experiment_and_execute(keyfield_values, experiment_function=_sweep)

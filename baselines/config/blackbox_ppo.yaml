@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 1000000 # Internal Budget of one target function run
+      max_budget: 500000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -36,14 +36,14 @@ hydra:
     dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
 # Beloww are hyperparameters
-batch_size: 64
+batch_size: 256
 clip_range: 0.2
 clip_range_vf: Null  # If separate clipping is used for value function, otherwise can be the same as `clip_range`
-ent_coef: 0.01
+ent_coef: 0.005
 gae_lambda: 0.95
-learning_rate: 0.00025
+learning_rate: 0.000211
 max_grad_norm: 0.5
-n_epochs: 10
+n_epochs: 11
 n_steps: 2048
 normalize_advantage: False
 vf_coef: 0.5
@@ -56,12 +56,12 @@ non_hyperparameters:
   environment_id: MiniHack-Room-Random-5x5-v0
   env_seed: 0
   saved_neural_nets: blablabla
-  observation_keys: [glyphs, chars, colors, specials, blstats]
+  observation_keys: [chars,]
   max_episode_steps: 100 # TODO should this be a relevant hp?
   parallel_vec_envs: 5
-  n_evaluation_episodes: 10
+  n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
   n_evaluation_rounds: 20
-  total_timesteps: Null # Defined at top with budget
+  total_timesteps: 500000 # Defined at top with budget
 
 PY_EXPERIMENTER: 
   n_jobs: 1
@@ -70,7 +70,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: hpo_baseline
+      name: 50_values_fixed_entropy
       keyfields: 
         environment_id:
           type: VARCHAR(50)
@@ -91,6 +91,8 @@ PY_EXPERIMENTER:
         n_evaluation_rounds:
           type: int
         total_timesteps: 
+          type: int
+        smac_budget:
           type: int
       resultfields:
         final_cost: FLOAT

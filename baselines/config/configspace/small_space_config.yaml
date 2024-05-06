@@ -1,8 +1,8 @@
 hyperparameters:
-  ent_coef:
-    type: uniform_float
-    lower: 0.0
-    upper: 0.3
+  #ent_coef:
+  #  type: uniform_float
+  #  lower: 0.0
+  #  upper: 0.3
   learning_rate:
     log: true
     type: uniform_float

@@ -112,9 +112,13 @@ class CustomEvaluationCallback(EvalCallback):
 
         return continue_training
 
-    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int):
+    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, ent_coef: float, vf_coef: float):
         for n_rollout, rollout_losses in enumerate(self.losses):
             rollout_losses = {key[6:]: value for key, value in rollout_losses.items()}
+            if "entropy_loss" in rollout_losses:
+                rollout_losses["entropy_loss"] = ent_coef * rollout_losses["entropy_loss"]
+            if "value_loss" in rollout_losses:
+                rollout_losses["value_loss"] = vf_coef * rollout_losses["value_loss"]
             result_processor.process_logs(
                 {
                     "training_losses": {

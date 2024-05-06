@@ -19,7 +19,7 @@ def get_table(database_name, table_name, config_file: str = "baselines/config/bl
 
 
 def get_logtable(database_name, table_name, logtable_name, config_file: str = "baselines/config/blackbox_ppo.yaml"):
-    experimenter = PyExperimenter(config_file, database_name=database_name, table_name=table_name)
+    experimenter = PyExperimenter(config_file, database_name=database_name, table_name=table_name, use_ssh_tunnel=True)
     return experimenter.get_logtable(logtable_name)
 
 

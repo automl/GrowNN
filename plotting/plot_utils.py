@@ -1,4 +1,5 @@
-from typing import Tuple, Callable
+import io
+from typing import Callable, List, Tuple
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -6,11 +7,20 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib.backends.backend_agg import FigureCanvasAgg
-from rliable import library as rly
-from rliable import metrics
-from rliable import plot_utils
-import io
 from PIL import Image
+from py_experimenter.experimenter import PyExperimenter
+from rliable import library as rly
+from rliable import metrics, plot_utils
+
+
+def get_table(database_name, table_name, config_file: str = "baselines/config/blackbox_ppo.yaml"):
+    experimenter = PyExperimenter(config_file, database_name=database_name, table_name=table_name)
+    return experimenter.get_table()
+
+
+def get_logtable(database_name, table_name, logtable_name, config_file: str = "baselines/config/blackbox_ppo.yaml"):
+    experimenter = PyExperimenter(config_file, database_name=database_name, table_name=table_name)
+    return experimenter.get_logtable(logtable_name)
 
 
 def set_rc_params():
@@ -86,7 +96,7 @@ def plot_performance_over_time(
     errorbar: str = "ci",
     xlabel: str = None,
     ylabel: str = None,
-    aggregation: str = np.mean,
+    aggregation: str = "mean",
     save_path: str = None,
 ):
     set_rc_params()
@@ -249,6 +259,7 @@ def _plot_performance_over_time(
     fig = plt.figure(dpi=300, figsize=(4, 4))
     nseeds = len(data["seed"].unique())
     if ylim is None:
+        data = data[~data[y].isna()]
         ylim = (min(data[y]), max(data[y]))
     if xlim is None:
         xlim = (min(data[x]), max(data[x]))
@@ -287,7 +298,6 @@ def _plot_performance_over_time(
         ax.set_title(f"{agg_name} over Time (num_seeds={nseeds})")
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
-        sns.move_legend(ax, "lower center", bbox_to_anchor=(0.5, 1.1), ncol=5, title=None, frameon=False)
         fig.set_tight_layout(True)
     return fig
 
@@ -327,3 +337,105 @@ def plot_deepcave(plugin, run_path=None, run_object=None, kwargs={}, budget_id=N
         if save_path is not None:
             fig.savefig(save_path, bbox_inches="tight", dpi=600)
         return plotly_fig2array(fig)
+
+
+# Plot Performance over time, but with several y columns
+def plot_performance_comparison_over_time(
+    data: pd.DataFrame,
+    fig: plt.Figure,
+    x: str,
+    y_columns: List[str],
+    hue: str = None,
+    marker: str = None,
+    logx: bool = False,
+    logy: bool = False,
+    xlim: Tuple = None,
+    ylim: Tuple = None,
+    errorbar: str = "ci",
+    xlabel: str = None,
+    ylabel: str = None,
+    aggregation: str = "mean",
+    save_path: str = None,
+):
+    set_rc_params()
+    if aggregation == "iqm":
+        aggregation = metrics.aggregate_iqm
+        agg_name = "IQM"
+    elif aggregation == "mean":
+        aggregation = np.mean
+        agg_name = "Mean"
+    elif aggregation == "median":
+        aggregation = np.median
+        agg_name = "Median"
+    elif aggregation == "rank":
+        aggregation = np.mean
+        groups = data.columns.values.tolist()
+        groups.remove(y_columns)
+        data["rank"] = data.groupby(groups)[y_columns].rank(method="first")
+        y_columns = "rank"
+        agg_name = "Rank"
+
+    fig = _plot_performance_over_time(data, fig, x, y_columns, hue, marker, logx, logy, xlim, ylim, errorbar, xlabel, ylabel, aggregation, agg_name)
+    if save_path is not None:
+        fig.savefig(save_path, bbox_inches="tight", dpi=600)
+    return fig2img(fig)
+
+
+def plot_performance_comparison_over_time(
+    data: pd.DataFrame,
+    fig: plt.Figure,
+    x: str,
+    y_columns: str,
+    hue: str = None,
+    marker: str = None,
+    logx: bool = False,
+    logy: bool = False,
+    xlim: Tuple = None,
+    ylim: Tuple = None,
+    errorbar: str = "ci",
+    xlabel: str = None,
+    ylabel: str = None,
+    aggregation: Callable = np.mean,
+    agg_name="Performance",
+    agg_name_short="perf",
+):
+
+    nseeds = len(data["seed"].unique())
+    if ylim is None:
+        min_y_values = []
+        max_y_values = []
+        for y in y_columns:
+            data = data[~data[y].isna()]
+            min_y_values.append(min(data[y]))
+            max_y_values.append(max(data[y]))
+        ylim = (min(min_y_values), max(max_y_values))
+    if xlim is None:
+        xlim = (min(data[x]), max(data[x]))
+
+    ax = fig.add_subplot(1, 1, 1)
+    for y in y_columns:
+        ax = sns.lineplot(
+            data=data,
+            x=x,
+            y=y,
+            ax=ax,
+            marker=marker,
+            hue=hue,
+            errorbar=errorbar,
+            estimator=aggregation,
+            palette=sns.color_palette("colorblind", as_cmap=True),
+            label=y,
+        )
+        if logy:
+            ax.set_yscale("log")
+        if logx:
+            ax.set_xscale("log")
+        ax.set_xlim(xlim)
+        ax.set_ylim(ylim)
+        ax.set_title(f"{agg_name} over Time (num_seeds={nseeds})")
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.legend()
+        sns.move_legend(ax, "lower center", bbox_to_anchor=(0.5, 1.1), ncol=5, title=None, frameon=False)
+        fig.set_tight_layout(True)
+    return fig

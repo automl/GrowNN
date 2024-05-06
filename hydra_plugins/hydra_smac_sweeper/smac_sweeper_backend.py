@@ -173,7 +173,7 @@ class SMACSweeperBackend(Sweeper):
 
         configspace = search_space_to_config_space(search_space=self.search_space)
 
-        py_experimenter = create_pyexperimenter(self.config, use_ssh_tunnel=True)
+        py_experimenter = create_pyexperimenter(self.config)
 
         keyfield_values = dict(self.config["non_hyperparameters"])
 

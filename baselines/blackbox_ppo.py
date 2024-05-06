@@ -185,7 +185,7 @@ def black_box_ppo_configure(config: Configuration):
     else:
 
         # Attach Execution to pyExperimetner to then enable logging
-        experimenter = create_pyexperimenter(config, use_ssh_tunnel=True)
+        experimenter = create_pyexperimenter(config)
         result = experimenter.attach(black_box_ppo_execute, config.non_hyperparameters.experiment_id)
         return float(result)
 

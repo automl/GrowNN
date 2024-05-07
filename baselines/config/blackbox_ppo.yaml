@@ -53,7 +53,7 @@ seed: 0
 non_hyperparameters:
   trial_number: 0
   experiment_id: Null
-  environment_id: MiniHack-Room-Random-5x5-v0
+  environment_id: MiniHack-Room-Random-15x15-v0
   env_seed: 0
   saved_neural_nets: blablabla
   observation_keys: [glyphs,]
@@ -70,7 +70,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: 50_values_fixed_entropy
+      name: 15-15_experiments
       keyfields: 
         environment_id:
           type: VARCHAR(50)

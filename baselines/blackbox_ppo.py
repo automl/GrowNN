@@ -11,12 +11,7 @@ import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.logger import configure
 from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
-
-# Next step is the callback during training
-# Also keep an eye on the data that we generate in the currently running job
-# Mit Theresa darüber reden ob es eine art liit an der menge an jobs gibt ,die submitted werden können. Denn gestern hat 3113145_0 nicht gestartet
-# Obwohl ressourcen verfügbar schienen
-# TODO plots über den learning process erstellen
+from utils.networks.feature_extractor import CustomCombinedExtractor 
 
 debug_mode = False
 
@@ -72,8 +67,8 @@ def black_box_ppo_configure(config: Configuration):
         )
 
         model = PPO(
-            "MultiInputPolicy",
-            training_vec_env,
+            policy="MultiInputPolicy",
+            env = training_vec_env,
             verbose=2,
             device="cuda",
             batch_size=batch_size,
@@ -88,6 +83,7 @@ def black_box_ppo_configure(config: Configuration):
             vf_coef=vf_coef,
             n_steps=n_steps,  # The number of steps to run for each environment per update
             seed=seed,
+            policy_kwargs={"features_extractor_class": CustomCombinedExtractor,"net_arch": {"pi":[256], "vf":[256]}},
         )
 
         evaluation_callback = CustomEvaluationCallback(

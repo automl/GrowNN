@@ -18,8 +18,8 @@ def get_table(database_name, table_name, config_file: str = "baselines/config/bl
     return experimenter.get_table()
 
 
-def get_logtable(database_name, table_name, logtable_name, config_file: str = "baselines/config/blackbox_ppo.yaml"):
-    experimenter = PyExperimenter(config_file, database_name=database_name, table_name=table_name, use_ssh_tunnel=True)
+def get_logtable(database_name, table_name, logtable_name, config_file: str = "baselines/config/blackbox_ppo.yaml",use_ssh_tunnel=True):
+    experimenter = PyExperimenter(config_file, database_name=database_name, table_name=table_name, use_ssh_tunnel=use_ssh_tunnel)
     return experimenter.get_logtable(logtable_name)
 
 
@@ -412,7 +412,6 @@ def plot_performance_comparison_over_time(
     if xlim is None:
         xlim = (min(data[x]), max(data[x]))
 
-    ax = fig.add_subplot(1, 1, 1)
     for y in y_columns:
         ax = sns.lineplot(
             data=data,

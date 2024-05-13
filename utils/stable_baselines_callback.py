@@ -168,24 +168,34 @@ class FinalEvaluationWrapper:
                 current_step = locals_dict["current_lengths"][env_number]
                 # current state == 2 means that the episode finished successfully
                 if end_status == 2:
-                    self.final_espisode_state.append(1)
+                    self.final_espisode_state.append("Success")
                     self.episode_lengths.append(current_step)
                     self.rewards_per_episode.append(self._rewards_in_current_episode[env_number])
                     self._rewards_in_current_episode[env_number] = []
                 # current state == -1 means that the episode failed
                 elif end_status == -1:
-                    self.final_espisode_state.append(0)
+                    self.final_espisode_state.append("TimeOut")
                     self.episode_lengths.append(current_step)
                     self.rewards_per_episode.append(self._rewards_in_current_episode[env_number])
                     self._rewards_in_current_episode[env_number] = []
                     # current state == 0 means that the episode is currenlty running
-                elif end_status not in (-1, 0, 2):
-                    raise ValueError("Unknown state")
+                elif end_status == 1:
+                    self.final_espisode_state.append("Death")
+                    self.episode_lengths.append(current_step)
+                    self.rewards_per_episode.append(self._rewards_in_current_episode[env_number])
+                    self._rewards_in_current_episode[env_number] = []
+
+                elif end_status not in (-1, 0, 1, 2):
+                    raise ValueError(f"Unknown end_status {end_status}")
             self._current_end_status = [locals_dict["infos"][i]["end_status"] for i in range(self.n_envs)]
 
         return _callback
 
     def process_results(self, trial_number: int, worker_number: int, final_score: float, final_std: float):
+        successfull = np.count_nonzero(np.array(self.final_espisode_state) == "Success") / len(self.final_espisode_state)
+        dead = np.count_nonzero(np.array(self.final_espisode_state) == "Death") / len(self.final_espisode_state)
+        time_out = np.count_nonzero(np.array(self.final_espisode_state) == "TimeOut") / len(self.final_espisode_state)
+
         self.result_processor.process_logs(
             {
                 "final_evaluation_callback": {
@@ -195,7 +205,10 @@ class FinalEvaluationWrapper:
                     "final_std": final_std,
                     "episode_lengths": ",".join([str(x) for x in self.episode_lengths]),
                     "average_episode_lengths": float(np.mean(self.episode_lengths)),
-                    "successfull": np.mean(self.final_espisode_state),
+                    "successfull": successfull,
+                    "dead": dead,
+                    "time_out": time_out,
+                    "end_states": ",".join(self.final_espisode_state),
                     "rewards_per_episode": str(self.rewards_per_episode),
                 }
             }

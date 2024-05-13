@@ -5,7 +5,7 @@
 #SBATCH --mem=2GB
 #SBATCH --output=ssh_files/result_on_ai-n001.out
 #SBATCH --error=ssh_files/error_on_ai-n001.err
-#SBATCH --time=48:00:00
+#SBATCH --time=168:00:00
 #SBATCH --nodelist=ai-n001
 #SBATCH --partition=ai
 

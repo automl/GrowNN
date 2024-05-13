@@ -3,7 +3,7 @@
 #SBATCH --job-name=rl_training
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16GB
-#SBATCH --time=22:00:00
+#SBATCH --time=168:00:00
 #SBATCH --nodelist=ai-n001
 #SBATCH --partition=ai
 

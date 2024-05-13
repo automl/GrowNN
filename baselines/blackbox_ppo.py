@@ -2,16 +2,14 @@ import gym
 import minihack
 from ConfigSpace import Configuration, Float
 from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.ppo import PPO
 import hydra
 from utils import make_vec_env, make_env, extract_hyperparameters, create_pyexperimenter, log_results
 from py_experimenter.result_processor import ResultProcessor
 import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.logger import configure
 from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
-from utils.networks.feature_extractor import CustomCombinedExtractor 
+from utils.networks.feature_extractor import CustomCombinedExtractor
 
 debug_mode = False
 
@@ -68,7 +66,7 @@ def black_box_ppo_configure(config: Configuration):
 
         model = PPO(
             policy="MultiInputPolicy",
-            env = training_vec_env,
+            env=training_vec_env,
             verbose=2,
             device="cuda",
             batch_size=batch_size,
@@ -83,7 +81,7 @@ def black_box_ppo_configure(config: Configuration):
             vf_coef=vf_coef,
             n_steps=n_steps,  # The number of steps to run for each environment per update
             seed=seed,
-            policy_kwargs={"features_extractor_class": CustomCombinedExtractor,"net_arch": {"pi":[256], "vf":[256]}},
+            policy_kwargs={"features_extractor_class": CustomCombinedExtractor, "net_arch": {"pi": [256], "vf": [256]}},
         )
 
         evaluation_callback = CustomEvaluationCallback(

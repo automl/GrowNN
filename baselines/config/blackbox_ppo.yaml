@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 500000 # Internal Budget of one target function run
+      max_budget: 1000000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -57,11 +57,11 @@ non_hyperparameters:
   env_seed: 0
   saved_neural_nets: blablabla
   observation_keys: [glyphs,]
-  max_episode_steps: 100 # TODO should this be a relevant hp?
+  max_episode_steps: 5000 # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
   n_evaluation_rounds: 20
-  total_timesteps: 500000 # Defined at top with budget
+  total_timesteps: 1000000 # Defined at top with budget
 
 PY_EXPERIMENTER: 
   n_jobs: 1
@@ -70,7 +70,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: 15-15_experiments
+      name: 15x15_experiments
       keyfields: 
         environment_id:
           type: VARCHAR(50)
@@ -135,6 +135,9 @@ PY_EXPERIMENTER:
         episode_lengths: TEXT
         average_episode_lengths: FLOAT
         successfull: FLOAT
+        dead: FLOAT
+        time_out: FLOAT
+        end_states: LONGTEXT
         rewards_per_episode: LONGTEXT
       
       training_losses:

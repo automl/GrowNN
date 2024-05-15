@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  # - slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -56,7 +56,7 @@ non_hyperparameters:
   environment_id: MiniHack-Room-Random-15x15-v0
   env_seed: 0
   saved_neural_nets: blablabla
-  observation_keys: [glyphs,]
+  observation_keys: [chars,]
   max_episode_steps: 5000 # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?

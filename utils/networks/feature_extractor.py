@@ -16,19 +16,21 @@ class OneHotEncoder(nn.Module):
         self.shape = shape
 
     def forward(self, x):
-        x = x.to(torch.int64)
-        x_flat = x.flatten()
-        x_one_hot = F.one_hot(x_flat, num_classes=self.num_classes)
-        x_one_hot = x_one_hot.view(-1, self.shape[0], self.shape[1], self.num_classes)
-        # Change the shape to [batch_size, num_classes, 21, 79] for CNN
-        return x_one_hot.permute(0, 3, 1, 2).to(torch.float32)
+        with torch.no_grad():
+            x = x.to(torch.int64)
+            x = x.flatten()
+            x = F.one_hot(x, num_classes=self.num_classes)
+            x = x.to(torch.float32)
+            x = x.view(-1, self.shape[0], self.shape[1], self.num_classes)
+            x = x.permute(0, 3, 1, 2)
+        return x
 
 
 class CustomCombinedExtractor(BaseFeaturesExtractor):
     def __init__(self, observation_space: gym.spaces.Dict, cnn_intermediate_dimension: int = 1):
         super().__init__(observation_space, features_dim=1)
         self.cnn_intermediate_dimension = cnn_intermediate_dimension
-        self.shape = observation_space["glyphs"].shape
+        self.shape = observation_space["chars"].shape
 
         extractors = {}
 
@@ -36,8 +38,8 @@ class CustomCombinedExtractor(BaseFeaturesExtractor):
         # We need to know size of the output of this extractor,
         # so go over all the spaces and compute output feature sizes
         for key, subspace in observation_space.spaces.items():
-            if key == "glyphs":
-                # Assume the glyphs are 2D grid of integers
+            if key == "chars":
+                # Assume the chars are 2D grid of integers
                 # Transform them to one-hot encoding - resulting in
                 extractors[key] = nn.Sequential(
                     OneHotEncoder(int(subspace.high_repr), self.shape),
@@ -45,7 +47,7 @@ class CustomCombinedExtractor(BaseFeaturesExtractor):
                     nn.ReLU(),
                     nn.Flatten(),
                 )
-                total_concat_size += observation_space["glyphs"].shape[0] * observation_space["glyphs"].shape[1]
+                total_concat_size += observation_space["chars"].shape[0] * observation_space["chars"].shape[1]
 
             else:
                 raise NotImplementedError("Image observation not supported")

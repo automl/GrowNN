@@ -10,6 +10,7 @@ import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
 from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
 from utils.networks.feature_extractor import CustomCombinedExtractor
+import torch
 
 debug_mode = False
 
@@ -63,7 +64,7 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["max_episode_steps"],
         )
-
+        torch.cuda.torch.cuda.empty_cache()
         model = PPO(
             policy="MultiInputPolicy",
             env=training_vec_env,
@@ -92,7 +93,6 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
-
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
@@ -172,6 +172,8 @@ def black_box_ppo_configure(config: Configuration):
                     }
                 },
             )
+        model.policy=None
+        torch.cuda.empty_cache()
         return float(-final_score)
 
     if debug_mode:

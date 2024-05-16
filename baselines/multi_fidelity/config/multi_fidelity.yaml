@@ -1,14 +1,15 @@
 defaults:
   - _self_
-  - slurm
+  # - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
 hydra:
   sweeper:
     smac_kwargs:
-      intensifier: Not-HB
-      max_budget: 1000000 # Internal Budget of one target function run
+      intensifier: HB
+      min_budget: 1 # Internal Budget of one target function run
+      max_budget: 2 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -24,7 +25,7 @@ hydra:
 
     budget: 50 # The budget for SMAC
 
-    budget_variable: non_hyperparameters.total_timesteps
+    budget_variable: non_hyperparameters.environment_number
     saving_variable: non_hyperparameters.saved_neural_nets
 
     search_space: ${configspace}
@@ -53,7 +54,7 @@ seed: 0
 non_hyperparameters:
   trial_number: 0
   experiment_id: Null
-  environment_id: MiniHack-Room-Random-15x15-v0
+  environment_number: 0
   env_seed: 0
   saved_neural_nets: blablabla
   observation_keys: [chars,]
@@ -70,10 +71,12 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: 15x15_experiments
+      name: multifiderlity_playing_filed
       keyfields: 
         environment_id:
           type: VARCHAR(50)
+        environment_number:
+          type: INT
         env_seed:
           type: INT
         saved_neural_nets:

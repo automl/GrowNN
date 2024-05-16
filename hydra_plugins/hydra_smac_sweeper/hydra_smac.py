@@ -83,7 +83,8 @@ class HydraSMAC:
         self.scenario = Scenario(self.configspace, deterministic=deterministic, n_trials=n_trials, min_budget=min_budget, max_budget=max_budget)
         max_config_calls = len(self.seeds) if seeds and not deterministic else 1
         if intensifier == "HB":
-            self.intensifier = Hyperband(self.scenario, incumbent_selection="highest_budget", n_seeds=max_config_calls)
+            eta = self.scenario.max_budget - self.scenario.min_budget + 1
+            self.intensifier = Hyperband(self.scenario, incumbent_selection="highest_budget", n_seeds=max_config_calls, eta=eta)
         else:
             self.intensifier = HyperparameterOptimizationFacade.get_intensifier(
                 self.scenario,

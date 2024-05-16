@@ -1,0 +1,54 @@
+hyperparameters:
+  batch_size:
+    choices:
+    - 32
+    - 64
+    - 128
+    - 256
+    type: categorical
+  clip_range:
+    type: uniform_float
+    lower: 0.0
+    upper: 0.5
+  clip_range_vf:
+    type: uniform_float
+    lower: 0.0
+    upper: 0.5
+  ent_coef:
+    type: uniform_float
+    lower: 0.0
+    upper: 0.3
+  gae_lambda:
+    type: uniform_float
+    lower: 0.8
+    upper: 0.9999
+  learning_rate:
+    log: true
+    type: uniform_float
+    lower: 1.0e-04
+    upper: 0.01
+  max_grad_norm:
+    type: uniform_float
+    lower: 0.0
+    upper: 0.5
+  n_epochs:
+    type: uniform_int
+    lower: 5
+    upper: 20
+  n_steps:
+    choices:
+    - 256
+    - 512
+    - 1024
+    - 2048
+    - 4096
+    type: categorical
+  normalize_advantage:
+    choices:
+    - true
+    - false
+    type: categorical
+  vf_coef:
+    type: uniform_float
+    lower: 0.0
+    upper: 0.5

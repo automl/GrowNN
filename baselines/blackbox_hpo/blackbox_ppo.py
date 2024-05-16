@@ -20,12 +20,8 @@ def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         minihack
         gym
-        # TODO are the inptu features noramlized?
 
         seed = config["seed"]
-        # TODO Build Reward Manager https://minihack.readthedocs.io/en/latest/getting-started/reward.html
-        # TODO only use navigation actions
-        # TODO How do we continue training from a previous point, or do we simply restart training with a higher fidelity? To be determined in next version
         non_hyperparameters = config["non_hyperparameters"]
         (
             batch_size,
@@ -117,12 +113,6 @@ def black_box_ppo_configure(config: Configuration):
                     },
                 )
 
-        # TODO track solutionrate during learning
-        # TODO Evaluation Videos
-        # TODO Track solutionrate
-        # TODO track loss components
-        # TODO check reward conversion
-
         evaluation_vec_env = make_vec_env(
             non_hyperparameters["environment_id"],
             non_hyperparameters["observation_keys"],
@@ -131,7 +121,6 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["max_episode_steps"],
         )
 
-        # TODO use a not vectorized environemnt here
         callback_wrapper = FinalEvaluationWrapper(
             result_processor,
             non_hyperparameters["parallel_vec_envs"],

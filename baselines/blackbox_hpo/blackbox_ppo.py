@@ -18,10 +18,16 @@ debug_mode = False
 @hydra.main(config_path="config", config_name="blackbox_ppo", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
+        # Mention the used libraries because of implicit imports
         minihack
         gym
 
+        environment_name = config.non_hyperparameters.environment_id
+
+        # We only seed the neural network. Everything else is seeded more or less constantly
         seed = config["seed"]
+        set_random_seed(seed, using_cuda=True)
+        
         non_hyperparameters = config["non_hyperparameters"]
         (
             batch_size,
@@ -40,12 +46,11 @@ def black_box_ppo_configure(config: Configuration):
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
         # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
 
-        # We only seed the neural network. Everything else is seeded more or less constantly
-        set_random_seed(seed, using_cuda=True)
+
 
         # We always use the same seeds in here
         training_vec_env = make_vec_env(
-            non_hyperparameters["environment_id"],
+            environment_name,
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"],
             non_hyperparameters["parallel_vec_envs"],
@@ -54,7 +59,7 @@ def black_box_ppo_configure(config: Configuration):
 
         # Check whether to wrap in monitor wrapper
         evaluation_vec_env = make_vec_env(
-            non_hyperparameters["environment_id"],
+            environment_name,
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["parallel_vec_envs"],
@@ -114,7 +119,7 @@ def black_box_ppo_configure(config: Configuration):
                 )
 
         evaluation_vec_env = make_vec_env(
-            non_hyperparameters["environment_id"],
+            environment_name,
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["parallel_vec_envs"],
@@ -144,7 +149,7 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_number": seed,  # Currently the same as the workerseed
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
-                        "environment_id": non_hyperparameters["environment_id"],
+                        "environment_id": environment_name,
                         "batch_size": batch_size,
                         "clip_range": clip_range,
                         "clip_range_vf": clip_range_vf,

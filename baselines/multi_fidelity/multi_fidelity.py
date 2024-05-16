@@ -31,8 +31,10 @@ def black_box_ppo_configure(config: Configuration):
         # TODO Keep this line for the final version        
         environment_name = environment_scheudule[int(config.non_hyperparameters.environment_number)] 
         
-        # TODO if the budget is greater than 1, we need load a previsouly trained model
         seed = config["seed"]
+        set_random_seed(seed, using_cuda=True)
+        
+        # TODO if the budget is greater than 1, we need load a previsouly trained model
         non_hyperparameters = config["non_hyperparameters"]
         (
             batch_size,
@@ -50,9 +52,6 @@ def black_box_ppo_configure(config: Configuration):
 
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
         # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
-
-        # We only seed the neural network. Everything else is seeded more or less constantly
-        set_random_seed(seed, using_cuda=True)
 
         # We always use the same seeds in here
         training_vec_env = make_vec_env(

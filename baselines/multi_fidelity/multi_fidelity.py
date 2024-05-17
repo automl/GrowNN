@@ -1,20 +1,22 @@
-import gym
-import minihack
-from ConfigSpace import Configuration, Float
-from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3.ppo import PPO
-import hydra
-from utils import make_vec_env, make_env, extract_hyperparameters, create_pyexperimenter, log_results
-from py_experimenter.result_processor import ResultProcessor
-import numpy as np
-from stable_baselines3.common.evaluation import evaluate_policy
-from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
-from utils.networks.feature_extractor import CustomCombinedExtractor
-import torch
-from enum import IntEnum
+import os
 from typing import Dict
 
-debug_mode = False
+import gym
+import hydra
+import minihack
+import numpy as np
+import torch
+from ConfigSpace import Configuration, Float
+from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.utils import set_random_seed
+from stable_baselines3.ppo import PPO
+
+from py_experimenter.result_processor import ResultProcessor
+from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_env, make_vec_env
+from utils.networks.feature_extractor import CustomCombinedExtractor
+from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
+
+debug_mode = True
 
 environment_scheudule: Dict[int, str] = {
     0: "MiniHack-Room-Random-5x5-v0",
@@ -29,10 +31,11 @@ def black_box_ppo_configure(config: Configuration):
         minihack
         gym
 
-        environment_name = environment_scheudule[int(config.non_hyperparameters.environment_number)]
-
+        config_id = config.non_hyperparameters.config_id
         seed = config["seed"]
         set_random_seed(seed, using_cuda=True)
+
+        environment_name = environment_scheudule[int(config.non_hyperparameters.environment_number)]
 
         # Idea save to n_trials_seed_budget_hpohash
         # To find the current seed, we ignore n_trials but select based on the rest
@@ -95,6 +98,9 @@ def black_box_ppo_configure(config: Configuration):
             seed=seed,
             policy_kwargs={"features_extractor_class": CustomCombinedExtractor, "net_arch": {"pi": [256], "vf": [256]}},
         )
+        if config_id > 1:  # If we can load a previous model
+            final_load_path = os.path.join(config.non_hyperparameters.model_save_path, f"{config_id - 1}", f"{seed}")
+            model.set_parameters(os.path.join(final_load_path, "model.zip"), exact_match=False)
 
         evaluation_callback = CustomEvaluationCallback(
             evaluation_vec_env,
@@ -104,20 +110,23 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
-        #model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
-        #if not debug_mode:
+        # model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
+        # if not debug_mode:
         #    evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
 
         # TODO Save the model and feature extractor
-        print()
+        final_save_path = os.path.join(config.non_hyperparameters.model_save_path, f"{config_id}", f"{seed}")
+        if not os.path.exists(final_save_path):
+            os.makedirs(final_save_path)
 
-        callback_data = np.load("logs/evaluations.npz")
+        model.save(os.path.join(final_save_path, "model"))
 
-        for timestep, result, _ in zip(*callback_data.values()):
-            # Check whether we evalaute 10 episodes
-            evaluated_cost = np.mean(result)
-            evalauted_stdev = np.std(result)
-            if not debug_mode:
+        if not debug_mode:
+            callback_data = np.load("logs/evaluations.npz")
+            for timestep, result, _ in zip(*callback_data.values()):
+                # Check whether we evalaute 10 episodes
+                evaluated_cost = np.mean(result)
+                evalauted_stdev = np.std(result)
                 log_results(
                     result_processor,
                     {
@@ -152,9 +161,9 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             callback=callback_wrapper.get_callback(),
         )
-
-        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std)
         if not debug_mode:
+            callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std)
+
             log_results(
                 result_processor,
                 {
@@ -179,12 +188,7 @@ def black_box_ppo_configure(config: Configuration):
                     }
                 },
             )
-            
-        if non_hyperparameters['environemnt_number'] == 1:
-            config_hash = hash(
-                ()
-            )
-            
+
         model.policy = None
         torch.cuda.empty_cache()
         return float(-final_score)

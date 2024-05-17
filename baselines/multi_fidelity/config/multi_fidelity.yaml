@@ -26,7 +26,7 @@ hydra:
     budget: 50 # The budget for SMAC
 
     budget_variable: non_hyperparameters.environment_number
-    saving_variable: non_hyperparameters.saved_neural_nets
+    saving_variable: non_hyperparameters.model_save_path
 
     search_space: ${configspace}
 
@@ -57,7 +57,7 @@ non_hyperparameters:
   experiment_id: Null
   environment_number: 0
   env_seed: 0
-  saved_neural_nets: blablabla
+  model_save_path: blablabla
   observation_keys: [chars,]
   max_episode_steps: 5000 # TODO should this be a relevant hp?
   parallel_vec_envs: 5
@@ -80,7 +80,7 @@ PY_EXPERIMENTER:
           type: INT
         env_seed:
           type: INT
-        saved_neural_nets:
+        model_save_path:
           type: VARCHAR(50)
         observation_keys:
           type: VARCHAR(200)

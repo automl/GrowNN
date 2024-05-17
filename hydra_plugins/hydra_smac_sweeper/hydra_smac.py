@@ -1,25 +1,22 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import logging
-import os
-import math
-import time
 import json
+import logging
+import math
+import os
 import pickle
-import numpy as np
+import time
 from typing import List
-from ConfigSpace.hyperparameters import (
-    CategoricalHyperparameter,
-    NormalIntegerHyperparameter,
-    OrdinalHyperparameter,
-    UniformIntegerHyperparameter,
-)
-from py_experimenter.result_processor import ResultProcessor
+
+import numpy as np
+from ConfigSpace.hyperparameters import CategoricalHyperparameter, NormalIntegerHyperparameter, OrdinalHyperparameter, UniformIntegerHyperparameter
 from hydra.utils import to_absolute_path
 
 # from deepcave import Recorder, Objective
 from smac import HyperparameterOptimizationFacade, Scenario
 from smac.intensifier.hyperband import Hyperband
-from smac.runhistory.dataclasses import TrialValue, TrialInfo
+from smac.runhistory.dataclasses import TrialInfo, TrialValue
+
+from py_experimenter.result_processor import ResultProcessor
 
 log = logging.getLogger(__name__)
 
@@ -162,7 +159,7 @@ class HydraSMAC:
 
             if self.seeds and self.deterministic:
                 for s in self.seeds:
-                    save_path = os.path.join(self.checkpoint_dir, f"iteration_{self.iteration}_id_{i}_s{s}.pt")
+                    save_path = os.path.join(os.getcwd(), "smac3_output", self.scenario.name)
                     values = (
                         list(configs[i].values()) + config_ids + [budgets[i]] + [save_path] + [experiment_id] + [s] + [trial_numbers[i]]
                     )  # Add PyExperiemtner ID

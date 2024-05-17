@@ -53,6 +53,7 @@ vf_coef: 0.5
 seed: 0 
 non_hyperparameters:
   trial_number: 0
+  config_id: Null
   experiment_id: Null
   environment_number: 0
   env_seed: 0

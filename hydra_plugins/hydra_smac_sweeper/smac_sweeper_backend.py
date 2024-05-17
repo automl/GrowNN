@@ -177,9 +177,11 @@ class SMACSweeperBackend(Sweeper):
 
         keyfield_values = dict(self.config["non_hyperparameters"])
 
-        # Dont write PyExperimetner Experimentid
+        # Dont write values that are trial specific into the pyexperimenter
         del keyfield_values["experiment_id"]
         del keyfield_values["trial_number"]
+        del keyfield_values["config_id"]
+
         keyfield_values["smac_budget"] = self.budget
 
         keyfield_values["observation_keys"] = ",".join(keyfield_values["observation_keys"])

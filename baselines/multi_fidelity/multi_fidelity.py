@@ -16,10 +16,11 @@ from typing import Dict
 
 debug_mode = False
 
-environment_scheudule :Dict[int, str] = {
+environment_scheudule: Dict[int, str] = {
     0: "MiniHack-Room-Random-5x5-v0",
     1: "MiniHack-Room-Random-15x15-v0",
 }
+
 
 @hydra.main(config_path="config", config_name="multi_fidelity", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
@@ -28,13 +29,16 @@ def black_box_ppo_configure(config: Configuration):
         minihack
         gym
 
-        # TODO Keep this line for the final version        
-        environment_name = environment_scheudule[int(config.non_hyperparameters.environment_number)] 
-        
+        environment_name = environment_scheudule[int(config.non_hyperparameters.environment_number)]
+
         seed = config["seed"]
         set_random_seed(seed, using_cuda=True)
-        
-        # TODO if the budget is greater than 1, we need load a previsouly trained model
+
+        # Idea save to n_trials_seed_budget_hpohash
+        # To find the current seed, we ignore n_trials but select based on the rest
+        # Question: How do we log? We write the id into the log file. But how do we know which run is continued where
+
+        # TODO Load previously trained model
         non_hyperparameters = config["non_hyperparameters"]
         (
             batch_size,
@@ -71,7 +75,7 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["max_episode_steps"],
         )
         torch.cuda.torch.cuda.empty_cache()
-        
+
         model = PPO(
             policy="MultiInputPolicy",
             env=training_vec_env,
@@ -100,9 +104,12 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
-        model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
-        if not debug_mode:
-            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
+        #model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
+        #if not debug_mode:
+        #    evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
+
+        # TODO Save the model and feature extractor
+        print()
 
         callback_data = np.load("logs/evaluations.npz")
 
@@ -172,7 +179,13 @@ def black_box_ppo_configure(config: Configuration):
                     }
                 },
             )
-        model.policy=None
+            
+        if non_hyperparameters['environemnt_number'] == 1:
+            config_hash = hash(
+                ()
+            )
+            
+        model.policy = None
         torch.cuda.empty_cache()
         return float(-final_score)
 

@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, Union
 
 import gym
 import hydra
@@ -18,9 +18,10 @@ from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvalu
 
 debug_mode = True
 
-environment_scheudule: Dict[int, str] = {
-    0: "MiniHack-Room-Random-5x5-v0",
-    1: "MiniHack-Room-Random-15x15-v0",
+
+environment_scheudule: Dict[int, Dict[str, Union[str, int]]] = {
+    0: {"name": "MiniHack-Room-Random-5x5-v0", "max_episode_steps": 100, "total_timesteps": 500000},
+    1: {"name": "MiniHack-Room-Random-15x15-v0", "max_episode_steps": 5000, "total_timesteps": 1000000},
 }
 
 

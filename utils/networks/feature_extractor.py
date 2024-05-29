@@ -27,10 +27,12 @@ class OneHotEncoder(nn.Module):
 
 
 class CustomCombinedExtractor(BaseFeaturesExtractor):
-    def __init__(self, observation_space: gym.spaces.Dict, cnn_intermediate_dimension: int = 1):
+    def __init__(self, observation_space: gym.spaces.Dict,  n_layers:int, layer_width:int, cnn_intermediate_dimension: int = 1):
         super().__init__(observation_space, features_dim=1)
         self.cnn_intermediate_dimension = cnn_intermediate_dimension
         self.shape = observation_space["chars"].shape
+        self.n_layers = n_layers
+        self.layer_width = layer_width
 
         extractors = {}
 
@@ -53,7 +55,11 @@ class CustomCombinedExtractor(BaseFeaturesExtractor):
                 raise NotImplementedError("Image observation not supported")
 
         self.extractors = nn.ModuleDict(extractors)
-        self.downscaling = nn.Sequential(nn.Linear(total_concat_size, 256), nn.ReLU())
+
+        self.downscaling = nn.Sequential()
+        for layer_number in range(n_layers):
+            self.downscaling.add_module(f"linear_{layer_number}", nn.Linear(total_concat_size, self.layer_width))
+            self.downscaling.add_module(f"ReLu_{layer_number}", nn.ReLU())
 
         # Update the features dim manually
         self._features_dim = 256

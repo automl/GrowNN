@@ -23,7 +23,7 @@ hyperparameters:
     lower: 1
     type: uniform_int
     upper: 10
-  feature_extractor_layer_widht:
+  feature_extractor_layer_width:
     type: categorical
     choices:
     - 32

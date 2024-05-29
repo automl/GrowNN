@@ -20,7 +20,10 @@ def make_env(env_id: str, observation_keys: List[str], max_episode_steps: int, e
     MOVE_ACTIONS = tuple(nethack.CompassDirection)
 
     def _init():
-        env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps=max_episode_steps, actions=MOVE_ACTIONS)
+        if max_episode_steps is None:
+            env = gym.make(env_id, observation_keys=observation_keys, actions=MOVE_ACTIONS)
+        else:
+            env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps=max_episode_steps, actions=MOVE_ACTIONS)
         # env.reset(seed=environment_seed)
         env.seed(environment_seed, environment_seed)
         return env

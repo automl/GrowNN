@@ -27,12 +27,28 @@ class OneHotEncoder(nn.Module):
 
 
 class CustomCombinedExtractor(BaseFeaturesExtractor):
-    def __init__(self, observation_space: gym.spaces.Dict,  n_layers:int, layer_width:int, cnn_intermediate_dimension: int = 1):
+    def __init__(
+        self,
+        observation_space: gym.spaces.Dict,
+        cnn_intermediate_dimension: int,
+        n_feature_extractor_layers: int,
+        feature_extractor_layer_width: int,
+        feature_extractor_output_dimension: int,
+    ):
+        """
+        Custom feature extractor for the MultiInputPolicy.
+
+        First the input is processed by a onehot encoder, followed by a CNN layer, and one linear layer used for downscaling.
+        The output is then processed by a number of linear layers of dimension `feature_extractor_layer_width`.
+        The last layer has `feature_extractor_output_dimension` units.
+
+        """
         super().__init__(observation_space, features_dim=1)
-        self.cnn_intermediate_dimension = cnn_intermediate_dimension
         self.shape = observation_space["chars"].shape
-        self.n_layers = n_layers
-        self.layer_width = layer_width
+        self.cnn_intermediate_dimension = cnn_intermediate_dimension
+        self.n_feature_extractor_layers = n_feature_extractor_layers
+        self.feature_extractor_layer_width = feature_extractor_layer_width
+        self.feature_extractor_output_dimension = feature_extractor_output_dimension
 
         extractors = {}
 
@@ -45,7 +61,13 @@ class CustomCombinedExtractor(BaseFeaturesExtractor):
                 # Transform them to one-hot encoding - resulting in
                 extractors[key] = nn.Sequential(
                     OneHotEncoder(int(subspace.high_repr), self.shape),
-                    nn.Conv2d(int(subspace.high_repr), self.cnn_intermediate_dimension, kernel_size=(1, 1), stride=1, padding=0),
+                    nn.Conv2d(
+                        int(subspace.high_repr),
+                        self.cnn_intermediate_dimension,
+                        kernel_size=(1, 1),
+                        stride=1,
+                        padding=0,
+                    ),
                     nn.ReLU(),
                     nn.Flatten(),
                 )
@@ -55,14 +77,24 @@ class CustomCombinedExtractor(BaseFeaturesExtractor):
                 raise NotImplementedError("Image observation not supported")
 
         self.extractors = nn.ModuleDict(extractors)
+        self.downscaling = nn.Sequential(
+            nn.Linear(total_concat_size, self.feature_extractor_layer_width),
+            nn.ReLU(),
+        )
 
-        self.downscaling = nn.Sequential()
-        for layer_number in range(n_layers):
-            self.downscaling.add_module(f"linear_{layer_number}", nn.Linear(total_concat_size, self.layer_width))
-            self.downscaling.add_module(f"ReLu_{layer_number}", nn.ReLU())
+        self.linear_layers = nn.Sequential()
+        for layer_number in range(n_feature_extractor_layers):
+            input_size = self.feature_extractor_layer_width
+            if layer_number == n_feature_extractor_layers - 1:
+                output_size = feature_extractor_output_dimension
+            else:
+                output_size = self.feature_extractor_layer_width
+            self.linear_layers.add_module(f"linear_{layer_number}", nn.Linear(input_size, output_size))
+            self.linear_layers.add_module(f"ReLu_{layer_number}", nn.ReLU())
 
-        # Update the features dim manually
-        self._features_dim = 256
+        ##### KEEEEEP THIS AT ALL COST, BECAUSE STABLE BASELIENS USES IT FOR SOME REASON
+        self._features_dim = feature_extractor_output_dimension
+        ##### KEEEEEP THIS AT ALL COST, BECAUSE STABLE BASELIENS USES IT FOR SOME REASON
 
     def forward(self, observations) -> th.Tensor:
         encoded_tensor_list = []
@@ -74,6 +106,7 @@ class CustomCombinedExtractor(BaseFeaturesExtractor):
         # Concatenate the extracted features
         encoded_tensor = th.cat(encoded_tensor_list, dim=1)
         encoded_tensor = self.downscaling(encoded_tensor)
+        encoded_tensor = self.linear_layers(encoded_tensor)
 
         # Return a (B, self._features_dim) PyTorch tensor, where B is batch dimension.
         return encoded_tensor

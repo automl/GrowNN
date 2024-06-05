@@ -6,13 +6,13 @@ import hydra
 import minihack
 import numpy as np
 import torch
-from ConfigSpace import Configuration, Float
+from ConfigSpace import Configuration
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_env, make_vec_env
+from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env
 from utils.networks.feature_extractor import CustomCombinedExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
@@ -25,7 +25,7 @@ environment_scheudule: Dict[int, Dict[str, Union[str, int]]] = {
 }
 
 
-@hydra.main(config_path="config", config_name="multi_fidelity", version_base="1.1")
+@hydra.main(config_path="config", config_name="net2deeper", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports

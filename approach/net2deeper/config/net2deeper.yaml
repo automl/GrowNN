@@ -72,7 +72,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: multifiderlity_playing_filed
+      name: net2deeper
       keyfields: 
         environment_id:
           type: VARCHAR(50)

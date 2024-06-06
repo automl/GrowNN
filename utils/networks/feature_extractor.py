@@ -7,6 +7,7 @@ from torch.nn import functional as F
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 import torch
 import abc
+from utils.networks.net2deeper import Net2Deeper
 
 class OneHotEncoder(nn.Module):
     # Written with the Help of ChatGPT
@@ -176,16 +177,11 @@ class Net2DeeperFeatureExtractor(AbstractFeatureExtractor):
             nn.ReLU(),
         )
 
-        self.linear_layers = nn.Sequential()
-        for layer_number in range(self.n_feature_extractor_layers):
-            input_size = self.feature_extractor_layer_width
-            if layer_number == self.n_feature_extractor_layers - 1:
-                output_size = self.feature_extractor_output_dimension
-            else:
-                output_size = self.feature_extractor_layer_width
-            self.linear_layers.add_module(f"linear_{layer_number}", nn.Linear(input_size, output_size))
-            self.linear_layers.add_module(f"ReLu_{layer_number}", nn.ReLU())
+        self.linear_layers = Net2Deeper(self.feature_extractor_layer_width, self.feature_extractor_output_dimension)
 
         ##### KEEEEEP THIS AT ALL COST, BECAUSE STABLE BASELIENS USES IT FOR SOME REASON
         self._features_dim = self.feature_extractor_output_dimension
         ##### KEEEEEP THIS AT ALL COST, BECAUSE STABLE BASELIENS USES IT FOR SOME REASON
+
+    def add_layer(self):
+        self.linear_layers.add_layer()

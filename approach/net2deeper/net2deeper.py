@@ -1,6 +1,6 @@
 import os
 from typing import Dict, Union
-
+from functools import partial
 import gym
 import hydra
 import minihack
@@ -13,17 +13,10 @@ from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
 from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env
-from utils.networks.feature_extractor import CustomCombinedExtractor
+from utils.networks.feature_extractor import Net2DeeperFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
-debug_mode = True
-
-
-environment_scheudule: Dict[int, Dict[str, Union[str, int]]] = {
-    0: {"name": "MiniHack-Room-Random-5x5-v0", "max_episode_steps": 100, "total_timesteps": 500000},
-    1: {"name": "MiniHack-Room-Random-15x15-v0", "max_episode_steps": 5000, "total_timesteps": 1000000},
-}
-
+debug_mode = False
 
 @hydra.main(config_path="config", config_name="net2deeper", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
@@ -32,18 +25,16 @@ def black_box_ppo_configure(config: Configuration):
         minihack
         gym
 
-        config_id = config.non_hyperparameters.config_id
+        feature_extractor_depth = config.non_hyperparameters.feature_extractor_depth
         seed = config["seed"]
         set_random_seed(seed, using_cuda=True)
-
-        environment_name = environment_scheudule[int(config.non_hyperparameters.environment_number)]
-
         # Idea save to n_trials_seed_budget_hpohash
         # To find the current seed, we ignore n_trials but select based on the rest
         # Question: How do we log? We write the id into the log file. But how do we know which run is continued where
 
         # TODO Load previously trained model
         non_hyperparameters = config["non_hyperparameters"]
+        environment_name = non_hyperparameters["environment_name"]
         (
             batch_size,
             clip_range,
@@ -56,6 +47,9 @@ def black_box_ppo_configure(config: Configuration):
             n_steps,
             normalize_advantage,
             vf_coef,
+            feature_extractor_output_dimension,
+            n_feature_extractor_layers,
+            feature_extractor_layer_width,
         ) = extract_hyperparameters(config)
 
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
@@ -80,6 +74,14 @@ def black_box_ppo_configure(config: Configuration):
         )
         torch.cuda.torch.cuda.empty_cache()
 
+        feature_extractor = partial(
+            Net2DeeperFeatureExtractor,
+            cnn_intermediate_dimension=1,
+            n_feature_extractor_layers=n_feature_extractor_layers,
+            feature_extractor_layer_width=feature_extractor_layer_width,
+            feature_extractor_output_dimension=feature_extractor_output_dimension,
+        )
+
         model = PPO(
             policy="MultiInputPolicy",
             env=training_vec_env,
@@ -97,10 +99,10 @@ def black_box_ppo_configure(config: Configuration):
             vf_coef=vf_coef,
             n_steps=n_steps,  # The number of steps to run for each environment per update
             seed=seed,
-            policy_kwargs={"features_extractor_class": CustomCombinedExtractor, "net_arch": {"pi": [256], "vf": [256]}},
+            policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [feature_extractor_output_dimension], "vf": [feature_extractor_output_dimension]}},
         )
-        if config_id > 1:  # If we can load a previous model
-            final_load_path = os.path.join(config.non_hyperparameters.model_save_path, f"{config_id - 1}", f"{seed}")
+        if feature_extractor_depth > 1:  # If we can load a previous model
+            final_load_path = os.path.join(config.non_hyperparameters.model_save_path, f"{feature_extractor_depth - 1}", f"{seed}")
             model.set_parameters(os.path.join(final_load_path, "model.zip"), exact_match=False)
 
         evaluation_callback = CustomEvaluationCallback(
@@ -111,12 +113,12 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
-        # model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
-        # if not debug_mode:
-        #    evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
+        model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
+        if not debug_mode:
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
 
         # TODO Save the model and feature extractor
-        final_save_path = os.path.join(config.non_hyperparameters.model_save_path, f"{config_id}", f"{seed}")
+        final_save_path = os.path.join(config.non_hyperparameters.model_save_path, f"{feature_extractor_depth}", f"{seed}")
         if not os.path.exists(final_save_path):
             os.makedirs(final_save_path)
 
@@ -172,7 +174,7 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_number": seed,  # Currently the same as the workerseed
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
-                        "environment_id": environment_name,
+                        "environment_name": environment_name,
                         "batch_size": batch_size,
                         "clip_range": clip_range,
                         "clip_range_vf": clip_range_vf,
@@ -197,7 +199,6 @@ def black_box_ppo_configure(config: Configuration):
     if debug_mode:
         return black_box_ppo_execute(None)
     else:
-
         # Attach Execution to pyExperimetner to then enable logging
         experimenter = create_pyexperimenter(config)
         result = experimenter.attach(black_box_ppo_execute, config.non_hyperparameters.experiment_id)

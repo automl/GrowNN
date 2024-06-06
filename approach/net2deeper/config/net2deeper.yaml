@@ -25,7 +25,7 @@ hydra:
 
     budget: 50 # The budget for SMAC
 
-    budget_variable: non_hyperparameters.environment_number
+    budget_variable: non_hyperparameters.feature_extractor_depth
     saving_variable: non_hyperparameters.model_save_path
 
     search_space: ${configspace}
@@ -48,14 +48,18 @@ n_epochs: 11
 n_steps: 2048
 normalize_advantage: False
 vf_coef: 0.5
+feature_extractor_output_dimension: 256
+n_feature_extractor_layers: 1
+feature_extractor_layer_width: 256
 
 # Below are not hpo parameters. Seed is currenlty not allowed to be outside of section
 seed: 0 
 non_hyperparameters:
   trial_number: 0
-  config_id: Null
   experiment_id: Null
-  environment_number: 0
+  config_id: Null
+  feature_extractor_depth: 0
+  environment_name: "MiniHack-Room-Random-15x15-v0"
   env_seed: 0
   model_save_path: blablabla
   observation_keys: [chars,]
@@ -74,9 +78,9 @@ PY_EXPERIMENTER:
     table:
       name: net2deeper
       keyfields: 
-        environment_id:
+        environment_name:
           type: VARCHAR(50)
-        environment_number:
+        feature_extractor_depth:
           type: INT
         env_seed:
           type: INT
@@ -103,7 +107,7 @@ PY_EXPERIMENTER:
         config: TEXT
     logtables:
       configurations:
-        environment_id: VARCHAR(50)
+        environment_name: VARCHAR(50)
         trial_number: INT
         worker_number: INT # The number of the worker used by hypersweeper to evaluate the current configuration
         worker_seed: INT # The seed provided to the worker to evalaute the curernt configuration
@@ -118,6 +122,9 @@ PY_EXPERIMENTER:
         n_steps: INT
         normalize_advantage: BOOLEAN
         vf_coef: FLOAT
+        feature_extractor_output_dimension: INT
+        n_feature_extractor_layers: INT
+        feature_extractor_layer_width: INT
         final_score: FLOAT
         final_std: FLOAT
       training_process:

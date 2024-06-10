@@ -3,6 +3,8 @@ __pycache__
 .vscode/settings.json
 .vscode/launch.json
 smac3_output/*
+!smac3_output/.gitkeep
+!smac3_output/sync_files.sh
 tmp/
 config/database_credentials.cfg
 logs/py-experimenter.log

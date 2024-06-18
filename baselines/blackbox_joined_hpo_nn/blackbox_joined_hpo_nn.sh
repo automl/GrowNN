@@ -11,4 +11,4 @@
 cd /bigwork/nhwpfehl/architectures-in-rl
 
 # Run the Python script with specified module
-/bigwork/nhwpfehl/.conda/envs/rl-architectures/bin/python baselines/blackbox_ppo.py -m
+/bigwork/nhwpfehl/.conda/envs/rl-architectures/bin/python baselines/blackbox_joined_hpo_nn/blackbox_joined_hpo_nn.py -m

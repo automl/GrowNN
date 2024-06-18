@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  # - slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -49,7 +49,7 @@ normalize_advantage: False
 vf_coef: 0.5
 feature_extractor_output_dimension: 256
 n_feature_extractor_layers: 1
-feature_extractor_layer_width: 128
+feature_extractor_layer_width: 256
 
 # Below are not hpo parameters. Seed is currenlty not allowed to be outside of section
 seed: 0 
@@ -65,16 +65,15 @@ non_hyperparameters:
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
   n_evaluation_rounds: 20
-  total_timesteps: 500000 # Defined at top with budget
+  total_timesteps: 1000000 # Defined at top with budget
 
 PY_EXPERIMENTER: 
   n_jobs: 1
-
   Database:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: testing
+      name: black_box_run
       keyfields: 
         environment_id:
           type: VARCHAR(50)

@@ -22,13 +22,4 @@ hyperparameters:
   n_feature_extractor_layers:
     lower: 1
     type: uniform_int
-    upper: 10
-  feature_extractor_layer_width:
-    type: categorical
-    choices:
-    - 32
-    - 64
-    - 128
-    - 256
-    - 512
-    - 1024
+    upper: 20

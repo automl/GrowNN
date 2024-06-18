@@ -5,7 +5,7 @@ from typing import Dict
 
 
 def create_pyexperimenter(
-    config: OmegaConf, credentials_file_path="/home/lukas/Desktop/architectures-in-rl/config/database_credentials.yml", use_ssh_tunnel: bool = False
+    config: OmegaConf, credentials_file_path="/bigwork/nhwpfehl/architectures-in-rl/config/database_credentials.yml", use_ssh_tunnel: bool = True
 ) -> PyExperimenter:
     py_experimenter_config = OmegaConf.create({"PY_EXPERIMENTER": config["PY_EXPERIMENTER"]})
     with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".yaml") as tmpfile:

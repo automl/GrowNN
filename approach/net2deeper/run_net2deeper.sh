@@ -11,4 +11,5 @@
 cd /bigwork/nhwpfehl/architectures-in-rl
 
 # Run the Python script with specified module
-/bigwork/nhwpfehl/.conda/envs/rl-architectures/bin/python baselines/blackbox_ppo.py -m
+/bigwork/nhwpfehl/.conda/envs/rl-architectures/bin/python approach/net2deeper/net2deeper.py -m
+

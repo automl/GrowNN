@@ -102,9 +102,13 @@ def black_box_ppo_configure(config: Configuration):
             policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [feature_extractor_output_dimension], "vf": [feature_extractor_output_dimension]}},
         )
         if feature_extractor_depth > 1:  # If we can load a previous model
-            for allready_added_feature_layer in range(1, feature_extractor_depth ):
+
+            # Rebuild the model with increased size, to then load the weigths and optimizer
+            for _ in range(1, feature_extractor_depth -1):
                 model.policy.features_extractor.add_layer()
-                model.policy.optimizer.add_param_group({f"additional_layer_{allready_added_feature_layer}": additional_layer.parameters()})
+                additional_layer = model.policy.features_extractor.linear_layers.sequential_container[-2]
+                additional_layer.to("cuda")
+                model.policy.optimizer.add_param_group({"params": additional_layer.parameters()})
          
             # Load Previously used model
             final_load_path = os.path.join(config.non_hyperparameters.model_save_path, f"{feature_extractor_depth - 1}", f"{seed}")
@@ -114,7 +118,7 @@ def black_box_ppo_configure(config: Configuration):
             model.policy.to("cuda")
             # Add Linear Layer to Optimizer
             additional_layer = model.policy.features_extractor.linear_layers.sequential_container[-2]
-            model.policy.optimizer.add_param_group({f"additional_layer_{feature_extractor_depth}": additional_layer.parameters()})
+            model.policy.optimizer.add_param_group({"params": additional_layer.parameters()})
         evaluation_callback = CustomEvaluationCallback(
             evaluation_vec_env,
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],

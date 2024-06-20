@@ -2,11 +2,16 @@ import tempfile
 from py_experimenter.experimenter import PyExperimenter, ResultProcessor
 from omegaconf import OmegaConf
 from typing import Dict
+import os
 
 
-def create_pyexperimenter(
-    config: OmegaConf, credentials_file_path="/bigwork/nhwpfehl/architectures-in-rl/config/database_credentials.yml", use_ssh_tunnel: bool = True
-) -> PyExperimenter:
+def create_pyexperimenter(config: OmegaConf, use_ssh_tunnel: bool = True) -> PyExperimenter:
+    if "nhwpfehl" in os.getcwd():
+        credentials_file_path = "/bigwork/nhwpfehl/architectures-in-rl/config/database_credentials.yml"
+    else:
+        credentials_file_path = "/home/lukas/Desktop/architectures-in-rl/config/database_credentials.yml"
+        use_ssh_tunnel = False
+
     py_experimenter_config = OmegaConf.create({"PY_EXPERIMENTER": config["PY_EXPERIMENTER"]})
     with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".yaml") as tmpfile:
         OmegaConf.save(py_experimenter_config, tmpfile)

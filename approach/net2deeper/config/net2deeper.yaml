@@ -23,7 +23,7 @@ hydra:
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 150 # The budget for SMAC
+    budget: 99 # The budget for SMAC
 
     budget_variable: non_hyperparameters.feature_extractor_depth
     saving_variable: non_hyperparameters.model_save_path
@@ -132,6 +132,7 @@ PY_EXPERIMENTER:
       training_process:
         worker_id: INT
         trial_number: INT
+        budget: INT
         timestep: INT
         evaluated_cost: FLOAT
         evaluated_stdev: FLOAT

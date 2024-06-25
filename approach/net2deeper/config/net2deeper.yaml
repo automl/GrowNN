@@ -23,7 +23,7 @@ hydra:
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 99 # The budget for SMAC
+    budget: 150 # The budget for SMAC
 
     budget_variable: non_hyperparameters.feature_extractor_depth
     saving_variable: non_hyperparameters.model_save_path
@@ -65,8 +65,8 @@ non_hyperparameters:
   observation_keys: [chars,]
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
-  n_evaluation_episodes: 2 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 2
+  n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
+  n_evaluation_rounds: 20
   total_timesteps: 500000 # Defined at top with budget
 
 PY_EXPERIMENTER: 
@@ -109,6 +109,7 @@ PY_EXPERIMENTER:
       configurations:
         environment_name: VARCHAR(50)
         trial_number: INT
+        budget: INT
         worker_number: INT # The number of the worker used by hypersweeper to evaluate the current configuration
         worker_seed: INT # The seed provided to the worker to evalaute the curernt configuration
         batch_size: INT
@@ -127,6 +128,7 @@ PY_EXPERIMENTER:
         feature_extractor_layer_width: INT
         final_score: FLOAT
         final_std: FLOAT
+
       training_process:
         worker_id: INT
         trial_number: INT
@@ -136,10 +138,12 @@ PY_EXPERIMENTER:
 
       smac_callbacks:
         trial_number: INT
+        budget: INT
         cost: FLOAT
 
       final_evaluation_callback:
         trial_number: INT
+        budget: INT
         worker_number: INT
         final_score: FLOAT
         final_std: FLOAT
@@ -153,6 +157,7 @@ PY_EXPERIMENTER:
       
       training_losses:
         trial_number: INT
+        budget: INT
         worker_number: INT
         n_rollout: INT
         learning_rate: FLOAT

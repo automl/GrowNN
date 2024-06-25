@@ -69,7 +69,8 @@ class CustomCallback(Callback):
         to gracefully stop the optimization.
         """
         super().on_tell_start(smbo, info, value)
-        self.result_processor.process_logs({"smac_callbacks": {"trial_number": len(smbo.runhistory), "cost": value.cost}})
+        budget = info.budget
+        self.result_processor.process_logs({"smac_callbacks": {"trial_number": len(smbo.runhistory), "cost": value.cost, "budget": budget}})
 
     def on_tell_end(self, smbo: SMBO, info: TrialInfo, value: TrialValue):
         """Called after the stats are updated and the trial is added to the runhistory. Optionally, returns false

@@ -150,6 +150,7 @@ def black_box_ppo_configure(config: Configuration):
                         "training_process": {
                             "worker_id": seed,
                             "trial_number": non_hyperparameters["trial_number"],
+                            "budget": n_feature_extractor_layers,
                             "timestep": timestep,
                             "evaluated_cost": evaluated_cost,
                             "evaluated_stdev": evalauted_stdev,
@@ -179,7 +180,7 @@ def black_box_ppo_configure(config: Configuration):
             callback=callback_wrapper.get_callback(),
         )
         if not debug_mode:
-            callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std)
+            callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, budget = n_feature_extractor_layers)
 
             log_results(
                 result_processor,
@@ -188,6 +189,7 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_number": seed,  # Currently the same as the workerseed
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
+                        "budget": feature_extractor_depth,
                         "environment_name": environment_name,
                         "batch_size": batch_size,
                         "clip_range": clip_range,

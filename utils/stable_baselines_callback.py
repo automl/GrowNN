@@ -112,7 +112,7 @@ class CustomEvaluationCallback(EvalCallback):
 
         return continue_training
 
-    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, ent_coef: float, vf_coef: float):
+    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, ent_coef: float, vf_coef: float, **kwargs):
         for n_rollout, rollout_losses in enumerate(self.losses):
             rollout_losses = {key[6:]: value for key, value in rollout_losses.items()}
             if "entropy_loss" in rollout_losses:
@@ -126,6 +126,7 @@ class CustomEvaluationCallback(EvalCallback):
                         "worker_number": worker_number,
                         "n_rollout": n_rollout,
                         **rollout_losses,
+                        **kwargs
                     }
                 }
             )
@@ -191,14 +192,14 @@ class FinalEvaluationWrapper:
 
         return _callback
 
-    def process_results(self, trial_number: int, worker_number: int, final_score: float, final_std: float):
+    def process_results(self, trial_number: int, worker_number: int, final_score: float, final_std: float, **kwargs):
         successfull = np.count_nonzero(np.array(self.final_espisode_state) == "Success") / len(self.final_espisode_state)
         dead = np.count_nonzero(np.array(self.final_espisode_state) == "Death") / len(self.final_espisode_state)
         time_out = np.count_nonzero(np.array(self.final_espisode_state) == "TimeOut") / len(self.final_espisode_state)
 
         self.result_processor.process_logs(
             {
-                "final_evaluation_callback": {
+                "final_evaluation_callback": {**{
                     "trial_number": trial_number,
                     "worker_number": worker_number,
                     "final_score": final_score,
@@ -210,6 +211,6 @@ class FinalEvaluationWrapper:
                     "time_out": time_out,
                     "end_states": ",".join(self.final_espisode_state),
                     "rewards_per_episode": str(self.rewards_per_episode),
-                }
+                }, **kwargs}
             }
         )

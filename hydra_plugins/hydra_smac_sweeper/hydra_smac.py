@@ -1,20 +1,18 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import json
 import logging
-import math
 import os
-import pickle
 import time
 from typing import List
 
 import numpy as np
-from ConfigSpace.hyperparameters import CategoricalHyperparameter, NormalIntegerHyperparameter, OrdinalHyperparameter, UniformIntegerHyperparameter
+from ConfigSpace.hyperparameters import CategoricalHyperparameter, OrdinalHyperparameter
 from hydra.utils import to_absolute_path
 
 # from deepcave import Recorder, Objective
 from smac import HyperparameterOptimizationFacade, Scenario
 from smac.intensifier.scheduled_hyperband import ScheduledHyperband
-from smac.runhistory.dataclasses import TrialInfo, TrialValue
+from smac.runhistory.dataclasses import TrialValue
 from smac.main.config_selector import ConfigSelector
 
 from py_experimenter.result_processor import ResultProcessor
@@ -81,7 +79,7 @@ class HydraSMAC:
         self.scenario = Scenario(self.configspace, deterministic=deterministic, n_trials=n_trials, min_budget=min_budget, max_budget=max_budget)
         max_config_calls = len(self.seeds) if seeds and not deterministic else 1
         if intensifier == "HB":
-            self.intensifier = ScheduledHyperband(self.scenario, n_lowest_budget=10, bracket_width=max_budget, incumbent_selection="highest_budget", n_seeds=max_config_calls, eta = 1.3)
+            self.intensifier = ScheduledHyperband(self.scenario, n_lowest_budget=10, bracket_width=max_budget, incumbent_selection="highest_budget", n_seeds=max_config_calls, eta=1.3)
         else:
             self.intensifier = HyperparameterOptimizationFacade.get_intensifier(
                 self.scenario,
@@ -99,15 +97,12 @@ class HydraSMAC:
             callbacks=[CustomCallback(result_processor)],
             intensifier=self.intensifier,
             overwrite=True,
-            config_selector=ConfigSelector(scenario=self.scenario, min_trials=10),
+            config_selector=ConfigSelector(scenario=self.scenario),
+            initial_design=HyperparameterOptimizationFacade.get_initial_design(self.scenario, n_configs=10),
         )
 
-        self.categorical_hps = [
-            n for n in list(self.configspace.keys()) if isinstance(self.configspace.get_hyperparameter(n), CategoricalHyperparameter)
-        ]
-        self.categorical_hps += [
-            n for n in list(self.configspace.keys()) if isinstance(self.configspace.get_hyperparameter(n), OrdinalHyperparameter)
-        ]
+        self.categorical_hps = [n for n in list(self.configspace.keys()) if isinstance(self.configspace.get_hyperparameter(n), CategoricalHyperparameter)]
+        self.categorical_hps += [n for n in list(self.configspace.keys()) if isinstance(self.configspace.get_hyperparameter(n), OrdinalHyperparameter)]
         self.continuous_hps = [n for n in list(self.configspace.keys()) if n not in self.categorical_hps]
         self.hp_bounds = np.array(
             [
@@ -161,9 +156,7 @@ class HydraSMAC:
             if self.seeds and self.deterministic:
                 for s in self.seeds:
                     save_path = os.path.join(os.getcwd(), "smac3_output", self.scenario.name)
-                    values = (
-                        list(configs[i].values()) + config_ids + [budgets[i]] + [save_path] + [experiment_id] + [s] + [trial_numbers[i]]
-                    )  # Add PyExperiemtner ID
+                    values = list(configs[i].values()) + config_ids + [budgets[i]] + [save_path] + [experiment_id] + [s] + [trial_numbers[i]]  # Add PyExperiemtner ID
                     if self.slurm:
                         raise ValueError("Not Supported")
                         values += [int(optimized_timeout)]

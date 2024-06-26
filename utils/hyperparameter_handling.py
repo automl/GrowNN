@@ -1,5 +1,6 @@
-from typing import Tuple, Optional
+from typing import Tuple
 from omegaconf import DictConfig
+import os
 
 
 def extract_hyperparameters(config: DictConfig) -> Tuple[int, float, float, float, float, float, float, int, int, bool, float]:
@@ -34,3 +35,7 @@ def extract_hyperparameters(config: DictConfig) -> Tuple[int, float, float, floa
         n_feature_extractor_layers,
         feature_extractor_layer_width,
     )
+
+
+def create_model_save_path(model_save_path: str, config: DictConfig, budget, seed) -> str:
+    return os.path.join(model_save_path, str(extract_hyperparameters(config)), str(budget), str(seed))

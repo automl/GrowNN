@@ -1,5 +1,4 @@
 import os
-from typing import Dict, Union
 from functools import partial
 import gym
 import hydra
@@ -12,11 +11,12 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env
+from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env, create_model_save_path
 from utils.networks.feature_extractor import Net2DeeperFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
 debug_mode = False
+
 
 @hydra.main(config_path="config", config_name="net2deeper", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
@@ -51,6 +51,7 @@ def black_box_ppo_configure(config: Configuration):
             n_feature_extractor_layers,
             feature_extractor_layer_width,
         ) = extract_hyperparameters(config)
+        hyperparameter_str_identifier = str(extract_hyperparameters(config))
 
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
         # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
@@ -102,16 +103,15 @@ def black_box_ppo_configure(config: Configuration):
             policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [feature_extractor_output_dimension], "vf": [feature_extractor_output_dimension]}},
         )
         if feature_extractor_depth > 1:  # If we can load a previous model
-
             # Rebuild the model with increased size, to then load the weigths and optimizer
-            for _ in range(1, feature_extractor_depth -1):
+            for _ in range(1, feature_extractor_depth - 1):
                 model.policy.features_extractor.add_layer()
                 additional_layer = model.policy.features_extractor.linear_layers.sequential_container[-2]
                 additional_layer.to("cuda")
                 model.policy.optimizer.add_param_group({"params": additional_layer.parameters()})
-         
+
             # Load Previously used model
-            final_load_path = os.path.join(config.non_hyperparameters.model_save_path, f"{feature_extractor_depth - 1}", f"{seed}")
+            final_load_path = create_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth - 1, seed)
             model.set_parameters(os.path.join(final_load_path, "model.zip"), exact_match=False)
             # Add Linear Layer and move to cuda
             model.policy.features_extractor.add_layer()
@@ -129,10 +129,10 @@ def black_box_ppo_configure(config: Configuration):
         )
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
-            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef, hyperparameter_str_identifier=hyperparameter_str_identifier)
 
         # TODO Save the model and feature extractor
-        final_save_path = os.path.join(config.non_hyperparameters.model_save_path, f"{feature_extractor_depth}", f"{seed}")
+        final_save_path = create_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
         if not os.path.exists(final_save_path):
             os.makedirs(final_save_path)
 
@@ -150,7 +150,8 @@ def black_box_ppo_configure(config: Configuration):
                         "training_process": {
                             "worker_id": seed,
                             "trial_number": non_hyperparameters["trial_number"],
-                            "budget": n_feature_extractor_layers,
+                            "budget": feature_extractor_depth,
+                            "hyperparameter_str_identifier": hyperparameter_str_identifier,
                             "timestep": timestep,
                             "evaluated_cost": evaluated_cost,
                             "evaluated_stdev": evalauted_stdev,
@@ -180,7 +181,9 @@ def black_box_ppo_configure(config: Configuration):
             callback=callback_wrapper.get_callback(),
         )
         if not debug_mode:
-            callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, budget = n_feature_extractor_layers)
+            callback_wrapper.process_results(
+                non_hyperparameters["trial_number"], seed, final_score, final_std, budget=feature_extractor_depth, hyperparameter_str_identifier=hyperparameter_str_identifier
+            )
 
             log_results(
                 result_processor,
@@ -190,6 +193,7 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
                         "budget": feature_extractor_depth,
+                        "hyperparameter_str_identifier": hyperparameter_str_identifier,
                         "environment_name": environment_name,
                         "batch_size": batch_size,
                         "clip_range": clip_range,

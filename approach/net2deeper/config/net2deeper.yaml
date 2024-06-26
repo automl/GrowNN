@@ -18,7 +18,7 @@ hydra:
 
       deterministic: True # whether or nto the env is deterministic
       
-      seeds: [0,1,2,3,4] # seeds passed to each worker - so we alsways have the same seeds
+      seeds: [0, 1, 2, 3, 4] # seeds passed to each worker - so we alsways have the same seeds
       # TODO Assuming wokring with seeds mak sense, how do we go from here
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
@@ -110,6 +110,7 @@ PY_EXPERIMENTER:
         environment_name: VARCHAR(50)
         trial_number: INT
         budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         worker_number: INT # The number of the worker used by hypersweeper to evaluate the current configuration
         worker_seed: INT # The seed provided to the worker to evalaute the curernt configuration
         batch_size: INT
@@ -133,6 +134,7 @@ PY_EXPERIMENTER:
         worker_id: INT
         trial_number: INT
         budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         timestep: INT
         evaluated_cost: FLOAT
         evaluated_stdev: FLOAT
@@ -140,11 +142,13 @@ PY_EXPERIMENTER:
       smac_callbacks:
         trial_number: INT
         budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         cost: FLOAT
 
       final_evaluation_callback:
         trial_number: INT
         budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         worker_number: INT
         final_score: FLOAT
         final_std: FLOAT
@@ -159,6 +163,7 @@ PY_EXPERIMENTER:
       training_losses:
         trial_number: INT
         budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         worker_number: INT
         n_rollout: INT
         learning_rate: FLOAT

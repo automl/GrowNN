@@ -1,12 +1,7 @@
 from smac.callback import Callback, MetadataCallback
 from py_experimenter.result_processor import ResultProcessor
-import json
 from smac.main.config_selector import ConfigSelector
 from ConfigSpace import Configuration
-import json
-import platform
-from datetime import datetime
-import smac
 from smac.callback.callback import Callback
 from smac.main.smbo import SMBO
 
@@ -70,7 +65,9 @@ class CustomCallback(Callback):
         """
         super().on_tell_start(smbo, info, value)
         budget = info.budget
-        self.result_processor.process_logs({"smac_callbacks": {"trial_number": len(smbo.runhistory), "cost": value.cost, "budget": budget}})
+        self.result_processor.process_logs(
+            {"smac_callbacks": {"trial_number": len(smbo.runhistory), "cost": value.cost, "budget": budget, "hyperparameter_str_identifier": str(info.config.get_dictionary())}}
+        )
 
     def on_tell_end(self, smbo: SMBO, info: TrialInfo, value: TrialValue):
         """Called after the stats are updated and the trial is added to the runhistory. Optionally, returns false

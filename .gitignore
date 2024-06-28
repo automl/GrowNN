@@ -15,3 +15,5 @@ ssh_files/result_on_ai-n001.out
 ssh_files/result_on_ai-n002.out
 slurm_logs
 build
+ssh_files/kissi/error_on_*
+ssh_files/kissi/result_on_*

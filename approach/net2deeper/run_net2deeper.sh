@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=rl_training
+#SBATCH --job-name=n2d_train
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16GB
 #SBATCH --time=168:00:00

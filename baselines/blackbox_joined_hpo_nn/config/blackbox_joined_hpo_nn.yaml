@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 500000 # Internal Budget of one target function run
+      max_budget: 1000000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -131,6 +131,8 @@ PY_EXPERIMENTER:
 
       smac_callbacks:
         trial_number: INT
+        budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         cost: FLOAT
 
       final_evaluation_callback:

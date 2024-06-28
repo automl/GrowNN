@@ -21,11 +21,11 @@ def make_env(env_id: str, observation_keys: List[str], max_episode_steps: Option
     def _init():
         nonlocal max_episode_steps
         if max_episode_steps is None:
-            if "Room" in env_id:
-                grid_size = int(env_id.split("-")[-2].split("x")[0])
-                max_episode_steps = grid_size * grid_size * 4
-                env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps = max_episode_steps,actions=MOVE_ACTIONS)
-            else:
+            #if "Room" in env_id:
+            #    grid_size = int(env_id.split("-")[-2].split("x")[0])
+            #    max_episode_steps = grid_size * grid_size * 4
+            #    env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps = max_episode_steps,actions=MOVE_ACTIONS)
+            #else:
                 env = gym.make(env_id, observation_keys=observation_keys, actions=MOVE_ACTIONS)
         else:
             env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps=max_episode_steps, actions=MOVE_ACTIONS)

@@ -104,6 +104,8 @@ PY_EXPERIMENTER:
       configurations:
         environment_id: VARCHAR(50)
         trial_number: INT
+        budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         worker_number: INT # The number of the worker used by hypersweeper to evaluate the current configuration
         worker_seed: INT # The seed provided to the worker to evalaute the curernt configuration
         batch_size: INT
@@ -125,16 +127,21 @@ PY_EXPERIMENTER:
       training_process:
         worker_id: INT
         trial_number: INT
+        budget: INT
         timestep: INT
         evaluated_cost: FLOAT
         evaluated_stdev: FLOAT
 
       smac_callbacks:
         trial_number: INT
+        budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         cost: FLOAT
 
       final_evaluation_callback:
         trial_number: INT
+        budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         worker_number: INT
         final_score: FLOAT
         final_std: FLOAT
@@ -148,6 +155,8 @@ PY_EXPERIMENTER:
       
       training_losses:
         trial_number: INT
+        budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         worker_number: INT
         n_rollout: INT
         learning_rate: FLOAT

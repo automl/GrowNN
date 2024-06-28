@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=rl_training
+#SBATCH --job-name=blackbox-optimize-width
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16GB
 #SBATCH --time=168:00:00
@@ -11,4 +11,4 @@
 cd /bigwork/nhwpfehl/architectures-in-rl
 
 # Run the Python script with specified module
-/bigwork/nhwpfehl/.conda/envs/rl-architectures/bin/python baselines/blackbox_joined_hpo_nn/blackbox_joined_hpo_nn.py -m
+/bigwork/nhwpfehl/.conda/envs/rl-architectures/bin/python baselines/blackbox_joined_hpo_nn_optimize_width/blackbox_joined_hpo_nn.py -m

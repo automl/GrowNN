@@ -8,6 +8,8 @@ import os
 def create_pyexperimenter(config: OmegaConf, use_ssh_tunnel: bool = True) -> PyExperimenter:
     if "nhwpfehl" in os.getcwd():
         credentials_file_path = "/bigwork/nhwpfehl/architectures-in-rl/config/database_credentials.yml"
+    elif "mnt" in os.getcwd():
+        credentials_file_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/config/database_credentials.yml"
     else:
         credentials_file_path = "/home/lukas/Desktop/architectures-in-rl/config/database_credentials.yml"
         use_ssh_tunnel = False

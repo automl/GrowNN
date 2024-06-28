@@ -14,3 +14,4 @@ ssh_files/error_on_ai-n002.err
 ssh_files/result_on_ai-n001.out
 ssh_files/result_on_ai-n002.out
 slurm_logs
+build

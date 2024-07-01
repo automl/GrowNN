@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 1000000 # Internal Budget of one target function run
+      max_budget: 2000000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5

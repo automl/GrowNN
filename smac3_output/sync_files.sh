@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Variables
-REMOTE_USER="nhwpfehl"  # Replace with your username
-REMOTE_HOST="transfer.cluster.uni-hannover.de"
-REMOTE_DIR="/bigwork/nhwpfehl/architectures-in-rl/smac3_output"
+REMOTE_USER="lfehring"  # Replace with your username
+REMOTE_HOST="kisski01.cluster.uni-hannover.de"
+REMOTE_DIR="/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output"
 LOCAL_DIR="."  # Replace with your local directory
-SSH_KEY="~/.ssh/id_rsa"  # Path to your RSA key
+SSH_KEY="~/.ssh/kissi-cluster"  # Path to your RSA key
 
 # Rsync command
 rsync -avz -e "ssh -i ${SSH_KEY}" ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR} ${LOCAL_DIR}

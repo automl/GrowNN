@@ -12,6 +12,7 @@ from hydra.utils import to_absolute_path
 # from deepcave import Recorder, Objective
 from smac import HyperparameterOptimizationFacade, Scenario
 from smac.intensifier.scheduled_hyperband import ScheduledHyperband
+from smac.intensifier.hyperband import Hyperband
 from smac.runhistory.dataclasses import TrialValue
 from smac.main.config_selector import ConfigSelector
 
@@ -78,8 +79,11 @@ class HydraSMAC:
 
         self.scenario = Scenario(self.configspace, deterministic=deterministic, n_trials=n_trials, min_budget=min_budget, max_budget=max_budget)
         max_config_calls = len(self.seeds) if seeds and not deterministic else 1
-        if intensifier == "HB":
+        if intensifier == "SHB":
             self.intensifier = ScheduledHyperband(self.scenario, n_lowest_budget=10, bracket_width=max_budget, incumbent_selection="highest_budget", n_seeds=max_config_calls, eta=1.3)
+        elif intensifier == "HB":
+            self.intensifier = Hyperband(self.scenario, n_seeds=max_config_calls, eta=2.5)
+        
         else:
             self.intensifier = HyperparameterOptimizationFacade.get_intensifier(
                 self.scenario,

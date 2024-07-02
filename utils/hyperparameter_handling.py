@@ -37,5 +37,13 @@ def extract_hyperparameters(config: DictConfig) -> Tuple[int, float, float, floa
     )
 
 
-def create_model_save_path(model_save_path: str, config: DictConfig, budget, seed) -> str:
+def get_model_save_path(model_save_path: str, config: DictConfig, budget, seed) -> str:
     return os.path.join(model_save_path, str(extract_hyperparameters(config)), str(budget), str(seed))
+
+
+def config_is_evaluated(model_save_path: str, config: DictConfig) -> bool:
+    return os.path.exists(get_model_save_path(model_save_path, extract_hyperparameters(config)))
+
+
+def get_budget_path_dict(model_save_path: str, config: DictConfig) -> dict:
+    return { directory_name:directory_name for directory_name in os.listdir(model_save_path, extract_hyperparameters(config))}

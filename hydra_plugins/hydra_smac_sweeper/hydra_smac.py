@@ -14,7 +14,7 @@ from smac import HyperparameterOptimizationFacade, Scenario
 from smac.intensifier.scheduled_hyperband import ScheduledHyperband
 from smac.intensifier.hyperband import Hyperband
 from smac.runhistory.dataclasses import TrialValue
-from smac.main.config_selector import ConfigSelector
+from utils.smac_config_selector import LowestBudgetConfigSelector
 
 from py_experimenter.result_processor import ResultProcessor
 
@@ -83,7 +83,7 @@ class HydraSMAC:
             self.intensifier = ScheduledHyperband(self.scenario, n_lowest_budget=10, bracket_width=max_budget, incumbent_selection="highest_budget", n_seeds=max_config_calls, eta=1.3)
         elif intensifier == "HB":
             self.intensifier = Hyperband(self.scenario, n_seeds=max_config_calls, eta=2.5)
-        
+
         else:
             self.intensifier = HyperparameterOptimizationFacade.get_intensifier(
                 self.scenario,
@@ -101,7 +101,7 @@ class HydraSMAC:
             callbacks=[CustomCallback(result_processor)],
             intensifier=self.intensifier,
             overwrite=True,
-            config_selector=ConfigSelector(scenario=self.scenario, min_trials=10),
+            config_selector=LowestBudgetConfigSelector(self.scenario, min_trials=10),
             initial_design=HyperparameterOptimizationFacade.get_initial_design(self.scenario, n_configs=10),
         )
 

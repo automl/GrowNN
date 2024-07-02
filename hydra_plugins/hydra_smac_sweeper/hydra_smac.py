@@ -101,7 +101,7 @@ class HydraSMAC:
             callbacks=[CustomCallback(result_processor)],
             intensifier=self.intensifier,
             overwrite=True,
-            config_selector=ConfigSelector(scenario=self.scenario),
+            config_selector=ConfigSelector(scenario=self.scenario, min_trials=10),
             initial_design=HyperparameterOptimizationFacade.get_initial_design(self.scenario, n_configs=10),
         )
 

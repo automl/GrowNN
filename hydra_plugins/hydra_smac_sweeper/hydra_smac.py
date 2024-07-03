@@ -81,6 +81,7 @@ class HydraSMAC:
         max_config_calls = len(self.seeds) if seeds and not deterministic else 1
         if intensifier == "SHB":
             self.intensifier = ScheduledHyperband(self.scenario, n_lowest_budget=10, bracket_width=max_budget, incumbent_selection="highest_budget", n_seeds=max_config_calls, eta=1.3)
+            config_selector = LowestBudgetConfigSelector(self.scenario, min_trials=10)
         elif intensifier == "HB":
             self.intensifier = Hyperband(self.scenario, n_seeds=max_config_calls, eta=2.5)
 
@@ -89,6 +90,7 @@ class HydraSMAC:
                 self.scenario,
                 max_config_calls=max_config_calls,
             )
+            config_selector = HyperparameterOptimizationFacade.get_config_selector(scenario=self.scenario)
 
         def dummy(arg, seed, budget):
             pass
@@ -101,7 +103,7 @@ class HydraSMAC:
             callbacks=[CustomCallback(result_processor)],
             intensifier=self.intensifier,
             overwrite=True,
-            config_selector=LowestBudgetConfigSelector(self.scenario, min_trials=10),
+            config_selector=config_selector,
             initial_design=HyperparameterOptimizationFacade.get_initial_design(self.scenario, n_configs=10),
         )
 

@@ -4,9 +4,7 @@ from __future__ import annotations
 import logging
 
 from typing import List
-from py_experimenter.experimenter import PyExperimenter
 from py_experimenter.result_processor import ResultProcessor
-import tempfile
 import os
 import operator
 from functools import reduce
@@ -155,10 +153,11 @@ class SMACSweeperBackend(Sweeper):
                 reduce(operator.getitem, key_parts[:-1], final_config)[key_parts[-1]] = schedules[k]
             with open(os.path.join(smac.output_dir, "final_config.yaml"), "w+") as fp:
                 OmegaConf.save(config=final_config, f=fp)
+            incumbent_config, incumbent_cost = smac.get_incumbent()
             result_processor.process_results(
                 {
-                    "final_cost": incumbent["cost"],
-                    "final_config": final_config,
+                    "final_cost": incumbent_cost,
+                    "config": str(dict(incumbent_config)),
                 }
             )
 

@@ -177,7 +177,7 @@ def black_box_ppo_configure(config: Configuration):
                 },
             )
 
-        model.save(os.path.join(non_hyperparameters["model_save_path"], non_hyperparameters["trial_number"], seed, "model"))
+        model.save(os.path.join(non_hyperparameters["model_save_path"], str(non_hyperparameters["trial_number"]), str(seed), "model"))
 
         model.policy = None
         torch.cuda.empty_cache()

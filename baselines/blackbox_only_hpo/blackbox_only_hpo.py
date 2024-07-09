@@ -46,6 +46,7 @@ def black_box_ppo_configure(config: Configuration):
             feature_extractor_output_dimension,
             n_feature_extractor_layers,
             feature_extractor_layer_width,
+            cnn_intermediate_dimension
         ) = extract_hyperparameters(config)
 
         # We always use the same seeds in here
@@ -68,7 +69,7 @@ def black_box_ppo_configure(config: Configuration):
         torch.cuda.torch.cuda.empty_cache()
         feature_extractor = partial(
             CustomCombinedExtractor,
-            cnn_intermediate_dimension=1,
+            cnn_intermediate_dimension=cnn_intermediate_dimension,
             n_feature_extractor_layers=n_feature_extractor_layers,
             feature_extractor_layer_width=feature_extractor_layer_width,
             feature_extractor_output_dimension=feature_extractor_output_dimension,

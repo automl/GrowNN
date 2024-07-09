@@ -18,6 +18,7 @@ def extract_hyperparameters(config: DictConfig) -> Tuple[int, float, float, floa
     feature_extractor_output_dimension = config["feature_extractor_output_dimension"]
     n_feature_extractor_layers = config["n_feature_extractor_layers"]
     feature_extractor_layer_width = config["feature_extractor_layer_width"]
+    cnn_intermediate_dimension = config["cnn_intermediate_dimension"]
 
     return (
         batch_size,
@@ -34,6 +35,7 @@ def extract_hyperparameters(config: DictConfig) -> Tuple[int, float, float, floa
         feature_extractor_output_dimension,
         n_feature_extractor_layers,
         feature_extractor_layer_width,
+        cnn_intermediate_dimension
     )
 
 

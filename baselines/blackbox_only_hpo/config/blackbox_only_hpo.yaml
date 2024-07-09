@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  # - slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -47,9 +47,10 @@ n_epochs: 11
 n_steps: 2048
 normalize_advantage: False
 vf_coef: 0.5
-feature_extractor_output_dimension: 256
-n_feature_extractor_layers: 1
-feature_extractor_layer_width: 256
+feature_extractor_output_dimension: 512
+n_feature_extractor_layers: 3
+feature_extractor_layer_width: 512
+cnn_intermediate_dimension: 2
 
 # Below are not hpo parameters. Seed is currenlty not allowed to be outside of section
 seed: 0 
@@ -73,7 +74,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: black_box_hpo
+      name: blackbox_incumbent_gen
       keyfields: 
         environment_id:
           type: VARCHAR(50)
@@ -122,6 +123,7 @@ PY_EXPERIMENTER:
         feature_extractor_output_dimension: INT
         n_feature_extractor_layers: INT
         feature_extractor_layer_width: INT
+        cnn_intermediate_dimension: INT
         final_score: FLOAT
         final_std: FLOAT
       training_process:

@@ -5,7 +5,7 @@
 #SBATCH --mem=2GB
 #SBATCH --output=ssh_files/kissi/result_on_gpu8.kisski.out
 #SBATCH --error=ssh_files/kissi/error_on_gpu8.kisski.err
-#SBATCH --time=168:00:00
+#SBATCH --time=24:00:00
 #SBATCH --nodelist=gpu008.kisski
 
 cd /mnt/home/lfehring/MasterThesis/architectures-in-rl

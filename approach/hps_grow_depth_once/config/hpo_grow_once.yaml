@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  # - slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 10000 # Internal Budget of one target function run
+      max_budget: 500000 # Internal Budget of one target function run
       job_array_size_limit: 5
       max_parallelization: .001 
 
@@ -60,9 +60,9 @@ non_hyperparameters:
   observation_keys: [chars,]
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
-  n_evaluation_episodes: 1 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 2
-  total_timesteps: 10000
+  n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
+  n_evaluation_rounds: 20
+  total_timesteps: 500000
 
 PY_EXPERIMENTER: 
   n_jobs: 1

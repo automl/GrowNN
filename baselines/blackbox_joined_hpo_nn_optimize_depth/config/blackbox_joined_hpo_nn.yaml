@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 10000 # Internal Budget of one target function run
+      max_budget: 1000000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -47,9 +47,10 @@ n_epochs: 11
 n_steps: 2048
 normalize_advantage: False
 vf_coef: 0.5
-feature_extractor_output_dimension: 256
+feature_extractor_output_dimension: 512
 n_feature_extractor_layers: 1
-feature_extractor_layer_width: 256
+feature_extractor_layer_width: 512
+cnn_intermediate_dimension: 2
 
 # Below are not hpo parameters. Seed is currenlty not allowed to be outside of section
 seed: 0 
@@ -63,9 +64,9 @@ non_hyperparameters:
   observation_keys: [chars,]
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
-  n_evaluation_episodes: 1 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 2
-  total_timesteps: 10000 # Defined at top with budget
+  n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
+  n_evaluation_rounds: 20
+  total_timesteps: 1000000 # Defined at top with budget
 
 PY_EXPERIMENTER: 
   n_jobs: 1
@@ -73,7 +74,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: black_box_run
+      name: black_box_run_depth
       keyfields: 
         environment_id:
           type: VARCHAR(50)
@@ -122,8 +123,10 @@ PY_EXPERIMENTER:
         feature_extractor_output_dimension: INT
         n_feature_extractor_layers: INT
         feature_extractor_layer_width: INT
+        cnn_intermediate_dimension: INT
         final_score: FLOAT
         final_std: FLOAT
+
       training_process:
         worker_id: INT
         trial_number: INT

@@ -9,6 +9,7 @@ import torch
 import abc
 from utils.networks.net2deeper import Net2Deeper
 
+
 class OneHotEncoder(nn.Module):
     # Written with the Help of ChatGPT
     def __init__(self, num_classes, shape):
@@ -51,7 +52,7 @@ class AbstractFeatureExtractor(BaseFeaturesExtractor, abc.ABC):
     @abc.abstractmethod
     def build_feature_extractor(self, observation_space: gym.spaces.Dict):
         """
-        Abstract Method to initialise the feature extracot. 
+        Abstract Method to initialise the feature extracot.
         """
 
     def forward(self, observations) -> th.Tensor:
@@ -69,10 +70,9 @@ class AbstractFeatureExtractor(BaseFeaturesExtractor, abc.ABC):
         # Return a (B, self._features_dim) PyTorch tensor, where B is batch dimension.
         return encoded_tensor
 
+
 class CustomCombinedExtractor(AbstractFeatureExtractor):
     def build_feature_extractor(self, observation_space: gym.spaces.Dict):
-        """
-        """
         extractors = {}
 
         total_concat_size = 0
@@ -94,7 +94,7 @@ class CustomCombinedExtractor(AbstractFeatureExtractor):
                     nn.ReLU(),
                     nn.Flatten(),
                 )
-                total_concat_size += observation_space["chars"].shape[0] * observation_space["chars"].shape[1]
+                total_concat_size += observation_space["chars"].shape[0] * observation_space["chars"].shape[1] * self.cnn_intermediate_dimension
 
             else:
                 raise NotImplementedError("Image observation not supported")
@@ -134,6 +134,7 @@ class CustomCombinedExtractor(AbstractFeatureExtractor):
         # Return a (B, self._features_dim) PyTorch tensor, where B is batch dimension.
         return encoded_tensor
 
+
 class Net2DeeperFeatureExtractor(AbstractFeatureExtractor):
     """
     Custom feature extractor for the MultiInputPolicy.
@@ -143,7 +144,8 @@ class Net2DeeperFeatureExtractor(AbstractFeatureExtractor):
     The last layer has `feature_extractor_output_dimension` units.
 
     The object is initialised with the given amount of layers, but the amount of layers is increased over time.
-    """ 
+    """
+
     def build_feature_extractor(self, observation_space: gym.spaces.Dict):
         extractors = {}
 

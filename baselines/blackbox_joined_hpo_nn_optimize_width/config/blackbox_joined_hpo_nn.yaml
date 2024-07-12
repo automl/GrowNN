@@ -74,7 +74,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: test
+      name: blackbox_optimize_width
       keyfields: 
         environment_id:
           type: VARCHAR(50)

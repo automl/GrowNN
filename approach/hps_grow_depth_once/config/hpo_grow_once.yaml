@@ -54,7 +54,7 @@ non_hyperparameters:
   experiment_id: Null
   config_id: Null
   feature_extractor_depth: 0
-  environment_name: "MiniHack-Room-15x15-v0"
+  environment_name: "MiniHack-Room-10x10-v0"
   env_seed: 0
   model_save_path: blablabla
   observation_keys: [chars,]
@@ -122,6 +122,7 @@ PY_EXPERIMENTER:
         feature_extractor_output_dimension: INT
         n_feature_extractor_layers: INT
         feature_extractor_layer_width: INT
+        cnn_intermediate_dimension: INT
         momentum_reset: BOOLEAN
         final_score: FLOAT
         final_std: FLOAT

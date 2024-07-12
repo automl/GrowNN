@@ -18,7 +18,7 @@ from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvalu
 debug_mode = False
 
 # TODO ADapt the model path
-model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs/49"
+model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs/38"
 
 
 @hydra.main(config_path="config", config_name="hpo_grow_once", version_base="1.1")
@@ -53,6 +53,7 @@ def black_box_ppo_configure(config: Configuration):
             feature_extractor_output_dimension,
             n_feature_extractor_layers,
             feature_extractor_layer_width,
+            cnn_intermediate_dimension
         ) = extract_hyperparameters(config)
 
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
@@ -79,7 +80,7 @@ def black_box_ppo_configure(config: Configuration):
 
         feature_extractor = partial(
             Net2DeeperFeatureExtractor,
-            cnn_intermediate_dimension=1,
+            cnn_intermediate_dimension=cnn_intermediate_dimension,
             n_feature_extractor_layers=n_feature_extractor_layers,
             feature_extractor_layer_width=feature_extractor_layer_width,
             feature_extractor_output_dimension=feature_extractor_output_dimension,

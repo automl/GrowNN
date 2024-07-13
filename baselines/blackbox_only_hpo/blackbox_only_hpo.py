@@ -172,6 +172,9 @@ def black_box_ppo_configure(config: Configuration):
                         "vf_coef": vf_coef,
                         "feature_extractor_output_dimension": feature_extractor_output_dimension,
                         "n_feature_extractor_layers": n_feature_extractor_layers,
+                        "feature_extractor_layer_width": feature_extractor_layer_width,
+                        "cnn_intermediate_dimension": cnn_intermediate_dimension,
+                        "final_score": final_score,
                         "final_score": final_score,
                         "final_std": final_std,
                     }

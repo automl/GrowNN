@@ -20,6 +20,10 @@ hyperparameters:
     - 256
     type: categorical
   n_feature_extractor_layers:
-    lower: 1
-    type: uniform_int
-    upper: 20
+    type: categorical
+    choices:
+    - 1
+    - 5
+    - 10
+    - 15
+    - 20

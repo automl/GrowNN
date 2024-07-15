@@ -1,6 +1,0 @@
-hyperparameters:
-  learning_rate:
-    log: true
-    type: uniform_float
-    lower: 1.0e-04
-    upper: 0.01

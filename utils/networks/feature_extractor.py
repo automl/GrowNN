@@ -168,7 +168,7 @@ class Net2DeeperFeatureExtractor(AbstractFeatureExtractor):
                     nn.ReLU(),
                     nn.Flatten(),
                 )
-                total_concat_size += observation_space["chars"].shape[0] * observation_space["chars"].shape[1]
+                total_concat_size += observation_space["chars"].shape[0] * observation_space["chars"].shape[1] * self.cnn_intermediate_dimension
 
             else:
                 raise NotImplementedError("Image observation not supported")

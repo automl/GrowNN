@@ -8,6 +8,7 @@ from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 import torch
 import abc
 from utils.networks.net2deeper import Net2Deeper
+from utils.networks.net2wider import Net2Wider
 
 
 class OneHotEncoder(nn.Module):
@@ -187,3 +188,65 @@ class Net2DeeperFeatureExtractor(AbstractFeatureExtractor):
 
     def add_layer(self):
         self.linear_layers.add_layer()
+
+
+class Net2WiderFeatureExtractor(AbstractFeatureExtractor):
+    def __init__(
+        self,
+        observation_space: gym.spaces.Dict,
+        cnn_intermediate_dimension: int,
+        n_feature_extractor_layers: int,
+        feature_extractor_layer_width: int,
+        feature_extractor_output_dimension: int,
+        increase_factor: float,
+        noise_level: float,
+    ):
+        self.increase_factor = increase_factor
+        self.noise_level = noise_level
+        super().__init__(observation_space=observation_space,
+                         cnn_intermediate_dimension=cnn_intermediate_dimension,
+                         n_feature_extractor_layers=n_feature_extractor_layers,
+                         feature_extractor_layer_width=feature_extractor_layer_width,
+                         feature_extractor_output_dimension=feature_extractor_output_dimension)
+
+    def build_feature_extractor(self, observation_space: gym.spaces.Dict):
+        extractors = {}
+
+        total_concat_size = 0
+        # We need to know size of the output of this extractor,
+        # so go over all the spaces and compute output feature sizes
+        for key, subspace in observation_space.spaces.items():
+            if key == "chars":
+                # Assume the chars are 2D grid of integers
+                # Transform them to one-hot encoding - resulting in
+                extractors[key] = nn.Sequential(
+                    OneHotEncoder(int(subspace.high_repr), self.shape),
+                    nn.Conv2d(
+                        int(subspace.high_repr),
+                        self.cnn_intermediate_dimension,
+                        kernel_size=(1, 1),
+                        stride=1,
+                        padding=0,
+                    ),
+                    nn.ReLU(),
+                    nn.Flatten(),
+                )
+                total_concat_size += observation_space["chars"].shape[0] * observation_space["chars"].shape[1] * self.cnn_intermediate_dimension
+
+            else:
+                raise NotImplementedError("Image observation not supported")
+
+        self.extractors = nn.ModuleDict(extractors)
+        self.downscaling = nn.Sequential(
+            nn.Linear(total_concat_size, self.feature_extractor_layer_width),
+            nn.ReLU(),
+        )
+
+        self.linear_layers = Net2Wider(self.feature_extractor_layer_width, self.feature_extractor_output_dimension,self.n_feature_extractor_layers, increase_factor=self.increase_factor, noise_level=self.noise_level)
+
+        ##### KEEEEEP THIS AT ALL COST, BECAUSE STABLE BASELIENS USES IT FOR SOME REASON
+        self._features_dim = self.feature_extractor_output_dimension
+        ##### KEEEEEP THIS AT ALL COST, BECAUSE STABLE BASELIENS USES IT FOR SOME REASON
+
+    def increase_width(self):
+        self.linear_layers.increase_network_width()

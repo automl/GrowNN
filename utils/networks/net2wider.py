@@ -1,6 +1,6 @@
 from torch import nn
 import torch
-import copy
+
 
 class Net2Wider(nn.Module):
     """
@@ -9,9 +9,7 @@ class Net2Wider(nn.Module):
 
     """
 
-    def __init__(
-        self, input_size: int, output_size: int, n_layers: int, increase_factor: int, noise_level: float
-    ):
+    def __init__(self, input_size: int, output_size: int, n_layers: int, increase_factor: int, noise_level: float):
         super(Net2Wider, self).__init__()
         self.input_size = input_size
         self.output_size = output_size
@@ -21,20 +19,11 @@ class Net2Wider(nn.Module):
 
         self.sequential_container = nn.Sequential()
         for i in range(self.n_layers):
-            self.sequential_container.add_module(
-                f"linear_{i}", nn.Linear(input_size, output_size)
-            )
+            self.sequential_container.add_module(f"linear_{i}", nn.Linear(input_size, output_size))
             self.sequential_container.add_module(f"relu_{i}", nn.ReLU())
-        
 
     def forward(self, x: torch.Tensor):
-        x1 = self.sequential_container[0](x)
-        x2 = self.sequential_container[1](x1)
-        x3 = self.sequential_container[2](x2)
-        x4 = self.sequential_container[3](x3)
-        x5 = self.sequential_container[4](x4)
-        x6 = self.sequential_container[5](x5)
-        return x6
+        return self.sequential_container(x)
 
     def increase_network_width(self):
         """
@@ -60,15 +49,13 @@ class Net2Wider(nn.Module):
         output_layer: nn.Linear = self.sequential_container[transformed_layer_id]
 
         ### Select Neurons to Copy
-        n_new_neurons = int(output_layer.weight.shape[1] * self.increase_factor)
-        copy_indices = torch.sort(torch.randint(0, 2, (n_new_neurons,)))
+        n_new_neurons = int(output_layer.weight.shape[1] * (self.increase_factor - 1))
+        copy_indices = torch.sort(torch.randint(0, input_layer.out_features, (n_new_neurons,)))
 
         ### Transformations
-        self.sequential_container[transformed_layer_id - 2] = (
-            self.transform_input_layer(
-                input_layer=input_layer,
-                copy_indices=copy_indices,
-            )
+        self.sequential_container[transformed_layer_id - 2] = self.transform_input_layer(
+            input_layer=input_layer,
+            copy_indices=copy_indices,
         )
         self.sequential_container[transformed_layer_id] = self.transform_output_layer(
             preexisting_layer=output_layer,
@@ -84,9 +71,7 @@ class Net2Wider(nn.Module):
 
         # Create new layer
 
-        weigths = torch.cat(
-            (input_layer.weight, input_weights), dim=0
-        )
+        weigths = torch.cat((input_layer.weight, input_weights), dim=0)
 
         new_input_layer = nn.Linear(
             weigths.shape[1],
@@ -112,9 +97,10 @@ class Net2Wider(nn.Module):
         for index, count in enumerate(index_counts):
             if count > 0:
                 weigths[:, index] = weigths[:, index] / (count + 1)
-                added_weights = (weigths[:, index]).repeat(count).reshape(2, -1)
+                added_weights = (weigths[:, index]).repeat(count).reshape(weigths.shape[0], -1)
                 weigths = torch.cat((weigths, added_weights), dim=1)
-        weigths = weigths + torch.normal(0, 0.1, weigths.shape)
+        weigths.to("cuda" if torch.cuda.is_available() else "cpu")
+        weigths = weigths + torch.normal(0, self.noise_level, weigths.shape).to(weigths.device)
         preexisting_layer.weight.data = weigths
         transformed_layer = nn.Linear(
             weigths.shape[1],

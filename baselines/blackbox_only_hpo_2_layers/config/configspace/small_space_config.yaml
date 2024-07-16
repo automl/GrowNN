@@ -19,11 +19,3 @@ hyperparameters:
     - 128
     - 256
     type: categorical
-  n_feature_extractor_layers:
-    type: categorical
-    choices:
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5

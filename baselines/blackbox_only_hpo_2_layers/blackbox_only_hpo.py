@@ -1,43 +1,36 @@
-import os
-from functools import partial
 import gym
-import hydra
 import minihack
-import numpy as np
-import torch
 from ConfigSpace import Configuration
-from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
-
+import hydra
+from utils import make_vec_env, extract_hyperparameters, create_pyexperimenter, log_results
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env, get_model_save_path
-from utils.networks.feature_extractor import Net2DeeperFeatureExtractor
-from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
+import numpy as np
+from stable_baselines3.common.evaluation import evaluate_policy
+from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
+from utils.networks.feature_extractor import CustomCombinedExtractor
+import torch
+from functools import partial
+import os
 
 debug_mode = False
 
-# TODO ADapt the model path
-model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs/38"
 
-
-@hydra.main(config_path="config", config_name="hpo_warmstart", version_base="1.1")
+@hydra.main(config_path="config", config_name="blackbox_only_hpo", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
         minihack
         gym
 
-        feature_extractor_depth = config.non_hyperparameters.feature_extractor_depth
+        environment_name = config.non_hyperparameters.environment_id
+
+        # We only seed the neural network. Everything else is seeded more or less constantly
         seed = config["seed"]
         set_random_seed(seed, using_cuda=True)
-        # Idea save to n_trials_seed_budget_hpohash
-        # To find the current seed, we ignore n_trials but select based on the rest
-        # Question: How do we log? We write the id into the log file. But how do we know which run is continued where
 
-        # TODO Load previously trained model
         non_hyperparameters = config["non_hyperparameters"]
-        environment_name = non_hyperparameters["environment_name"]
         (
             batch_size,
             clip_range,
@@ -55,9 +48,6 @@ def black_box_ppo_configure(config: Configuration):
             feature_extractor_layer_width,
             cnn_intermediate_dimension
         ) = extract_hyperparameters(config)
-
-        # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
-        # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
 
         # We always use the same seeds in here
         training_vec_env = make_vec_env(
@@ -77,15 +67,13 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["max_episode_steps"],
         )
         torch.cuda.torch.cuda.empty_cache()
-
         feature_extractor = partial(
-            Net2DeeperFeatureExtractor,
+            CustomCombinedExtractor,
             cnn_intermediate_dimension=cnn_intermediate_dimension,
             n_feature_extractor_layers=n_feature_extractor_layers,
             feature_extractor_layer_width=feature_extractor_layer_width,
             feature_extractor_output_dimension=feature_extractor_output_dimension,
         )
-
         model = PPO(
             policy="MultiInputPolicy",
             env=training_vec_env,
@@ -114,30 +102,24 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
+        # For Soem Reason the policynet has a input dimension of 1
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
 
-        # TODO Save the model and feature extractor
-        final_save_path = get_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
-        if not os.path.exists(final_save_path):
-            os.makedirs(final_save_path)
+        callback_data = np.load("logs/evaluations.npz")
 
-        model.save(os.path.join(final_save_path, "model"))
-
-        if not debug_mode:
-            callback_data = np.load("logs/evaluations.npz")
-            for timestep, result, _ in zip(*callback_data.values()):
-                # Check whether we evalaute 10 episodes
-                evaluated_cost = np.mean(result)
-                evalauted_stdev = np.std(result)
+        for timestep, result, _ in zip(*callback_data.values()):
+            # Check whether we evalaute 10 episodes
+            evaluated_cost = np.mean(result)
+            evalauted_stdev = np.std(result)
+            if not debug_mode:
                 log_results(
                     result_processor,
                     {
                         "training_process": {
                             "worker_id": seed,
                             "trial_number": non_hyperparameters["trial_number"],
-                            "budget": feature_extractor_depth,
                             "timestep": timestep,
                             "evaluated_cost": evaluated_cost,
                             "evaluated_stdev": evalauted_stdev,
@@ -166,9 +148,9 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             callback=callback_wrapper.get_callback(),
         )
-        if not debug_mode:
-            callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, budget=feature_extractor_depth)
 
+        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std)
+        if not debug_mode:
             log_results(
                 result_processor,
                 {
@@ -176,8 +158,7 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_number": seed,  # Currently the same as the workerseed
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
-                        "budget": feature_extractor_depth,
-                        "environment_name": environment_name,
+                        "environment_id": environment_name,
                         "batch_size": batch_size,
                         "clip_range": clip_range,
                         "clip_range_vf": clip_range_vf,
@@ -189,11 +170,18 @@ def black_box_ppo_configure(config: Configuration):
                         "n_steps": n_steps,
                         "normalize_advantage": normalize_advantage,
                         "vf_coef": vf_coef,
+                        "feature_extractor_output_dimension": feature_extractor_output_dimension,
+                        "n_feature_extractor_layers": n_feature_extractor_layers,
+                        "feature_extractor_layer_width": feature_extractor_layer_width,
+                        "cnn_intermediate_dimension": cnn_intermediate_dimension,
+                        "final_score": final_score,
                         "final_score": final_score,
                         "final_std": final_std,
                     }
                 },
             )
+
+        model.save(os.path.join(non_hyperparameters["model_save_path"], str(non_hyperparameters["trial_number"]), str(seed), "model"))
 
         model.policy = None
         torch.cuda.empty_cache()

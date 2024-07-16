@@ -18,8 +18,8 @@ from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvalu
 debug_mode = False
 
 # TODO ADapt the model path
-model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs/38"
-
+model_path = "/home/lukas/Desktop/architectures-in-rl/smac3_output/b68612c5737d930e39db9a1cc9958ad7/0"
+# TODO add hyperparameters to config
 
 @hydra.main(config_path="config", config_name="hpo_grow_once", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
@@ -53,7 +53,7 @@ def black_box_ppo_configure(config: Configuration):
             feature_extractor_output_dimension,
             n_feature_extractor_layers,
             feature_extractor_layer_width,
-            cnn_intermediate_dimension
+            cnn_intermediate_dimension,
         ) = extract_hyperparameters(config)
 
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
@@ -84,6 +84,8 @@ def black_box_ppo_configure(config: Configuration):
             n_feature_extractor_layers=n_feature_extractor_layers,
             feature_extractor_layer_width=feature_extractor_layer_width,
             feature_extractor_output_dimension=feature_extractor_output_dimension,
+            increase_factor=2,  # TODO adapt this
+            noise_level=0.1,
         )
 
         model = PPO(
@@ -109,7 +111,7 @@ def black_box_ppo_configure(config: Configuration):
         # Add one additionaly layer
         model.set_parameters(os.path.join(model_path, str(seed), "model"), exact_match=False)
         # Add Linear Layer and move to cuda
-        model.policy.features_extractor.add_layer()
+        model.policy.features_extractor.increase_width()
         model.policy.to("cuda")
         # Add Linear Layer to Optimizer
         additional_layer = model.policy.features_extractor.linear_layers.sequential_container[-2]

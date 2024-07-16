@@ -72,7 +72,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: net2deeper_grow_once
+      name: hpo_warmstart
       keyfields: 
         environment_name:
           type: VARCHAR(50)

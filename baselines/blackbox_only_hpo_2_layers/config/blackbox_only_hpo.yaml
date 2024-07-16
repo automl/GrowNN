@@ -48,7 +48,7 @@ n_steps: 2048
 normalize_advantage: False
 vf_coef: 0.5
 feature_extractor_output_dimension: 512
-n_feature_extractor_layers: 1
+n_feature_extractor_layers: 2
 feature_extractor_layer_width: 512
 cnn_intermediate_dimension: 2
 
@@ -74,7 +74,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: blackbox_hpo_only_warmstart_hpo
+      name: blackbox_incumbent_gen_2_layers
       keyfields: 
         environment_id:
           type: VARCHAR(50)

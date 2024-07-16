@@ -11,7 +11,7 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env, get_model_save_path
+from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env
 from utils.networks.feature_extractor import Net2DeeperFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
@@ -53,7 +53,7 @@ def black_box_ppo_configure(config: Configuration):
             feature_extractor_output_dimension,
             n_feature_extractor_layers,
             feature_extractor_layer_width,
-            cnn_intermediate_dimension
+            cnn_intermediate_dimension,
         ) = extract_hyperparameters(config)
 
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
@@ -114,16 +114,10 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
+        model.set_parameters(os.path.join(model_path, str(seed), "model"), exact_match=False)
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
-
-        # TODO Save the model and feature extractor
-        final_save_path = get_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
-        if not os.path.exists(final_save_path):
-            os.makedirs(final_save_path)
-
-        model.save(os.path.join(final_save_path, "model"))
 
         if not debug_mode:
             callback_data = np.load("logs/evaluations.npz")

@@ -3,7 +3,7 @@ from omegaconf import DictConfig
 import os
 
 
-def extract_hyperparameters(config: DictConfig) -> Tuple[int, float, float, float, float, float, float, int, int, bool, float]:
+def extract_hyperparameters(config: DictConfig) -> Tuple:
     batch_size = config["batch_size"]
     clip_range = config["clip_range"]
     clip_range_vf = None if config["clip_range_vf"] == "None" else config["clip_range_vf"]
@@ -38,6 +38,10 @@ def extract_hyperparameters(config: DictConfig) -> Tuple[int, float, float, floa
         cnn_intermediate_dimension
     )
 
+def extract_increase_width_hyperparameters(config: DictConfig) -> Tuple:
+    noise_level = config["noise_level"]
+    increase_factor = config["increase_factor"]
+    return noise_level, increase_factor
 
 def get_model_save_path(model_save_path: str, config: DictConfig, budget, seed) -> str:
     return os.path.join(model_save_path, str(extract_hyperparameters(config)), str(budget), str(seed))

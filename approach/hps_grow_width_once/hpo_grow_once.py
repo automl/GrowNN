@@ -11,7 +11,7 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env, get_model_save_path
+from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env, get_model_save_path, extract_increase_width_hyperparameters
 from utils.networks.feature_extractor import Net2WiderFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
@@ -20,6 +20,7 @@ debug_mode = False
 # TODO ADapt the model path
 model_path = "/home/lukas/Desktop/architectures-in-rl/smac3_output/b68612c5737d930e39db9a1cc9958ad7/0"
 # TODO add hyperparameters to config
+
 
 @hydra.main(config_path="config", config_name="hpo_grow_once", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
@@ -56,6 +57,8 @@ def black_box_ppo_configure(config: Configuration):
             cnn_intermediate_dimension,
         ) = extract_hyperparameters(config)
 
+        noise_level, increase_factor = extract_increase_width_hyperparameters(config)
+
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
         # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
 
@@ -84,8 +87,8 @@ def black_box_ppo_configure(config: Configuration):
             n_feature_extractor_layers=n_feature_extractor_layers,
             feature_extractor_layer_width=feature_extractor_layer_width,
             feature_extractor_output_dimension=feature_extractor_output_dimension,
-            increase_factor=2,  # TODO adapt this
-            noise_level=0.1,
+            increase_factor=increase_factor,
+            noise_level=noise_level,
         )
 
         model = PPO(
@@ -207,6 +210,8 @@ def black_box_ppo_configure(config: Configuration):
                         "n_feature_extractor_layers": n_feature_extractor_layers,
                         "feature_extractor_layer_width": feature_extractor_layer_width,
                         "cnn_intermediate_dimension": cnn_intermediate_dimension,
+                        "noise_level": noise_level,
+                        "increase_factor": increase_factor,
                         "final_score": final_score,
                         "final_std": final_std,
                     }

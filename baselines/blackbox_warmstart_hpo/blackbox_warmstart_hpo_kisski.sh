@@ -3,7 +3,7 @@
 #SBATCH --job-name=rl_training
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16GB
-#SBATCH --time=24:00:00
+#SBATCH --time=72:00:00
 
 # Navigate to the project directory
 cd /mnt/home/lfehring/MasterThesis/architectures-in-rl

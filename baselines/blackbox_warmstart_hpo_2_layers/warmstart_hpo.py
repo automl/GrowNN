@@ -12,13 +12,13 @@ from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
 from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env
-from utils.networks.feature_extractor import Net2DeeperFeatureExtractor
+from utils.networks.feature_extractor import CustomCombinedExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
 debug_mode = False
 
 # TODO ADapt the model path
-model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs_2_layers/48"
+model_path = "/home/lukas/Desktop/architectures-in-rl/smac3_output/generate_runs_2_layers/47"
 
 
 @hydra.main(config_path="config", config_name="hpo_warmstart", version_base="1.1")
@@ -79,7 +79,7 @@ def black_box_ppo_configure(config: Configuration):
         torch.cuda.torch.cuda.empty_cache()
 
         feature_extractor = partial(
-            Net2DeeperFeatureExtractor,
+            CustomCombinedExtractor,
             cnn_intermediate_dimension=cnn_intermediate_dimension,
             n_feature_extractor_layers=n_feature_extractor_layers,
             feature_extractor_layer_width=feature_extractor_layer_width,
@@ -115,11 +115,11 @@ def black_box_ppo_configure(config: Configuration):
             log_path="./logs",
         )
         model.set_parameters(os.path.join(model_path, str(seed), "model"), exact_match=False)
-        
+
         # If momentum reset rebuild optimizer
         if config["momentum_reset"]:
             model.policy.optimizer = model.policy.optimizer.__class__(model.policy.parameters(), lr=learning_rate)
-        
+
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)

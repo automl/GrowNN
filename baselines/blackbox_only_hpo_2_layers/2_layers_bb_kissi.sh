@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=optimize-depth
+#SBATCH --job-name=2-layers-bb
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16GB
 #SBATCH --time=72:00:00
@@ -13,4 +13,4 @@ module load Miniconda3
 conda activate rl-architecture
 export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-rl"
 # Run the Python script with specified module
-python baselines/blackbox_joined_hpo_nn_optimize_depth/blackbox_joined_hpo_nn.py -m
+python baselines/blackbox_only_hpo_2_layers/2_layers_bb.py -m

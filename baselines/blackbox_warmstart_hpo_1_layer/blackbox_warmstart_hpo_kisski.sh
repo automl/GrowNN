@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=grow_once
+#SBATCH --job-name=warmstart_hpo
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16GB
 #SBATCH --time=72:00:00
@@ -13,6 +13,4 @@ module load Miniconda3
 conda activate rl-architecture
 export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-rl"
 # Run the Python script with specified module
-
-# Run the Python script with specified module
-python approach/hps_grow_width_once/hpo_grow_once.py -m 
+python baselines/blackbox_warmstart_hpo_1_layer/warmstart_hpo.py -m

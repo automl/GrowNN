@@ -11,18 +11,17 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env, get_model_save_path, extract_increase_width_hyperparameters
-from utils.networks.feature_extractor import Net2WiderFeatureExtractor
+from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env
+from utils.networks.feature_extractor import Net2DeeperFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
 debug_mode = False
 
 # TODO ADapt the model path
-model_path = model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs/48"
-# TODO add hyperparameters to config
+model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs/38"
 
 
-@hydra.main(config_path="config", config_name="hpo_grow_once", version_base="1.1")
+@hydra.main(config_path="config", config_name="hpo_warmstart", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
@@ -57,8 +56,6 @@ def black_box_ppo_configure(config: Configuration):
             cnn_intermediate_dimension,
         ) = extract_hyperparameters(config)
 
-        noise_level, increase_factor = extract_increase_width_hyperparameters(config)
-
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
         # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
 
@@ -82,13 +79,11 @@ def black_box_ppo_configure(config: Configuration):
         torch.cuda.torch.cuda.empty_cache()
 
         feature_extractor = partial(
-            Net2WiderFeatureExtractor,
+            Net2DeeperFeatureExtractor,
             cnn_intermediate_dimension=cnn_intermediate_dimension,
             n_feature_extractor_layers=n_feature_extractor_layers,
             feature_extractor_layer_width=feature_extractor_layer_width,
             feature_extractor_output_dimension=feature_extractor_output_dimension,
-            increase_factor=increase_factor,
-            noise_level=noise_level,
         )
 
         model = PPO(
@@ -111,19 +106,6 @@ def black_box_ppo_configure(config: Configuration):
             policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [feature_extractor_output_dimension], "vf": [feature_extractor_output_dimension]}},
         )
 
-        # Add one additionaly layer
-        model.set_parameters(os.path.join(model_path, str(seed), "model"), exact_match=False)
-        # Add Linear Layer and move to cuda
-        model.policy.features_extractor.increase_width()
-        model.policy.to("cuda")
-        # Add Linear Layer to Optimizer
-        additional_layer = model.policy.features_extractor.linear_layers.sequential_container[-2]
-
-        if config["momentum_reset"]:
-            model.policy.optimizer = model.policy.optimizer.__class__(model.policy.parameters(), lr=learning_rate)
-        else:
-            model.policy.optimizer.add_param_group({"params": additional_layer.parameters()})
-
         evaluation_callback = CustomEvaluationCallback(
             evaluation_vec_env,
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
@@ -132,16 +114,15 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
+        model.set_parameters(os.path.join(model_path, str(seed), "model"), exact_match=False)
+        
+        # If momentum reset rebuild optimizer
+        if config["momentum_reset"]:
+            model.policy.optimizer = model.policy.optimizer.__class__(model.policy.parameters(), lr=learning_rate)
+        
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
-
-        # TODO Save the model and feature extractor
-        final_save_path = get_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
-        if not os.path.exists(final_save_path):
-            os.makedirs(final_save_path)
-
-        model.save(os.path.join(final_save_path, "model"))
 
         if not debug_mode:
             callback_data = np.load("logs/evaluations.npz")
@@ -207,11 +188,7 @@ def black_box_ppo_configure(config: Configuration):
                         "n_steps": n_steps,
                         "normalize_advantage": normalize_advantage,
                         "vf_coef": vf_coef,
-                        "n_feature_extractor_layers": n_feature_extractor_layers,
-                        "feature_extractor_layer_width": feature_extractor_layer_width,
-                        "cnn_intermediate_dimension": cnn_intermediate_dimension,
-                        "noise_level": noise_level,
-                        "increase_factor": increase_factor,
+                        "momentum_reset": config["momentum_reset"],
                         "final_score": final_score,
                         "final_std": final_std,
                     }

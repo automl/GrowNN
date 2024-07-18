@@ -18,7 +18,7 @@ from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvalu
 debug_mode = False
 
 # TODO ADapt the model path
-model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs/38"
+model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs_2_layers/48"
 
 
 @hydra.main(config_path="config", config_name="hpo_warmstart", version_base="1.1")
@@ -115,6 +115,11 @@ def black_box_ppo_configure(config: Configuration):
             log_path="./logs",
         )
         model.set_parameters(os.path.join(model_path, str(seed), "model"), exact_match=False)
+        
+        # If momentum reset rebuild optimizer
+        if config["momentum_reset"]:
+            model.policy.optimizer = model.policy.optimizer.__class__(model.policy.parameters(), lr=learning_rate)
+        
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
@@ -183,6 +188,7 @@ def black_box_ppo_configure(config: Configuration):
                         "n_steps": n_steps,
                         "normalize_advantage": normalize_advantage,
                         "vf_coef": vf_coef,
+                        "momentum_reset": config["momentum_reset"],
                         "final_score": final_score,
                         "final_std": final_std,
                     }

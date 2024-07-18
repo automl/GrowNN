@@ -1,9 +1,11 @@
 #!/bin/bash
 
-#SBATCH --job-name=rl_training
+#SBATCH --job-name=optimize-depth
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16GB
-#SBATCH --time=168:00:00
+#SBATCH --time=72:00:00
+#SBATCH --output=%x.out
+#SBATCH --error=%x.err
 
 # Navigate to the project directory
 cd /mnt/home/lfehring/MasterThesis/architectures-in-rl
@@ -11,4 +13,4 @@ module load Miniconda3
 conda activate rl-architecture
 export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-rl"
 # Run the Python script with specified module
-python baselines/blackbox_joined_hpo_nn/blackbox_joined_hpo_nn.py -m
+python baselines/blackbox_joined_hpo_nn_optimize_depth/blackbox_joined_hpo_nn.py -m

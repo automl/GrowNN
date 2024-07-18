@@ -19,3 +19,8 @@ hyperparameters:
     - 128
     - 256
     type: categorical
+  momentum_reset:
+    type: categorical
+    choices:
+    - True
+    - False

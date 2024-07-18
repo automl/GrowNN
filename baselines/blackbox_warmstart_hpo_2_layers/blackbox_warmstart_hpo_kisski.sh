@@ -13,4 +13,4 @@ module load Miniconda3
 conda activate rl-architecture
 export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-rl"
 # Run the Python script with specified module
-python baselines/blackbox_warmstart_hpo/warmstart_hpo.py -m
+python baselines/blackbox_warmstart_hpo_2_layers/warmstart_hpo.py -m

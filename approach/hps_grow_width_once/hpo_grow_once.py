@@ -18,7 +18,7 @@ from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvalu
 debug_mode = False
 
 # TODO ADapt the model path
-model_path = "/home/lukas/Desktop/architectures-in-rl/smac3_output/b68612c5737d930e39db9a1cc9958ad7/0"
+model_path = model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs/48"
 # TODO add hyperparameters to config
 
 

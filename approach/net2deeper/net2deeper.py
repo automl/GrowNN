@@ -129,35 +129,15 @@ def black_box_ppo_configure(config: Configuration):
         )
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
-            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef, hyperparameter_str_identifier=hyperparameter_str_identifier)
-
+            evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef, hyperparameter_str_identifier=hyperparameter_str_identifier)
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
+            
         # TODO Save the model and feature extractor
         final_save_path = get_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
         if not os.path.exists(final_save_path):
             os.makedirs(final_save_path)
 
         model.save(os.path.join(final_save_path, "model"))
-
-        if not debug_mode:
-            callback_data = np.load("logs/evaluations.npz")
-            for timestep, result, _ in zip(*callback_data.values()):
-                # Check whether we evalaute 10 episodes
-                evaluated_cost = np.mean(result)
-                evalauted_stdev = np.std(result)
-                log_results(
-                    result_processor,
-                    {
-                        "training_process": {
-                            "worker_id": seed,
-                            "trial_number": non_hyperparameters["trial_number"],
-                            "budget": feature_extractor_depth,
-                            "hyperparameter_str_identifier": hyperparameter_str_identifier,
-                            "timestep": timestep,
-                            "evaluated_cost": evaluated_cost,
-                            "evaluated_stdev": evalauted_stdev,
-                        }
-                    },
-                )
 
         evaluation_vec_env = make_vec_env(
             environment_name,

@@ -3,7 +3,7 @@ from copy import deepcopy
 import numpy as np
 
 from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.vec_env import DummyVecEnv, VecEnv, sync_envs_normalization
+from stable_baselines3.common.vec_env import sync_envs_normalization
 from stable_baselines3.common.evaluation import evaluate_policy
 from typing import Dict
 import os
@@ -18,6 +18,11 @@ class CustomEvaluationCallback(EvalCallback):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.losses = list()
+
+        # List of actions and rewards per episode dicts.
+        # List entry is evaluation round, first dimension is the vecenv number, second dimension is the episode number
+        self.actions_per_episodes = list()
+        self.rewards_per_episodes = list()
 
     def _log_success_callback(self, locals_: Dict[str, Any], globals_: Dict[str, Any], env_id: int) -> None:
         """
@@ -35,15 +40,13 @@ class CustomEvaluationCallback(EvalCallback):
                     sync_envs_normalization(self.training_env, self.eval_env)
                 except AttributeError as e:
                     raise AssertionError(
-                        "Training and eval env are not wrapped the same way, "
-                        "see https://stable-baselines3.readthedocs.io/en/master/guide/callbacks.html#evalcallback "
-                        "and warning above."
+                        "Training and eval env are not wrapped the same way, " "see https://stable-baselines3.readthedocs.io/en/master/guide/callbacks.html#evalcallback " "and warning above."
                     ) from e
 
             # Reset success rate buffer
             self._is_success_buffer = []
 
-            episode_rewards, episode_lengths = evaluate_policy(
+            episode_rewards, episode_lengths, actions_per_episode, rewards_per_episode = evaluate_policy(
                 self.model,
                 self.eval_env,
                 n_eval_episodes=self.n_eval_episodes,
@@ -66,6 +69,11 @@ class CustomEvaluationCallback(EvalCallback):
                 if len(self._is_success_buffer) > 0:
                     self.evaluations_successes.append(self._is_success_buffer)
                     kwargs = dict(successes=self.evaluations_successes)
+
+                # Transform Actions per episode and rewards per episode to numpy array
+                # First dimension vecenv_number, second dimension episode_number, third dimension step_number
+                self.actions_per_episodes.append(actions_per_episode)
+                self.rewards_per_episodes.append(rewards_per_episode)
 
                 np.savez(
                     self.log_path,
@@ -112,23 +120,34 @@ class CustomEvaluationCallback(EvalCallback):
 
         return continue_training
 
-    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, ent_coef: float, vf_coef: float, **kwargs):
+    def log_losses(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, ent_coef: float, vf_coef: float, **kwargs):
         for n_rollout, rollout_losses in enumerate(self.losses):
             rollout_losses = {key[6:]: value for key, value in rollout_losses.items()}
             if "entropy_loss" in rollout_losses:
                 rollout_losses["entropy_loss"] = ent_coef * rollout_losses["entropy_loss"]
             if "value_loss" in rollout_losses:
                 rollout_losses["value_loss"] = vf_coef * rollout_losses["value_loss"]
+            result_processor.process_logs({"training_losses": {"trial_number": trial_number, "worker_number": worker_number, "n_rollout": n_rollout, **rollout_losses, **kwargs}})
+
+    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, **kwargs):
+        callback_data = np.load("logs/evaluations.npz")
+
+        for timestep, result, _, actions_per_episode, rewards_per_episode in zip(*callback_data.values(), self.actions_per_episodes, self.rewards_per_episodes):
+            mean_cost = np.mean(result)
+            mean_cost_stdev = np.std(result)
             result_processor.process_logs(
                 {
-                    "training_losses": {
+                    "training_process": {
+                        "worker_id": worker_number,
                         "trial_number": trial_number,
-                        "worker_number": worker_number,
-                        "n_rollout": n_rollout,
-                        **rollout_losses,
-                        **kwargs
+                        "timestep": timestep,
+                        "mean_cost": mean_cost,
+                        "mean_cost_stdev": mean_cost_stdev,
+                        "all_costs": str(result),
+                        "actions_per_episode": str(actions_per_episode),
+                        "rewards_per_episode": str(rewards_per_episode),
                     }
-                }
+                },
             )
 
     def _on_rollout_end(self) -> None:
@@ -199,18 +218,21 @@ class FinalEvaluationWrapper:
 
         self.result_processor.process_logs(
             {
-                "final_evaluation_callback": {**{
-                    "trial_number": trial_number,
-                    "worker_number": worker_number,
-                    "final_score": final_score,
-                    "final_std": final_std,
-                    "episode_lengths": ",".join([str(x) for x in self.episode_lengths]),
-                    "average_episode_lengths": float(np.mean(self.episode_lengths)),
-                    "successfull": successfull,
-                    "dead": dead,
-                    "time_out": time_out,
-                    "end_states": ",".join(self.final_espisode_state),
-                    "rewards_per_episode": str(self.rewards_per_episode),
-                }, **kwargs}
+                "final_evaluation_callback": {
+                    **{
+                        "trial_number": trial_number,
+                        "worker_number": worker_number,
+                        "final_score": final_score,
+                        "final_std": final_std,
+                        "episode_lengths": ",".join([str(x) for x in self.episode_lengths]),
+                        "average_episode_lengths": float(np.mean(self.episode_lengths)),
+                        "successfull": successfull,
+                        "dead": dead,
+                        "time_out": time_out,
+                        "end_states": ",".join(self.final_espisode_state),
+                        "rewards_per_episode": str(self.rewards_per_episode),
+                    },
+                    **kwargs,
+                }
             }
         )

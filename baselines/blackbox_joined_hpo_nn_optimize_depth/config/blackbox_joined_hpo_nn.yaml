@@ -132,8 +132,11 @@ PY_EXPERIMENTER:
         trial_number: INT
         budget: INT
         timestep: INT
-        evaluated_cost: FLOAT
-        evaluated_stdev: FLOAT
+        mean_cost: FLOAT
+        mean_cost_stdev: FLOAT
+        all_costs: LONGTEXT
+        actions_per_episode: LONGTEXT
+        rewards_per_episode: LONGTEXT
 
       smac_callbacks:
         trial_number: INT

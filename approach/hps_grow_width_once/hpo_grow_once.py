@@ -17,10 +17,7 @@ from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvalu
 
 debug_mode = False
 
-# TODO ADapt the model path
-model_path = model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs/48"
-# TODO add hyperparameters to config
-
+model_path = model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs_2_layers/48"
 
 @hydra.main(config_path="config", config_name="hpo_grow_once", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):

@@ -58,7 +58,7 @@ non_hyperparameters:
   trial_number: 0
   config_id: Null
   experiment_id: Null
-  environment_id: MiniHack-Room-Random-15x15-v0
+  environment_id: MiniHack-Room-Random-10x10-v0
   env_seed: 0
   model_save_path: blablabla
   observation_keys: [chars,]

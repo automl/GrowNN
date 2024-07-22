@@ -57,7 +57,7 @@ non_hyperparameters:
   experiment_id: Null
   config_id: Null
   feature_extractor_depth: 0
-  environment_name: "MiniHack-Room-10x10-v0"
+  environment_name: "MiniHack-Room-Random-10x10-v0"
   env_seed: 0
   model_save_path: blablabla
   observation_keys: [chars,]

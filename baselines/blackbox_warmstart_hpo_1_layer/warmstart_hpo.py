@@ -115,35 +115,15 @@ def black_box_ppo_configure(config: Configuration):
             log_path="./logs",
         )
         model.set_parameters(os.path.join(model_path, str(seed), "model"), exact_match=False)
-        
+
         # If momentum reset rebuild optimizer
         if config["momentum_reset"]:
             model.policy.optimizer = model.policy.optimizer.__class__(model.policy.parameters(), lr=learning_rate)
-        
+
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
-            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
-
-        if not debug_mode:
-            callback_data = np.load("logs/evaluations.npz")
-            for timestep, result, _ in zip(*callback_data.values()):
-                # Check whether we evalaute 10 episodes
-                evaluated_cost = np.mean(result)
-                evalauted_stdev = np.std(result)
-                log_results(
-                    result_processor,
-                    {
-                        "training_process": {
-                            "worker_id": seed,
-                            "trial_number": non_hyperparameters["trial_number"],
-                            "budget": feature_extractor_depth,
-                            "timestep": timestep,
-                            "evaluated_cost": evaluated_cost,
-                            "evaluated_stdev": evalauted_stdev,
-                        }
-                    },
-                )
-
+            evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
         evaluation_vec_env = make_vec_env(
             environment_name,
             non_hyperparameters["observation_keys"],

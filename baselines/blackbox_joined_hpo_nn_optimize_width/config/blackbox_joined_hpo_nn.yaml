@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - slurm
+  # - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 1000000 # Internal Budget of one target function run
+      max_budget: 100000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -66,7 +66,7 @@ non_hyperparameters:
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
   n_evaluation_rounds: 20
-  total_timesteps: 1000000 # Defined at top with budget
+  total_timesteps: 100000 # Defined at top with budget
 
 PY_EXPERIMENTER: 
   n_jobs: 1
@@ -74,7 +74,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: blackbox_optimize_width
+      name: test
       keyfields: 
         environment_id:
           type: VARCHAR(50)
@@ -131,8 +131,11 @@ PY_EXPERIMENTER:
         trial_number: INT
         budget: INT
         timestep: INT
-        evaluated_cost: FLOAT
-        evaluated_stdev: FLOAT
+        mean_cost: FLOAT
+        mean_cost_stdev: FLOAT
+        all_costs: LONGTEXT
+        actions_per_episode: LONGTEXT
+        rewards_per_episode: LONGTEXT
 
       smac_callbacks:
         trial_number: INT

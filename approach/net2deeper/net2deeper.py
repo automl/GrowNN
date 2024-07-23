@@ -3,7 +3,6 @@ from functools import partial
 import gym
 import hydra
 import minihack
-import numpy as np
 import torch
 from ConfigSpace import Configuration
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -131,7 +130,7 @@ def black_box_ppo_configure(config: Configuration):
         if not debug_mode:
             evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef, hyperparameter_str_identifier=hyperparameter_str_identifier)
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
-            
+
         # TODO Save the model and feature extractor
         final_save_path = get_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
         if not os.path.exists(final_save_path):
@@ -152,7 +151,7 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["n_evaluation_episodes"],
         )
-        final_score, final_std = evaluate_policy(
+        final_score, final_std, actions_per_epiosode = evaluate_policy(
             model,
             evaluation_vec_env,
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
@@ -162,7 +161,7 @@ def black_box_ppo_configure(config: Configuration):
         )
         if not debug_mode:
             callback_wrapper.process_results(
-                non_hyperparameters["trial_number"], seed, final_score, final_std, budget=feature_extractor_depth, hyperparameter_str_identifier=hyperparameter_str_identifier
+                non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode, budget=feature_extractor_depth, hyperparameter_str_identifier=hyperparameter_str_identifier
             )
 
             log_results(

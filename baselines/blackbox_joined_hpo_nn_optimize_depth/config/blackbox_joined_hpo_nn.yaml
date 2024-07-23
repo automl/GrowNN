@@ -72,9 +72,9 @@ PY_EXPERIMENTER:
   n_jobs: 1
   Database:
     provider: mysql
-    database: fehring_growing_nn
+    database: fehring_growing_nn_new
     table:
-      name: black_box_run_depth
+      name: black_box_run_depth_no_cnn
       keyfields: 
         environment_id:
           type: VARCHAR(50)

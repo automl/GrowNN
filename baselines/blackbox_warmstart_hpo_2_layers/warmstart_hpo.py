@@ -18,7 +18,7 @@ from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvalu
 debug_mode = False
 
 # TODO ADapt the model path
-model_path = "/home/lukas/Desktop/architectures-in-rl/smac3_output/generate_runs_2_layers/47"
+model_path = "//mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs_2_layers/47"
 
 
 @hydra.main(config_path="config", config_name="hpo_warmstart", version_base="1.1")

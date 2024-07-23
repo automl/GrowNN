@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  # - slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 100000 # Internal Budget of one target function run
+      max_budget: 1000000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -48,7 +48,7 @@ n_steps: 2048
 normalize_advantage: False
 vf_coef: 0.5
 feature_extractor_output_dimension: 512
-n_feature_extractor_layers: 5
+n_feature_extractor_layers: 2
 feature_extractor_layer_width: 512
 cnn_intermediate_dimension: 2
 
@@ -58,7 +58,7 @@ non_hyperparameters:
   trial_number: 0
   config_id: Null
   experiment_id: Null
-  environment_id: MiniHack-Room-Random-10x10-v0
+  environment_id: MiniHack-Room-Random-12x12-v0
   env_seed: 0
   model_save_path: blablabla
   observation_keys: [chars,]
@@ -66,15 +66,15 @@ non_hyperparameters:
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
   n_evaluation_rounds: 20
-  total_timesteps: 100000 # Defined at top with budget
+  total_timesteps: 1000000 # Defined at top with budget
 
 PY_EXPERIMENTER: 
   n_jobs: 1
   Database:
     provider: mysql
-    database: fehring_growing_nn
+    database: fehring_growing_nn_new
     table:
-      name: test
+      name: bb_hpo_width
       keyfields: 
         environment_id:
           type: VARCHAR(50)

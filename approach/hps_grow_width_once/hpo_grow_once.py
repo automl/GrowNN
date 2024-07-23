@@ -156,7 +156,7 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["n_evaluation_episodes"],
         )
-        final_score, final_std = evaluate_policy(
+        final_score, final_std, actions_per_epiosode = evaluate_policy(
             model,
             evaluation_vec_env,
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
@@ -165,7 +165,7 @@ def black_box_ppo_configure(config: Configuration):
             callback=callback_wrapper.get_callback(),
         )
         if not debug_mode:
-            callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, budget=feature_extractor_depth)
+            callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode)
 
             log_results(
                 result_processor,

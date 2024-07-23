@@ -6,7 +6,6 @@ from stable_baselines3.ppo import PPO
 import hydra
 from utils import make_vec_env, extract_hyperparameters, create_pyexperimenter, log_results
 from py_experimenter.result_processor import ResultProcessor
-import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
 from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
 from utils.networks.feature_extractor import CustomCombinedExtractor
@@ -123,7 +122,8 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["n_evaluation_episodes"],
         )
-        final_score, final_std = evaluate_policy(
+
+        final_score, final_std, actions_per_epiosode = evaluate_policy(
             model,
             evaluation_vec_env,
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
@@ -132,7 +132,7 @@ def black_box_ppo_configure(config: Configuration):
             callback=callback_wrapper.get_callback(),
         )
 
-        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std)
+        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode)
         if not debug_mode:
             log_results(
                 result_processor,

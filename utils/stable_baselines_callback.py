@@ -211,7 +211,7 @@ class FinalEvaluationWrapper:
 
         return _callback
 
-    def process_results(self, trial_number: int, worker_number: int, final_score: float, final_std: float, **kwargs):
+    def process_results(self, trial_number: int, worker_number: int, final_score: float, final_std: float, actions_per_episode, **kwargs):
         successfull = np.count_nonzero(np.array(self.final_espisode_state) == "Success") / len(self.final_espisode_state)
         dead = np.count_nonzero(np.array(self.final_espisode_state) == "Death") / len(self.final_espisode_state)
         time_out = np.count_nonzero(np.array(self.final_espisode_state) == "TimeOut") / len(self.final_espisode_state)
@@ -231,6 +231,7 @@ class FinalEvaluationWrapper:
                         "time_out": time_out,
                         "end_states": ",".join(self.final_espisode_state),
                         "rewards_per_episode": str(self.rewards_per_episode),
+                        "actions_per_episode": str(actions_per_episode),
                     },
                     **kwargs,
                 }

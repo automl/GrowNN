@@ -165,6 +165,7 @@ PY_EXPERIMENTER:
         time_out: FLOAT
         end_states: LONGTEXT
         rewards_per_episode: LONGTEXT
+        actions_per_episode: LONGTEXT
       
       training_losses:
         trial_number: INT

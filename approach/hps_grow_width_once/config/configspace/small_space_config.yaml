@@ -24,3 +24,7 @@ hyperparameters:
     choices:
     - True
     - False
+  noise_std:
+    type: uniform_float
+    lower: 0.01
+    upper: 1.0

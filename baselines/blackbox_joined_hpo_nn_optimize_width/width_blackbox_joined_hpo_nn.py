@@ -105,7 +105,7 @@ def black_box_ppo_configure(config: Configuration):
         )
         # For Soem Reason the policynet has a input dimension of 1
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
-        if not debug_mode:
+        if not debug_mode: 
             evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
 

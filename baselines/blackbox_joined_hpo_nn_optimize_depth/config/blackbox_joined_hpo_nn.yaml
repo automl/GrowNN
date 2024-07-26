@@ -22,7 +22,7 @@ hydra:
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 100 # The budget for SMAC
+    budget: 50 # The budget for SMAC
 
     budget_variable: non_hyperparameters.total_timesteps
     saving_variable: non_hyperparameters.model_save_path
@@ -58,7 +58,7 @@ non_hyperparameters:
   trial_number: 0
   config_id: Null
   experiment_id: Null
-  environment_id: MiniHack-Room-Random-12x12-v0
+  environment_id: MiniHack-Room-Random-5x5-v0
   env_seed: 0
   model_save_path: blablabla
   observation_keys: [chars,]

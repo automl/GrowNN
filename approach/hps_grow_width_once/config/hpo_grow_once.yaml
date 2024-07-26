@@ -74,7 +74,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn
     table:
-      name: net2deeper_grow_width_once
+      name: net2deeper_grow_width_once_new
       keyfields: 
         environment_name:
           type: VARCHAR(50)

@@ -47,7 +47,7 @@ n_feature_extractor_layers: 2
 feature_extractor_layer_width: 512
 cnn_intermediate_dimension: 2
 momentum_reset: Null
-noise_level: 0.1
+noise_level: Null
 increase_factor: 2
 
 # Below are not hpo parameters. Seed is currenlty not allowed to be outside of section

@@ -49,6 +49,7 @@ def black_box_ppo_configure(config: Configuration):
             feature_extractor_output_dimension,
             n_feature_extractor_layers,
             feature_extractor_layer_width,
+            cnn_intermediate_dimension,
         ) = extract_hyperparameters(config)
         hyperparameter_str_identifier = str(extract_hyperparameters(config))
 
@@ -76,7 +77,7 @@ def black_box_ppo_configure(config: Configuration):
 
         feature_extractor = partial(
             Net2DeeperFeatureExtractor,
-            cnn_intermediate_dimension=1,
+            cnn_intermediate_dimension=cnn_intermediate_dimension,
             n_feature_extractor_layers=n_feature_extractor_layers,
             feature_extractor_layer_width=feature_extractor_layer_width,
             feature_extractor_output_dimension=feature_extractor_output_dimension,
@@ -118,6 +119,7 @@ def black_box_ppo_configure(config: Configuration):
             # Add Linear Layer to Optimizer
             additional_layer = model.policy.features_extractor.linear_layers.sequential_container[-2]
             model.policy.optimizer.add_param_group({"params": additional_layer.parameters()})
+
         evaluation_callback = CustomEvaluationCallback(
             evaluation_vec_env,
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
@@ -185,6 +187,8 @@ def black_box_ppo_configure(config: Configuration):
                         "n_steps": n_steps,
                         "normalize_advantage": normalize_advantage,
                         "vf_coef": vf_coef,
+                        "feature_extractor_layer_width": feature_extractor_layer_width,
+                        "cnn_intermediate_dimension": cnn_intermediate_dimension,
                         "final_score": final_score,
                         "final_std": final_std,
                     }

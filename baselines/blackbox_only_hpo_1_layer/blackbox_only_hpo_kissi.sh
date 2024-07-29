@@ -11,4 +11,4 @@ module load Miniconda3
 conda activate rl-architecture
 export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-rl"
 # Run the Python script with specified module
-python baselines/blackbox_only_hpo/blackbox_only_hpo.py -m
+python baselines/blackbox_only_hpo_1_layer/blackbox_only_hpo.py -m

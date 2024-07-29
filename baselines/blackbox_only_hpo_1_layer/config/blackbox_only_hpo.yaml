@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 1000000 # Internal Budget of one target function run
+      max_budget: 2000000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -66,15 +66,15 @@ non_hyperparameters:
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
   n_evaluation_rounds: 20
-  total_timesteps: 1000000 # Defined at top with budget
+  total_timesteps: 2000000 # Defined at top with budget
 
 PY_EXPERIMENTER: 
   n_jobs: 1
   Database:
     provider: mysql
-    database: fehring_growing_nn
+    database: fehring_growing_nn_new
     table:
-      name: blackbox_incumbent_gen
+      name: bb_net2deeper_baseline
       keyfields: 
         environment_id:
           type: VARCHAR(50)

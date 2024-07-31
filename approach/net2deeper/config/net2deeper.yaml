@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  #- slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -9,7 +9,7 @@ hydra:
     smac_kwargs:
       intensifier: SHB
       min_budget: 1 # Internal Budget of one target function run
-      max_budget: 3 # Internal Budget of one target function run
+      max_budget: 4 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -18,7 +18,7 @@ hydra:
 
       deterministic: True # whether or nto the env is deterministic
       
-      seeds: [0] # seeds passed to each worker - so we alsways have the same seeds
+      seeds: [0,1,2,3,4] # seeds passed to each worker - so we alsways have the same seeds
       # TODO Assuming wokring with seeds mak sense, how do we go from here
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
@@ -68,8 +68,8 @@ non_hyperparameters:
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 2
-  total_timesteps: 10000
+  n_evaluation_rounds: 20
+  total_timesteps: 500000
 
 PY_EXPERIMENTER: 
   n_jobs: 1

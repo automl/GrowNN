@@ -1,7 +1,6 @@
 import gym
 from typing import List, Optional
-from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3.common.vec_env import DummyVecEnv
 import minihack
 from nle import nethack
 
@@ -18,19 +17,20 @@ def make_env(env_id: str, observation_keys: List[str], max_episode_steps: Option
     """
     minihack
     MOVE_ACTIONS = tuple(nethack.CompassDirection)
+
     def _init():
         nonlocal max_episode_steps
         if max_episode_steps is None:
-            #if "Room" in env_id:
+            # if "Room" in env_id:
             #    grid_size = int(env_id.split("-")[-2].split("x")[0])
             #    max_episode_steps = grid_size * grid_size * 4
             #    env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps = max_episode_steps,actions=MOVE_ACTIONS)
-            #else:
-                env = gym.make(env_id, observation_keys=observation_keys, actions=MOVE_ACTIONS)
+            # else:
+            env = gym.make(env_id, observation_keys=observation_keys, actions=MOVE_ACTIONS)
         else:
             env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps=max_episode_steps, actions=MOVE_ACTIONS)
         # env.reset(seed=environment_seed)
-        env.seed(environment_seed, environment_seed)
+        env.create_np_rng(environment_seed)
         return env
 
     return _init

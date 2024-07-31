@@ -62,6 +62,7 @@ non_hyperparameters:
   feature_extractor_depth: 0
   environment_name: "MiniHack-Room-Random-10x10-v0"
   env_seed: 0
+  smac_seed: 0
   model_save_path: blablabla
   observation_keys: [chars,]
   max_episode_steps: Null # TODO should this be a relevant hp?
@@ -75,7 +76,7 @@ PY_EXPERIMENTER:
 
   Database:
     provider: mysql
-    database: fehring_growing_nn_new
+    database: fehring_growing_nn_new_seeded
     table:
       name: net2deeper
       keyfields: 
@@ -84,6 +85,8 @@ PY_EXPERIMENTER:
         feature_extractor_depth:
           type: INT
         env_seed:
+          type: INT
+        smac_seed:
           type: INT
         model_save_path:
           type: VARCHAR(50)

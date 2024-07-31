@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 import minihack
 import numpy as np
 # %%
-env = gym.make("MiniHack-Room-15x15-v0", observation_keys=("pixel","chars",))
+env = gym.make("MiniHack-Room-Monster-5x5-v0", observation_keys=("pixel","chars",))
 obs = env.reset()
 
 # %%

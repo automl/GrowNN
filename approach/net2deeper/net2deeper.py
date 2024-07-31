@@ -27,11 +27,7 @@ def black_box_ppo_configure(config: Configuration):
         feature_extractor_depth = config.non_hyperparameters.feature_extractor_depth
         seed = config["seed"]
         set_random_seed(seed, using_cuda=True)
-        # Idea save to n_trials_seed_budget_hpohash
-        # To find the current seed, we ignore n_trials but select based on the rest
-        # Question: How do we log? We write the id into the log file. But how do we know which run is continued where
 
-        # TODO Load previously trained model
         non_hyperparameters = config["non_hyperparameters"]
         environment_name = non_hyperparameters["environment_name"]
         (

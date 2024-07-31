@@ -31,6 +31,7 @@ class HydraSMAC:
         n_trials,
         cs,
         result_processor: ResultProcessor,
+        smac_seed,
         seeds=False,
         slurm=False,
         slurm_timeout=10,
@@ -77,7 +78,7 @@ class HydraSMAC:
         self.deterministic = deterministic
         self.max_budget = max_budget
 
-        self.scenario = Scenario(self.configspace, deterministic=deterministic, n_trials=n_trials, min_budget=min_budget, max_budget=max_budget)
+        self.scenario = Scenario(self.configspace, deterministic=deterministic, n_trials=n_trials, min_budget=min_budget, max_budget=max_budget, seed=smac_seed)
         max_config_calls = len(self.seeds) if seeds and not deterministic else 1
         if intensifier == "SHB":
             self.intensifier = ScheduledHyperband(self.scenario, n_lowest_budget=10, bracket_width=max_budget, incumbent_selection="highest_budget", n_seeds=max_config_calls, eta=1.3)

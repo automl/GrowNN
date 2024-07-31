@@ -73,7 +73,7 @@ PY_EXPERIMENTER:
   n_jobs: 1
   Database:
     provider: mysql
-    database: fehring_growing_nn_new
+    database: fehring_growing_nn_new_seeded
     table:
       name: bb_net2deeper_baseline
       keyfields: 

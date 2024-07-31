@@ -131,6 +131,7 @@ class SMACSweeperBackend(Sweeper):
                 base_dir=self.sweep_dir,
                 cs=configspace,
                 result_processor=result_processor,
+                smac_seed=parameters["smac_seed"],
                 **self.smac_kwargs,
             )
 
@@ -170,7 +171,7 @@ class SMACSweeperBackend(Sweeper):
         else:
             log.info(f"Sweep overrides: {' '.join(arguments)}")
 
-        configspace = search_space_to_config_space(search_space=self.search_space)
+        configspace = search_space_to_config_space(search_space=self.search_space, seed=self.config["non_hyperparameters"]["smac_seed"])
 
         py_experimenter = create_pyexperimenter(self.config)
 

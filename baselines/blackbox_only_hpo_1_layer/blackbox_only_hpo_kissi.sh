@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #SBATCH --job-name=rl_training
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=16GB
-#SBATCH --time=24:00:00
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=8GB
+#SBATCH --time=72:00:00
 
 # Navigate to the project directory
 cd /mnt/home/lfehring/MasterThesis/architectures-in-rl

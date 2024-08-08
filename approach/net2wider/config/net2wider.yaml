@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  #- slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -9,7 +9,7 @@ hydra:
     smac_kwargs:
       intensifier: SHB
       min_budget: 1 # Internal Budget of one target function run
-      max_budget: 6 # Internal Budget of one target function run
+      max_budget: 4 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -18,12 +18,12 @@ hydra:
 
       deterministic: True # whether or nto the env is deterministic
       
-      seeds: [0,] # seeds passed to each worker - so we alsways have the same seeds
+      seeds: [0,1,2,3,4] # seeds passed to each worker - so we alsways have the same seeds
       # TODO Assuming wokring with seeds mak sense, how do we go from here
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 150 # The budget for SMAC
+    budget: 200 # The budget for SMAC
 
     budget_variable: non_hyperparameters.feature_extractor_width_step
     saving_variable: non_hyperparameters.model_save_path
@@ -60,25 +60,25 @@ non_hyperparameters:
   experiment_id: Null
   config_id: Null
   feature_extractor_width_step: Null
-  environment_name: "MiniHack-Room-Random-15x15-v0"
+  environment_name: "MiniHack-Room-Random-10x10-v0"
   env_seed: 0
   smac_seed: 0
   model_save_path: blablabla
   observation_keys: [chars,]
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
-  n_evaluation_episodes: 1 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 2
-  total_timesteps: 10000
+  n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
+  n_evaluation_rounds: 20
+  total_timesteps: 500000
 
 PY_EXPERIMENTER: 
   n_jobs: 1
 
   Database:
     provider: mysql
-    database: fehring_growing_nn
+    database: fehring_growing_nn_new_seeded
     table:
-      name: net2wider_testing
+      name: net2wider_budget200
       keyfields: 
         environment_name:
           type: VARCHAR(50)

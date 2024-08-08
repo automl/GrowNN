@@ -1,6 +1,7 @@
-from typing import Tuple
+from typing import Tuple, List
 from omegaconf import DictConfig
 import os
+import json
 
 
 def extract_hyperparameters(config: DictConfig) -> Tuple:
@@ -35,13 +36,15 @@ def extract_hyperparameters(config: DictConfig) -> Tuple:
         feature_extractor_output_dimension,
         n_feature_extractor_layers,
         feature_extractor_layer_width,
-        cnn_intermediate_dimension
+        cnn_intermediate_dimension,
     )
+
 
 def extract_increase_width_hyperparameters(config: DictConfig) -> Tuple:
     noise_level = config["noise_level"]
     increase_factor = config["increase_factor"]
     return noise_level, increase_factor
+
 
 def get_model_save_path(model_save_path: str, config: DictConfig, budget, seed) -> str:
     return os.path.join(model_save_path, str(extract_hyperparameters(config)), str(budget), str(seed))
@@ -52,4 +55,9 @@ def config_is_evaluated(model_save_path: str, config: DictConfig) -> bool:
 
 
 def get_budget_path_dict(model_save_path: str, config: DictConfig) -> dict:
-    return { directory_name:directory_name for directory_name in os.listdir(model_save_path, extract_hyperparameters(config))}
+    return {directory_name: directory_name for directory_name in os.listdir(model_save_path, extract_hyperparameters(config))}
+
+
+def extract_feature_extractor_architecture(config: DictConfig) -> List[int]:
+    extract_feature_extractor_architecture_str = config["non_hyperparameters"]["feature_extractor_architecture"]
+    return list(json.loads(extract_feature_extractor_architecture_str))

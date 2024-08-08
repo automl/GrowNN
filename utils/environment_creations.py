@@ -5,7 +5,7 @@ import minihack
 from nle import nethack
 
 
-def make_env(env_id: str, observation_keys: List[str], max_episode_steps: Optional[int], environment_seed: int):
+def make_minihack_env(env_id: str, observation_keys: List[str], max_episode_steps: Optional[int], environment_seed: int):
     """
     From https://stable-baselines3.readthedocs.io/en/master/guide/examples.html#multiprocessing-unleashing-the-power-of-vectorized-environments
     Utility function for multiprocessed env.
@@ -36,5 +36,5 @@ def make_env(env_id: str, observation_keys: List[str], max_episode_steps: Option
     return _init
 
 
-def make_vec_env(env_id: str, observation_keys: List[str], environment_seed: int, parralel_vec_envs: int, max_episode_steps: int):
-    return DummyVecEnv([make_env(env_id, observation_keys, max_episode_steps, environment_seed + i) for i in range(parralel_vec_envs)])
+def make_minihack_vec_env(env_id: str, observation_keys: List[str], environment_seed: int, parralel_vec_envs: int, max_episode_steps: int):
+    return DummyVecEnv([make_minihack_env(env_id, observation_keys, max_episode_steps, environment_seed + i) for i in range(parralel_vec_envs)])

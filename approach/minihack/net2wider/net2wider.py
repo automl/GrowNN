@@ -10,7 +10,7 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env, get_model_save_path
+from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_minihack_vec_env, get_model_save_path
 from utils.networks.feature_extractor import Net2WiderFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
@@ -57,7 +57,7 @@ def black_box_ppo_configure(config: Configuration):
         # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
 
         # We always use the same seeds in here
-        training_vec_env = make_vec_env(
+        training_vec_env = make_minihack_vec_env(
             environment_name,
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"],
@@ -66,7 +66,7 @@ def black_box_ppo_configure(config: Configuration):
         )
 
         # Check whether to wrap in monitor wrapper
-        evaluation_vec_env = make_vec_env(
+        evaluation_vec_env = make_minihack_vec_env(
             environment_name,
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
@@ -141,7 +141,7 @@ def black_box_ppo_configure(config: Configuration):
 
         model.save(os.path.join(final_save_path, "model"))
 
-        evaluation_vec_env = make_vec_env(
+        evaluation_vec_env = make_minihack_vec_env(
             environment_name,
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
@@ -164,7 +164,13 @@ def black_box_ppo_configure(config: Configuration):
         )
         if not debug_mode:
             callback_wrapper.process_results(
-                non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode, budget=feature_extractor_width_step, hyperparameter_str_identifier=hyperparameter_str_identifier
+                non_hyperparameters["trial_number"],
+                seed,
+                final_score,
+                final_std,
+                actions_per_epiosode,
+                budget=feature_extractor_width_step,
+                hyperparameter_str_identifier=hyperparameter_str_identifier,
             )
 
             log_results(

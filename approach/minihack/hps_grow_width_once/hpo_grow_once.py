@@ -3,7 +3,6 @@ from functools import partial
 import gym
 import hydra
 import minihack
-import numpy as np
 import torch
 from ConfigSpace import Configuration
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -11,13 +10,14 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_vec_env, get_model_save_path, extract_increase_width_hyperparameters
+from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_minihack_vec_env, get_model_save_path, extract_increase_width_hyperparameters
 from utils.networks.feature_extractor import Net2WiderFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
 debug_mode = False
 
 model_path = model_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs_2_layers/48"
+
 
 @hydra.main(config_path="config", config_name="hpo_grow_once", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
@@ -60,7 +60,7 @@ def black_box_ppo_configure(config: Configuration):
         # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
 
         # We always use the same seeds in here
-        training_vec_env = make_vec_env(
+        training_vec_env = make_minihack_vec_env(
             environment_name,
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"],
@@ -69,7 +69,7 @@ def black_box_ppo_configure(config: Configuration):
         )
 
         # Check whether to wrap in monitor wrapper
-        evaluation_vec_env = make_vec_env(
+        evaluation_vec_env = make_minihack_vec_env(
             environment_name,
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
@@ -140,7 +140,7 @@ def black_box_ppo_configure(config: Configuration):
 
         model.save(os.path.join(final_save_path, "model"))
 
-        evaluation_vec_env = make_vec_env(
+        evaluation_vec_env = make_minihack_vec_env(
             environment_name,
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],

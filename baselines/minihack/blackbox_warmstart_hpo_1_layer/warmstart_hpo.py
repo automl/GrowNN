@@ -10,7 +10,7 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters, log_results, make_minihack_vec_env
+from utils import create_pyexperimenter, extract_hyperparameters_minihack, log_results, make_minihack_vec_env
 from utils.networks.feature_extractor import Net2DeeperFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
@@ -53,7 +53,7 @@ def black_box_ppo_configure(config: Configuration):
             n_feature_extractor_layers,
             feature_extractor_layer_width,
             cnn_intermediate_dimension,
-        ) = extract_hyperparameters(config)
+        ) = extract_hyperparameters_minihack(config)
 
         # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
         # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63

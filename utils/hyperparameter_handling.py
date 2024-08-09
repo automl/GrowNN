@@ -4,7 +4,7 @@ import os
 import json
 
 
-def extract_hyperparameters(config: DictConfig) -> Tuple:
+def extract_hyperparameters_minihack(config: DictConfig) -> Tuple:
     batch_size = config["batch_size"]
     clip_range = config["clip_range"]
     clip_range_vf = None if config["clip_range_vf"] == "None" else config["clip_range_vf"]
@@ -40,6 +40,36 @@ def extract_hyperparameters(config: DictConfig) -> Tuple:
     )
 
 
+def extract_hyperparameters_gymnasium(config: DictConfig) -> Tuple:
+    batch_size = config["batch_size"]
+    clip_range = config["clip_range"]
+    clip_range_vf = None if config["clip_range_vf"] == "None" else config["clip_range_vf"]
+    ent_coef = config["ent_coef"]
+    gae_lambda = config["gae_lambda"]
+    learning_rate = config["learning_rate"]
+    max_grad_norm = config["max_grad_norm"]
+    n_epochs = config["n_epochs"]
+    n_steps = config["n_steps"]
+    normalize_advantage = config["normalize_advantage"]
+    vf_coef = config["vf_coef"]
+    gamma = config["gamma"]
+
+    return (
+        batch_size,
+        clip_range,
+        clip_range_vf,
+        ent_coef,
+        gae_lambda,
+        learning_rate,
+        max_grad_norm,
+        n_epochs,
+        n_steps,
+        normalize_advantage,
+        vf_coef,
+        gamma,
+    )
+
+
 def extract_increase_width_hyperparameters(config: DictConfig) -> Tuple:
     noise_level = config["noise_level"]
     increase_factor = config["increase_factor"]
@@ -47,15 +77,15 @@ def extract_increase_width_hyperparameters(config: DictConfig) -> Tuple:
 
 
 def get_model_save_path(model_save_path: str, config: DictConfig, budget, seed) -> str:
-    return os.path.join(model_save_path, str(extract_hyperparameters(config)), str(budget), str(seed))
+    return os.path.join(model_save_path, str(extract_hyperparameters_minihack(config)), str(budget), str(seed))
 
 
 def config_is_evaluated(model_save_path: str, config: DictConfig) -> bool:
-    return os.path.exists(get_model_save_path(model_save_path, extract_hyperparameters(config)))
+    return os.path.exists(get_model_save_path(model_save_path, extract_hyperparameters_minihack(config)))
 
 
 def get_budget_path_dict(model_save_path: str, config: DictConfig) -> dict:
-    return {directory_name: directory_name for directory_name in os.listdir(model_save_path, extract_hyperparameters(config))}
+    return {directory_name: directory_name for directory_name in os.listdir(model_save_path, extract_hyperparameters_minihack(config))}
 
 
 def extract_feature_extractor_architecture(config: DictConfig) -> List[int]:

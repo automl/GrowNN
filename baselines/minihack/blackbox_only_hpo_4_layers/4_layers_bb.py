@@ -4,7 +4,7 @@ from ConfigSpace import Configuration
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 import hydra
-from utils import make_minihack_vec_env, extract_hyperparameters, create_pyexperimenter, log_results
+from utils import make_minihack_vec_env, extract_hyperparameters_minihack, create_pyexperimenter, log_results
 from py_experimenter.result_processor import ResultProcessor
 from stable_baselines3.common.evaluation import evaluate_policy
 from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
@@ -46,7 +46,7 @@ def black_box_ppo_configure(config: Configuration):
             n_feature_extractor_layers,
             feature_extractor_layer_width,
             cnn_intermediate_dimension,
-        ) = extract_hyperparameters(config)
+        ) = extract_hyperparameters_minihack(config)
 
         # We always use the same seeds in here
         training_vec_env = make_minihack_vec_env(

@@ -38,6 +38,3 @@ def make_minihack_env(env_id: str, observation_keys: List[str], max_episode_step
 
 def make_minihack_vec_env(env_id: str, observation_keys: List[str], environment_seed: int, parralel_vec_envs: int, max_episode_steps: int):
     return DummyVecEnv([make_minihack_env(env_id, observation_keys, max_episode_steps, environment_seed + i) for i in range(parralel_vec_envs)])
-
-def make_bipedal_walker_vec_env(env_id: str, environment_seed: int, parralel_vec_envs: int):
-    return make_vec_env(env_id, n_envs=parralel_vec_envs, seed=environment_seed, vec_env_cls=DummyVecEnv)

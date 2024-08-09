@@ -1,14 +1,13 @@
 import gym
-import minihack
 from ConfigSpace import Configuration
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 import hydra
-from utils import make_minihack_vec_env, extract_hyperparameters, create_pyexperimenter, log_results
+from utils import extract_hyperparameters_gymnasium, create_pyexperimenter, log_results, make_bipedal_walker_vec_env
 from py_experimenter.result_processor import ResultProcessor
 from stable_baselines3.common.evaluation import evaluate_policy
 from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
-from utils.networks.feature_extractor import CustomCombinedExtractor
+from utils.gymnasium_compatible.feature_extractor import FixedArchitectureFeaturesExtractor
 import torch
 from functools import partial
 import os
@@ -20,7 +19,6 @@ debug_mode = False
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
-        minihack
         gym
 
         environment_name = config.non_hyperparameters.environment_id
@@ -42,37 +40,22 @@ def black_box_ppo_configure(config: Configuration):
             n_steps,
             normalize_advantage,
             vf_coef,
-            feature_extractor_output_dimension,
-            n_feature_extractor_layers,
-            feature_extractor_layer_width,
-            cnn_intermediate_dimension,
-        ) = extract_hyperparameters(config)
+            gamma,
+        ) = extract_hyperparameters_gymnasium(config)
 
         # We always use the same seeds in here
-        training_vec_env = make_minihack_vec_env( # TODO make this bipedal walker
-            environment_name,
-            non_hyperparameters["observation_keys"],
-            non_hyperparameters["env_seed"],
-            non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["max_episode_steps"],
+        training_vec_env = make_bipedal_walker_vec_env(
+            env_id="BipedalWalker-v3", environment_seed=non_hyperparameters["env_seed"], parralel_vec_envs=non_hyperparameters["parallel_vec_envs"], hardcore=True
         )
-
         # Check whether to wrap in monitor wrapper
-        evaluation_vec_env = make_minihack_vec_env( #TODO make this bipedal walker
-            environment_name,
-            non_hyperparameters["observation_keys"],
-            non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["max_episode_steps"],
+        evaluation_vec_env = make_bipedal_walker_vec_env(
+            env_id="BipedalWalker-v3",
+            environment_seed=non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
+            parralel_vec_envs=non_hyperparameters["parallel_vec_envs"],
+            hardcore=True
         )
         torch.cuda.torch.cuda.empty_cache()
-        feature_extractor = partial(
-            CustomCombinedExtractor,
-            cnn_intermediate_dimension=cnn_intermediate_dimension,
-            n_feature_extractor_layers=n_feature_extractor_layers,
-            feature_extractor_layer_width=feature_extractor_layer_width,
-            feature_extractor_output_dimension=feature_extractor_output_dimension,
-        )
+        feature_extractor = partial(FixedArchitectureFeaturesExtractor, feature_extractor_architecture=non_hyperparameters["feature_extractor_architecture"])
         model = PPO(
             policy="MultiInputPolicy",
             env=training_vec_env,
@@ -88,9 +71,10 @@ def black_box_ppo_configure(config: Configuration):
             n_epochs=n_epochs,
             normalize_advantage=normalize_advantage,
             vf_coef=vf_coef,
+            gamma=gamma,
             n_steps=n_steps,  # The number of steps to run for each environment per update
             seed=seed,
-            policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [feature_extractor_output_dimension], "vf": [feature_extractor_output_dimension]}},
+            policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [non_hyperparameters["pi_dimension"]], "vf": [non_hyperparameters["vf_dimension"]]}},
         )
 
         evaluation_callback = CustomEvaluationCallback(
@@ -107,12 +91,11 @@ def black_box_ppo_configure(config: Configuration):
             evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
 
-        evaluation_vec_env = make_minihack_vec_env(#TODO make this bipedal walker
-            environment_name,
-            non_hyperparameters["observation_keys"],
-            non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["max_episode_steps"],
+        evaluation_vec_env = make_bipedal_walker_vec_env(
+            env_id="BipedalWalker-v3",
+            environment_seed=non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
+            parralel_vec_envs=non_hyperparameters["parallel_vec_envs"],
+            hardcore=True,
         )
 
         callback_wrapper = FinalEvaluationWrapper(
@@ -126,7 +109,7 @@ def black_box_ppo_configure(config: Configuration):
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
             deterministic=True,
             render=False,
-            callback=callback_wrapper.get_callback(),
+            callback=callback_wrapper.get_callback(minihack_adaptation=False),
         )
 
         callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode)
@@ -150,11 +133,6 @@ def black_box_ppo_configure(config: Configuration):
                         "n_steps": n_steps,
                         "normalize_advantage": normalize_advantage,
                         "vf_coef": vf_coef,
-                        "feature_extractor_output_dimension": feature_extractor_output_dimension,
-                        "n_feature_extractor_layers": n_feature_extractor_layers,
-                        "feature_extractor_layer_width": feature_extractor_layer_width,
-                        "cnn_intermediate_dimension": cnn_intermediate_dimension,
-                        "final_score": final_score,
                         "final_score": final_score,
                         "final_std": final_std,
                     }

@@ -4,7 +4,7 @@ from ConfigSpace import Configuration
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 import hydra
-from utils import make_minihack_vec_env, extract_hyperparameters, create_pyexperimenter, log_results, extract_feature_extractor_architecture
+from utils import make_minihack_vec_env, extract_hyperparameters_minihack, create_pyexperimenter, log_results, extract_feature_extractor_architecture
 from py_experimenter.result_processor import ResultProcessor
 from stable_baselines3.common.evaluation import evaluate_policy
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
@@ -45,7 +45,7 @@ def net2wider_baseline(config: Configuration):
             _,
             _,
             cnn_intermediate_dimension,
-        ) = extract_hyperparameters(config)
+        ) = extract_hyperparameters_minihack(config)
 
         feature_extractor_architecture = extract_feature_extractor_architecture(config)
 

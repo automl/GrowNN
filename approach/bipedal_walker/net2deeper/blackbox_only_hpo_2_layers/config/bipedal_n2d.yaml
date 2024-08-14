@@ -1,0 +1,189 @@
+defaults:
+  - _self_
+  # - slurm
+  - configspace: small_space_config
+  - override hydra/sweeper: SMAC
+
+hydra:
+  sweeper:
+    smac_kwargs:
+      intensifier: SHB
+      min_budget: 1 # Internal Budget of one target function run
+      max_budget: 4 # Internal Budget of one target function run
+      
+      # Parralelisation Parameters
+      job_array_size_limit: 5
+      max_parallelization: .001 
+      # at most min(job_array_size_limit, max(1, int(max_parallelization * n_trials))) target functions are executed in parrallel
+
+      deterministic: True # whether or nto the env is deterministic
+      
+      seeds: [0,] # seeds passed to each worker - so we alsways have the same seeds
+      # TODO Assuming wokring with seeds mak sense, how do we go from here
+      # to plots that contain uncertainty? I assume that i need to log that myself, because
+      # there is no inbuilt function to do so
+
+    budget: 200 # The budget for SMAC
+
+    budget_variable: non_hyperparameters.feature_extractor_depth
+    saving_variable: non_hyperparameters.model_save_path
+
+    search_space: ${configspace}
+
+    
+  run:
+    dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ./tmp/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# Beloww are hyperparameters
+batch_size: 64
+clip_range: 0.2
+clip_range_vf: Null  # If separate clipping is used for value function, otherwise can be the same as `clip_range`
+ent_coef: 0.005
+gae_lambda: 0.95
+learning_rate: 0.000211
+max_grad_norm: 0.5
+n_epochs: 10
+n_steps: 2048
+normalize_advantage: False
+vf_coef: 0.001
+gamma: 0.99
+
+# Below are not hpo parameters. Seed is currenlty not allowed to be outside of section
+seed: 0 
+non_hyperparameters:
+  trial_number: 0
+  config_id: Null
+  experiment_id: Null
+  feature_extractor_depth: 0
+  environment_id: MiniHack-Room-Random-10x10-v0
+  env_seed: 0
+  smac_seed: 0
+  model_save_path: blablabla
+  feature_extractor_width: 64
+  pi_dimension: 64
+  vf_dimension: 64
+  max_episode_steps: Null # TODO should this be a relevant hp?
+  parallel_vec_envs: 5
+  n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
+  n_evaluation_rounds: 2
+  total_timesteps: 100000000 # Defined at top with budget
+
+
+PY_EXPERIMENTER: 
+  n_jobs: 1
+  Database:
+    provider: mysql
+    database: fehring_growing_nn_new_seeded
+    table:
+      name: bipedal_walker_net2deeper
+      keyfields: 
+        environment_id:
+          type: VARCHAR(50)
+        feature_extractor_depth:
+          type: INT
+        env_seed:
+          type: INT
+        smac_seed:
+          type: INT
+        model_save_path:
+          type: VARCHAR(50)
+        feature_extractor_width: 
+          type: INT
+        pi_dimension: 
+          type: INT
+        vf_dimension: 
+          type: INT
+        max_episode_steps:
+          type: INT
+        parallel_vec_envs:
+          type: INT
+        seed:
+          type: INT
+        n_evaluation_episodes:
+          type: INT
+        n_evaluation_rounds:
+          type: int
+        total_timesteps: 
+          type: int
+        smac_budget:
+          type: int
+      resultfields:
+        final_cost: FLOAT
+        config: TEXT
+    logtables:
+      configurations:
+        environment_id: VARCHAR(50)
+        trial_number: INT
+        budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
+        worker_number: INT # The number of the worker used by hypersweeper to evaluate the current configuration
+        worker_seed: INT # The seed provided to the worker to evalaute the curernt configuration
+        batch_size: INT
+        clip_range: VARCHAR(50)
+        clip_range_vf: FLOAT
+        ent_coef: FLOAT
+        gae_lambda: FLOAT
+        learning_rate: FLOAT
+        max_grad_norm: FLOAT
+        n_epochs: INT
+        n_steps: INT
+        normalize_advantage: BOOLEAN
+        vf_coef: FLOAT
+        gamma: FLOAT
+        feature_extractor_output_dimension: INT
+        n_feature_extractor_layers: INT
+        feature_extractor_layer_width: INT
+        cnn_intermediate_dimension: INT
+        final_score: FLOAT
+        final_std: FLOAT
+      training_process:
+        worker_id: INT
+        trial_number: INT
+        budget: INT
+        timestep: INT
+        mean_cost: FLOAT
+        mean_cost_stdev: FLOAT
+        all_costs: LONGTEXT
+        actions_per_episode: LONGTEXT
+        rewards_per_episode: LONGTEXT
+
+      smac_callbacks:
+        trial_number: INT
+        budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
+        cost: FLOAT
+
+      final_evaluation_callback:
+        trial_number: INT
+        budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
+        worker_number: INT
+        final_score: FLOAT
+        final_std: FLOAT
+        episode_lengths: TEXT
+        average_episode_lengths: FLOAT
+        successfull: FLOAT
+        dead: FLOAT
+        time_out: FLOAT
+        end_states: LONGTEXT
+        rewards_per_episode: LONGTEXT
+        actions_per_episode: LONGTEXT
+      
+      training_losses:
+        trial_number: INT
+        budget: INT
+        hyperparameter_str_identifier: VARCHAR(500)
+        worker_number: INT
+        n_rollout: INT
+        learning_rate: FLOAT
+        entropy_loss: FLOAT
+        policy_gradient_loss: FLOAT
+        value_loss: FLOAT
+        approx_kl: FLOAT
+        clip_fraction: FLOAT
+        loss: FLOAT
+        explained_variance: FLOAT
+        clip_range: FLOAT
+        n_updates: INT

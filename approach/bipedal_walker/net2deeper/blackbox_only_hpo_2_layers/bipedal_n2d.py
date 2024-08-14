@@ -1,35 +1,34 @@
-import os
-from functools import partial
 import gym
-import hydra
-import minihack
-import torch
 from ConfigSpace import Configuration
-from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
-
+import hydra
+from utils import extract_hyperparameters_gymnasium, create_pyexperimenter, log_results, make_bipedal_walker_vec_env
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters_minihack, log_results, make_minihack_vec_env, get_model_save_path
-from utils.minihack.feature_extractor import Net2DeeperFeatureExtractor
-from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
+from stable_baselines3.common.evaluation import evaluate_policy
+from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
+from utils.gymnasium_compatible.feature_extractor import Net2DeeperFeatureExtractor
+from utils import get_model_save_path
+import torch
+from functools import partial
+import os
 
 debug_mode = False
 
 
-@hydra.main(config_path="config", config_name="net2deeper", version_base="1.1")
+@hydra.main(config_path="config", config_name="bipedal_n2d", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
-        minihack
         gym
-
         feature_extractor_depth = config.non_hyperparameters.feature_extractor_depth
+        environment_name = config.non_hyperparameters.environment_id
+
+        # We only seed the neural network. Everything else is seeded more or less constantly
         seed = config["seed"]
         set_random_seed(seed, using_cuda=True)
 
         non_hyperparameters = config["non_hyperparameters"]
-        environment_name = non_hyperparameters["environment_name"]
         (
             batch_size,
             clip_range,
@@ -42,43 +41,22 @@ def black_box_ppo_configure(config: Configuration):
             n_steps,
             normalize_advantage,
             vf_coef,
-            feature_extractor_output_dimension,
-            n_feature_extractor_layers,
-            feature_extractor_layer_width,
-            cnn_intermediate_dimension,
-        ) = extract_hyperparameters_minihack(config)
-        hyperparameter_str_identifier = str(extract_hyperparameters_minihack(config))
-
-        # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
-        # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
+            gamma,
+        ) = extract_hyperparameters_gymnasium(config)
 
         # We always use the same seeds in here
-        training_vec_env = make_minihack_vec_env(
-            environment_name,
-            non_hyperparameters["observation_keys"],
-            non_hyperparameters["env_seed"],
-            non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["max_episode_steps"],
+        training_vec_env = make_bipedal_walker_vec_env(
+            env_id="BipedalWalker-v3", environment_seed=non_hyperparameters["env_seed"], parralel_vec_envs=non_hyperparameters["parallel_vec_envs"], hardcore=True
         )
-
         # Check whether to wrap in monitor wrapper
-        evaluation_vec_env = make_minihack_vec_env(
-            environment_name,
-            non_hyperparameters["observation_keys"],
-            non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["max_episode_steps"],
+        evaluation_vec_env = make_bipedal_walker_vec_env(
+            env_id="BipedalWalker-v3",
+            environment_seed=non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
+            parralel_vec_envs=non_hyperparameters["parallel_vec_envs"],
+            hardcore=True,
         )
         torch.cuda.torch.cuda.empty_cache()
-
-        feature_extractor = partial(
-            Net2DeeperFeatureExtractor,
-            cnn_intermediate_dimension=cnn_intermediate_dimension,
-            n_feature_extractor_layers=n_feature_extractor_layers,
-            feature_extractor_layer_width=feature_extractor_layer_width,
-            feature_extractor_output_dimension=feature_extractor_output_dimension,
-        )
-
+        feature_extractor = partial(Net2DeeperFeatureExtractor, feature_extractor_width=non_hyperparameters["feature_extractor_width"])
         model = PPO(
             policy="MultiInputPolicy",
             env=training_vec_env,
@@ -94,12 +72,13 @@ def black_box_ppo_configure(config: Configuration):
             n_epochs=n_epochs,
             normalize_advantage=normalize_advantage,
             vf_coef=vf_coef,
+            gamma=gamma,
             n_steps=n_steps,  # The number of steps to run for each environment per update
             seed=seed,
-            policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [feature_extractor_output_dimension], "vf": [feature_extractor_output_dimension]}},
+            policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [non_hyperparameters["pi_dimension"]], "vf": [non_hyperparameters["vf_dimension"]]}},
         )
+
         if feature_extractor_depth > 1:  # If we can load a previous model
-            # Rebuild the model with increased size, to then load the weigths and optimizer
             for _ in range(1, feature_extractor_depth - 1):
                 model.policy.features_extractor.add_layer()
                 additional_layer = model.policy.features_extractor.linear_layers.sequential_container[-2]
@@ -124,24 +103,17 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
+        # For Soem Reason the policynet has a input dimension of 1
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
-            evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef, hyperparameter_str_identifier=hyperparameter_str_identifier)
+            evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
 
-        # TODO Save the model and feature extractor
-        final_save_path = get_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
-        if not os.path.exists(final_save_path):
-            os.makedirs(final_save_path)
-
-        model.save(os.path.join(final_save_path, "model"))
-
-        evaluation_vec_env = make_minihack_vec_env(
-            environment_name,
-            non_hyperparameters["observation_keys"],
-            non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["parallel_vec_envs"],
-            non_hyperparameters["max_episode_steps"],
+        evaluation_vec_env = make_bipedal_walker_vec_env(
+            env_id="BipedalWalker-v3",
+            environment_seed=non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
+            parralel_vec_envs=non_hyperparameters["parallel_vec_envs"],
+            hardcore=True,
         )
 
         callback_wrapper = FinalEvaluationWrapper(
@@ -155,13 +127,11 @@ def black_box_ppo_configure(config: Configuration):
             n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
             deterministic=True,
             render=False,
-            callback=callback_wrapper.get_callback(),
+            callback=callback_wrapper.get_callback(minihack_adaptation=False),
         )
-        if not debug_mode:
-            callback_wrapper.process_results(
-                non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode, budget=feature_extractor_depth, hyperparameter_str_identifier=hyperparameter_str_identifier
-            )
 
+        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode)
+        if not debug_mode:
             log_results(
                 result_processor,
                 {
@@ -169,9 +139,7 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_number": seed,  # Currently the same as the workerseed
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
-                        "budget": feature_extractor_depth,
-                        "hyperparameter_str_identifier": hyperparameter_str_identifier,
-                        "environment_name": environment_name,
+                        "environment_id": environment_name,
                         "batch_size": batch_size,
                         "clip_range": clip_range,
                         "clip_range_vf": clip_range_vf,
@@ -183,13 +151,13 @@ def black_box_ppo_configure(config: Configuration):
                         "n_steps": n_steps,
                         "normalize_advantage": normalize_advantage,
                         "vf_coef": vf_coef,
-                        "feature_extractor_layer_width": feature_extractor_layer_width,
-                        "cnn_intermediate_dimension": cnn_intermediate_dimension,
                         "final_score": final_score,
                         "final_std": final_std,
                     }
                 },
             )
+
+        model.save(os.path.join(non_hyperparameters["model_save_path"], str(non_hyperparameters["trial_number"]), str(seed), "model"))
 
         model.policy = None
         torch.cuda.empty_cache()

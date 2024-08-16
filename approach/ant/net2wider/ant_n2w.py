@@ -8,7 +8,7 @@ from py_experimenter.result_processor import ResultProcessor
 from stable_baselines3.common.evaluation import evaluate_policy
 from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
 from utils.gymnasium_compatible.feature_extractor import Net2DeeperFeatureExtractor
-from utils import get_model_save_path
+from utils import get_model_save_path_minihack
 import torch
 from functools import partial
 import os
@@ -16,7 +16,7 @@ import os
 debug_mode = False
 
 
-@hydra.main(config_path="config", config_name="bipedal_n2d", version_base="1.1")
+@hydra.main(config_path="config", config_name="ant_n2w", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
@@ -86,7 +86,7 @@ def black_box_ppo_configure(config: Configuration):
                 model.policy.optimizer.add_param_group({"params": additional_layer.parameters()})
 
             # Load Previously used model
-            final_load_path = get_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth - 1, seed)
+            final_load_path = get_model_save_path_minihack(config.non_hyperparameters.model_save_path, config, feature_extractor_depth - 1, seed)
             model.set_parameters(os.path.join(final_load_path, "model.zip"), exact_match=False)
             # Add Linear Layer and move to cuda
             model.policy.features_extractor.add_layer()

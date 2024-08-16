@@ -10,7 +10,7 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters_minihack, log_results, make_minihack_vec_env, get_model_save_path
+from utils import create_pyexperimenter, extract_hyperparameters_minihack, log_results, make_minihack_vec_env, get_model_save_path_minihack
 from utils.minihack.feature_extractor import Net2DeeperFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
@@ -107,7 +107,7 @@ def black_box_ppo_configure(config: Configuration):
                 model.policy.optimizer.add_param_group({"params": additional_layer.parameters()})
 
             # Load Previously used model
-            final_load_path = get_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth - 1, seed)
+            final_load_path = get_model_save_path_minihack(config.non_hyperparameters.model_save_path, config, feature_extractor_depth - 1, seed)
             model.set_parameters(os.path.join(final_load_path, "model.zip"), exact_match=False)
             # Add Linear Layer and move to cuda
             model.policy.features_extractor.add_layer()
@@ -130,7 +130,7 @@ def black_box_ppo_configure(config: Configuration):
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
 
         # TODO Save the model and feature extractor
-        final_save_path = get_model_save_path(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
+        final_save_path = get_model_save_path_minihack(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
         if not os.path.exists(final_save_path):
             os.makedirs(final_save_path)
 

@@ -76,12 +76,16 @@ def extract_increase_width_hyperparameters(config: DictConfig) -> Tuple:
     return noise_level, increase_factor
 
 
-def get_model_save_path(model_save_path: str, config: DictConfig, budget, seed) -> str:
+def get_model_save_path_minihack(model_save_path: str, config: DictConfig, budget, seed) -> str:
     return os.path.join(model_save_path, str(extract_hyperparameters_minihack(config)), str(budget), str(seed))
 
 
+def get_model_save_path_gymnasium(model_save_path: str, config: DictConfig, budget, seed) -> str:
+    return os.path.join(model_save_path, str(extract_hyperparameters_gymnasium(config)), str(budget), str(seed))
+
+
 def config_is_evaluated(model_save_path: str, config: DictConfig) -> bool:
-    return os.path.exists(get_model_save_path(model_save_path, extract_hyperparameters_minihack(config)))
+    return os.path.exists(get_model_save_path_minihack(model_save_path, extract_hyperparameters_minihack(config)))
 
 
 def get_budget_path_dict(model_save_path: str, config: DictConfig) -> dict:

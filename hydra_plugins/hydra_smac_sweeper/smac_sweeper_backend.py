@@ -184,5 +184,6 @@ class SMACSweeperBackend(Sweeper):
 
         keyfield_values["smac_budget"] = self.budget
 
-        keyfield_values["observation_keys"] = ",".join(keyfield_values["observation_keys"])
+        if "keyfield_values" in self.config:
+            keyfield_values["observation_keys"] = ",".join(keyfield_values["observation_keys"])
         py_experimenter.add_experiment_and_execute(keyfield_values, experiment_function=_sweep)

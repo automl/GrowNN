@@ -8,12 +8,12 @@ from PIL import Image
 from py_experimenter.experimenter import PyExperimenter
 
 
-def get_table(database_name, table_name, config_file: str = "approach/net2deeper/config/net2deeper.yaml"):
+def get_table(database_name, table_name, config_file: str = "approach/minihack/net2deeper/config/net2deeper.yaml"):
     experimenter = PyExperimenter(config_file, database_name=database_name, table_name=table_name)
     return experimenter.get_table()
 
 
-def get_logtable(database_name, table_name, logtable_name, config_file: str = "approach/net2deeper/config/net2deeper.yaml", use_ssh_tunnel=True):
+def get_logtable(database_name, table_name, logtable_name, config_file: str = "approach/minihack/net2deeper/config/net2deeper.yaml", use_ssh_tunnel=True):
     experimenter = PyExperimenter(config_file, database_name=database_name, table_name=table_name, use_ssh_tunnel=use_ssh_tunnel)
     return experimenter.get_logtable(logtable_name)
 

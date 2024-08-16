@@ -174,12 +174,12 @@ class FinalEvaluationWrapper:
         # Going into `done`
         self._rewards_in_current_episode = [deepcopy([]) for i in range(n_envs)]
 
-    def get_callback(self):
+    def get_callback(self, minihack_adaptation:True=True):
         """
-        Creates a callback function used for the final evaluation
+        Creates a callback function used for the final evaluation.
         """
 
-        def _callback(locals_dict, globals_dict, env_number: int):
+        def _minihack_callback(locals_dict, globals_dict, env_number: int):
             end_status = locals_dict["infos"][env_number]["end_status"]
             current_reward = locals_dict["rewards"][env_number]
             self._rewards_in_current_episode[env_number].append(current_reward)
@@ -208,8 +208,26 @@ class FinalEvaluationWrapper:
                 elif end_status not in (-1, 0, 1, 2):
                     raise ValueError(f"Unknown end_status {end_status}")
             self._current_end_status = [locals_dict["infos"][i]["end_status"] for i in range(self.n_envs)]
-
-        return _callback
+        
+        def _standard_callback(locals_dict, globals_dict, env_number: int):
+            done = locals_dict["dones"][env_number]
+            current_reward = locals_dict["rewards"][env_number]
+            self._rewards_in_current_episode[env_number].append(current_reward)
+            # Only save data if the state chagned
+            if done:
+                if locals_dict["rewards"][env_number] < 0:
+                    self.final_espisode_state.append("Death")
+                else:
+                    self.final_espisode_state.append("Success")
+                self.episode_lengths.append(locals_dict["current_lengths"][env_number])
+                self.rewards_per_episode.append(self._rewards_in_current_episode[env_number])
+                self._rewards_in_current_episode[env_number] = []
+                
+        
+        if minihack_adaptation:
+            return _minihack_callback
+        else:
+            return _standard_callback
 
     def process_results(self, trial_number: int, worker_number: int, final_score: float, final_std: float, actions_per_episode, **kwargs):
         successfull = np.count_nonzero(np.array(self.final_espisode_state) == "Success") / len(self.final_espisode_state)

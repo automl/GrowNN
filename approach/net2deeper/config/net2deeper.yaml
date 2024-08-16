@@ -78,7 +78,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn_new_seeded
     table:
-      name: net2deeper_budget200
+      name: net2deeper_budget200_final
       keyfields: 
         environment_name:
           type: VARCHAR(50)

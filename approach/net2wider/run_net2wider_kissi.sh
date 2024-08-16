@@ -13,4 +13,4 @@ export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-
 # Run the Python script with specified module
 
 # Run the Python script with specified module
-python approach/net2wider/net2wider.py -m 
+python approach/net2wider/net2wider.py -m non_hyperparameters.environment_name="MiniHack-Room-Monster-10x10-v0"

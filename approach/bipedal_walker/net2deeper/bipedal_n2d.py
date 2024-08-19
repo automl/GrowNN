@@ -139,6 +139,12 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_number": seed,  # Currently the same as the workerseed
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
+                        "budget": feature_extractor_depth,
+                        "hyperparameter_str_identifier": str(extract_hyperparameters_gymnasium(config)),
+                        "gamma": gamma,
+                        "feature_extractor_output_dimension":non_hyperparameters["vf_dimension"],
+                        "feature_extractor_layer_width": non_hyperparameters["feature_extractor_width"],
+                        "n_feature_extractor_layers": feature_extractor_depth,
                         "environment_id": environment_name,
                         "batch_size": batch_size,
                         "clip_range": clip_range,

@@ -19,7 +19,3 @@ hyperparameters:
     - 128
     - 256
     type: categorical
-  feature_extractor_layer_width:
-    lower: 64
-    type: uniform_int
-    upper: 4096

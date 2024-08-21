@@ -13,4 +13,4 @@ export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-
 # Run the Python script with specified module
 
 # Run the Python script with specified module
-python approach/net2deeper/net2deeper.py -m 
+python approach/minihack/net2deeper/net2deeper.py -m 

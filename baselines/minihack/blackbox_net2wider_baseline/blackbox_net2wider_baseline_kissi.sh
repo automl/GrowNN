@@ -13,4 +13,4 @@ export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-
 # Run the Python script with specified module
 
 # Run the Python script with specified module
-python baselines/minihack/blackbox_net2wider_baseline/bb_net2wider_baseline.py -m 
+python baselines/minihack/blackbox_net2wider_baseline/bb_net2wider_baseline.py -m

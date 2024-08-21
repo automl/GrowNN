@@ -8,7 +8,7 @@ from utils import make_minihack_vec_env, extract_hyperparameters_minihack, creat
 from py_experimenter.result_processor import ResultProcessor
 from stable_baselines3.common.evaluation import evaluate_policy
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
-from utils.networks.feature_extractor import FixedArchitectureFeatureExtractor
+from utils.minihack.feature_extractor import FixedArchitectureFeatureExtractor
 import torch
 from functools import partial
 

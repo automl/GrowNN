@@ -132,7 +132,7 @@ def black_box_ppo_configure(config: Configuration):
             callback=callback_wrapper.get_callback(minihack_adaptation=False),
         )
 
-        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode)
+        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode, budget=feature_extractor_depth, hyperparameter_str_indentifier=str(extract_hyperparameters_gymnasium(config)))
         if not debug_mode:
             log_results(
                 result_processor,
@@ -142,6 +142,12 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
                         "environment_id": environment_name,
+                        "budget": feature_extractor_depth,
+                        "hyperparameter_str_identifier": str(extract_hyperparameters_gymnasium(config)),
+                        "gamma": gamma,
+                        "feature_extractor_output_dimension":non_hyperparameters["vf_dimension"],
+                        "feature_extractor_layer_width": non_hyperparameters["feature_extractor_width"],
+                        "n_feature_extractor_layers": feature_extractor_depth,
                         "batch_size": batch_size,
                         "clip_range": clip_range,
                         "clip_range_vf": clip_range_vf,

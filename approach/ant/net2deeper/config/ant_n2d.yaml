@@ -135,7 +135,6 @@ PY_EXPERIMENTER:
         feature_extractor_output_dimension: INT
         n_feature_extractor_layers: INT
         feature_extractor_layer_width: INT
-        cnn_intermediate_dimension: INT
         final_score: FLOAT
         final_std: FLOAT
       training_process:

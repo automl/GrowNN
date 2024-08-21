@@ -51,7 +51,6 @@ vf_coef: 0.001
 gamma: 0.99
 
 # Below are not hpo parameters. Seed is currenlty not allowed to be outside of section
-seed: 0 
 non_hyperparameters:
   trial_number: 0
   config_id: Null
@@ -64,7 +63,6 @@ non_hyperparameters:
   feature_extractor_width: 64
   pi_dimension: 64
   vf_dimension: 64
-  max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
   n_evaluation_rounds: 2
@@ -95,11 +93,7 @@ PY_EXPERIMENTER:
           type: INT
         vf_dimension: 
           type: INT
-        max_episode_steps:
-          type: INT
         parallel_vec_envs:
-          type: INT
-        seed:
           type: INT
         n_evaluation_episodes:
           type: INT
@@ -135,7 +129,6 @@ PY_EXPERIMENTER:
         feature_extractor_output_dimension: INT
         n_feature_extractor_layers: INT
         feature_extractor_layer_width: INT
-        cnn_intermediate_dimension: INT
         final_score: FLOAT
         final_std: FLOAT
       training_process:

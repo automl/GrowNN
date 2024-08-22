@@ -5,7 +5,8 @@ import seaborn as sns
 
 
 def training_process_style():
-    sns.color_palette("colorblind")
+    palette = sns.color_palette("colorblind")
+    sns.set_palette(palette)
     plt.tight_layout()
     plt.figure(figsize=(12, 8))
 
@@ -18,3 +19,4 @@ def training_process_style():
             return str(int(value))
 
     plt.gca().xaxis.set_major_formatter(FuncFormatter(format_func))
+

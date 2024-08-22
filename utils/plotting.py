@@ -5,6 +5,7 @@ import seaborn as sns
 import io
 import matplotlib as mpl
 import numpy as np
+import pandas as pd
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from PIL import Image
 from py_experimenter.experimenter import PyExperimenter
@@ -93,3 +94,19 @@ def fig2img(fig, figsize=None, dpi=300):
     # image = np.fromstring(s, dtype=np.uint8).reshape((height, width, 3))
 
     return image
+
+
+def select_incumbents(smac_callbacks: pd.DataFrame) -> pd.DataFrame:
+    "Given a dataframe contianing one training run, only keep the incumbent data points."
+    relevant_columns = smac_callbacks[["trial_number", "cost"]]
+
+    # Sort by trial_number to ensure proper order
+    sorted_callbacks = relevant_columns.sort_values("trial_number")
+
+    current_incumbent = float("inf")
+    incumbent_data = []
+    for index, row in sorted_callbacks.iterrows():
+        if row["cost"] < current_incumbent:
+            current_incumbent = row["cost"]
+            incumbent_data.append(row)
+    return pd.DataFrame(incumbent_data)

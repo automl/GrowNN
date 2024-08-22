@@ -1,7 +1,6 @@
-from plotting.plot_utils import get_logtable, set_rc_params
 import pandas as pd
 import seaborn as sns
-from utils.plotting import training_process_style
+from utils.plotting import training_process_style, select_incumbents, get_logtable, set_rc_params
 import matplotlib.pyplot as plt
 from typing import List
 
@@ -9,20 +8,6 @@ set_rc_params()
 
 
 def get_data(database_name: str, experiment_ids: List[int]) -> pd.DataFrame:
-    def select_incumbents(smac_callbacks: pd.DataFrame) -> pd.DataFrame:
-        relevant_columns = smac_callbacks[["trial_number", "cost"]]
-
-        # Sort by trial_number to ensure proper order
-        sorted_callbacks = relevant_columns.sort_values("trial_number")
-
-        current_incumbent = float("inf")
-        incumbent_data = []
-        for index, row in sorted_callbacks.iterrows():
-            if row["cost"] < current_incumbent:
-                current_incumbent = row["cost"]
-                incumbent_data.append(row)
-        return pd.DataFrame(incumbent_data)
-
     baseline_width_1_callback_data = get_logtable(database_name=database_name, table_name="incumbent_gen_2_layers", logtable_name="smac_callbacks")
     baseline_width_1_callback_data = baseline_width_1_callback_data[baseline_width_1_callback_data["experiment_id"] == experiment_ids[0]]
     baseline_width_1_callback_data.head()

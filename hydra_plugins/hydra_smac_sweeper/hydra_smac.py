@@ -195,13 +195,13 @@ class HydraSMAC:
         res = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
         self.job_idx += len(overrides)
         done = False
-        while not done:
-            for j in range(len(overrides)):
-                try:
-                    res[j].return_value
-                    done = True
-                except:
-                    done = False
+        
+        for j in range(len(overrides)):
+            try:
+                res[j].return_value
+                done = True
+            except:
+                done = False
 
         performances = []  # Performance variable, filled with average value, if seeds used, otherwise fileld with normal value
         costs = []  # Costs: Filled with max cost, if seeds used, standard cost otherwise

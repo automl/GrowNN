@@ -146,6 +146,7 @@ class CustomEvaluationCallback(EvalCallback):
                         "all_costs": str(result),
                         "actions_per_episode": str(actions_per_episode),
                         "rewards_per_episode": str(rewards_per_episode),
+                        **kwargs,
                     }
                 },
             )
@@ -174,7 +175,7 @@ class FinalEvaluationWrapper:
         # Going into `done`
         self._rewards_in_current_episode = [deepcopy([]) for i in range(n_envs)]
 
-    def get_callback(self, minihack_adaptation:True=True):
+    def get_callback(self, minihack_adaptation:bool=True):
         """
         Creates a callback function used for the final evaluation.
         """

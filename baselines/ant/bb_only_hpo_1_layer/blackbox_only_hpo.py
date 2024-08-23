@@ -1,27 +1,27 @@
-import gym
+import gymnasium as gym
 from ConfigSpace import Configuration
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
 import hydra
-from utils import extract_hyperparameters_gymnasium, create_pyexperimenter, log_results, make_ant_vec_env
+from utils import make_ant_vec_env, extract_hyperparameters_gymnasium, create_pyexperimenter, log_results
 from py_experimenter.result_processor import ResultProcessor
 from stable_baselines3.common.evaluation import evaluate_policy
 from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
-from utils.gymnasium_compatible.feature_extractor import Net2DeeperFeatureExtractor
-from utils import get_model_save_path_gymnasium
+from utils.gymnasium_compatible.feature_extractor import FixedArchitectureFeaturesExtractor
 import torch
 from functools import partial
 import os
+from utils.hyperparameter_handling import extract_feature_extractor_architecture
 
 debug_mode = False
 
 
-@hydra.main(config_path="config", config_name="ant_n2d", version_base="1.1")
+@hydra.main(config_path="config", config_name="blackbox_only_hpo", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
         gym
-        feature_extractor_depth = config.non_hyperparameters.feature_extractor_depth
+
         environment_name = config.non_hyperparameters.environment_id
 
         # We only seed the neural network. Everything else is seeded more or less constantly
@@ -46,6 +46,7 @@ def black_box_ppo_configure(config: Configuration):
 
         # We always use the same seeds in here
         training_vec_env = make_ant_vec_env(env_id=environment_name, environment_seed=non_hyperparameters["env_seed"], parralel_vec_envs=non_hyperparameters["parallel_vec_envs"])
+
         # Check whether to wrap in monitor wrapper
         evaluation_vec_env = make_ant_vec_env(
             env_id=environment_name,
@@ -53,7 +54,12 @@ def black_box_ppo_configure(config: Configuration):
             parralel_vec_envs=non_hyperparameters["parallel_vec_envs"],
         )
         torch.cuda.torch.cuda.empty_cache()
-        feature_extractor = partial(Net2DeeperFeatureExtractor, feature_extractor_width=non_hyperparameters["feature_extractor_width"])
+
+        feature_extractor_architecture = extract_feature_extractor_architecture(config)
+        pi_dimension = non_hyperparameters["pi_dimension"]
+        vf_dimension = non_hyperparameters["vf_dimension"]
+
+        feature_extractor = partial(FixedArchitectureFeaturesExtractor, feature_extractor_architecture=feature_extractor_architecture)
         model = PPO(
             policy="MultiInputPolicy",
             env=training_vec_env,
@@ -69,28 +75,11 @@ def black_box_ppo_configure(config: Configuration):
             n_epochs=n_epochs,
             normalize_advantage=normalize_advantage,
             vf_coef=vf_coef,
-            gamma=gamma,
             n_steps=n_steps,  # The number of steps to run for each environment per update
             seed=seed,
-            policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [non_hyperparameters["pi_dimension"]], "vf": [non_hyperparameters["vf_dimension"]]}},
+            gamma=gamma,
+            policy_kwargs={"features_extractor_class": feature_extractor, "net_arch": {"pi": [pi_dimension], "vf": [vf_dimension]}},
         )
-
-        if feature_extractor_depth > 1:  # If we can load a previous model
-            for _ in range(1, feature_extractor_depth - 1):
-                model.policy.features_extractor.add_layer()
-                additional_layer = model.policy.features_extractor.net2deeper_network.sequential_container[-2]
-                additional_layer.to("cuda")
-                model.policy.optimizer.add_param_group({"params": additional_layer.parameters()})
-
-            # Load Previously used model
-            final_load_path = get_model_save_path_gymnasium(config.non_hyperparameters.model_save_path, config, feature_extractor_depth - 1, seed)
-            model.set_parameters(os.path.join(final_load_path, "model.zip"), exact_match=False)
-            # Add Linear Layer and move to cuda
-            model.policy.features_extractor.add_layer()
-            model.policy.to("cuda")
-            # Add Linear Layer to Optimizer
-            additional_layer = model.policy.features_extractor.net2deeper_network.sequential_container[-2]
-            model.policy.optimizer.add_param_group({"params": additional_layer.parameters()})
 
         evaluation_callback = CustomEvaluationCallback(
             evaluation_vec_env,
@@ -104,7 +93,7 @@ def black_box_ppo_configure(config: Configuration):
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
             evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
-            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, hyperparameter_str_identifier=str(extract_hyperparameters_gymnasium(config)))
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
 
         evaluation_vec_env = make_ant_vec_env(
             env_id=environment_name,
@@ -126,15 +115,7 @@ def black_box_ppo_configure(config: Configuration):
             callback=callback_wrapper.get_callback(minihack_adaptation=False),
         )
 
-        callback_wrapper.process_results(
-            non_hyperparameters["trial_number"],
-            seed,
-            final_score,
-            final_std,
-            actions_per_epiosode,
-            budget=feature_extractor_depth,
-            hyperparameter_str_identifier=str(extract_hyperparameters_gymnasium(config)),
-        )
+        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode)
         if not debug_mode:
             log_results(
                 result_processor,
@@ -144,12 +125,6 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
                         "environment_id": environment_name,
-                        "budget": feature_extractor_depth,
-                        "hyperparameter_str_identifier": str(extract_hyperparameters_gymnasium(config)),
-                        "gamma": gamma,
-                        "feature_extractor_output_dimension": non_hyperparameters["vf_dimension"],
-                        "feature_extractor_layer_width": non_hyperparameters["feature_extractor_width"],
-                        "n_feature_extractor_layers": feature_extractor_depth,
                         "batch_size": batch_size,
                         "clip_range": clip_range,
                         "clip_range_vf": clip_range_vf,
@@ -161,17 +136,16 @@ def black_box_ppo_configure(config: Configuration):
                         "n_steps": n_steps,
                         "normalize_advantage": normalize_advantage,
                         "vf_coef": vf_coef,
+                        "feature_extractor_architecture": str(feature_extractor_architecture),
+                        "vf_dimension": vf_dimension,
+                        "pi_dimension": pi_dimension,
                         "final_score": final_score,
                         "final_std": final_std,
                     }
                 },
             )
 
-        final_save_path = get_model_save_path_gymnasium(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
-        if not os.path.exists(final_save_path):
-            os.makedirs(final_save_path)
-
-        model.save(os.path.join(final_save_path, "model"))
+        model.save(os.path.join(non_hyperparameters["model_save_path"], str(non_hyperparameters["trial_number"]), str(seed), "model"))
 
         model.policy = None
         torch.cuda.empty_cache()

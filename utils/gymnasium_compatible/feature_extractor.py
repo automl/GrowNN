@@ -12,7 +12,7 @@ class FixedArchitectureFeaturesExtractor(BaseFeaturesExtractor):
         self.architecture = feature_extractor_architecture
         self.input_layer = nn.Linear(in_features=observation_space.shape[0], out_features=feature_extractor_architecture[0])
         self.processing = nn.Sequential(
-            *[nn.Linear(in_features=feature_extractor_architecture[i], out_features=feature_extractor_architecture[i + 1]) for i in range(len(feature_extractor_architecture) - 1)]
+            *[nn.Sequential(nn.Linear(in_features=feature_extractor_architecture[i], out_features=feature_extractor_architecture[i + 1]), nn.ReLU()) for i in range(len(feature_extractor_architecture) - 1)]
         )
 
     def forward(self, observations):

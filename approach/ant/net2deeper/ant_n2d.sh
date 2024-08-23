@@ -11,4 +11,4 @@ module load Miniconda3
 conda activate rl-architecture
 export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-rl"
 # Run the Python script with specified module
-python approach/bipedal_walker copy/net2deeper/ant/ant_n2d.py -m
+python approach/ant/net2deeper/ant_n2d.py -m

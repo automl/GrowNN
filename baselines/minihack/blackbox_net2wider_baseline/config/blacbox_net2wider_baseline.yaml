@@ -62,7 +62,7 @@ non_hyperparameters:
   env_seed: 0
   smac_seed: 0
   model_save_path: blablabla
-  feature_extractor_architecture: "[512,2048,512]"
+  feature_extractor_architecture: "[512,4096,512]"
   observation_keys: [chars,]
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5

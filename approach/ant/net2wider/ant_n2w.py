@@ -16,7 +16,7 @@ import os
 debug_mode = False
 
 
-@hydra.main(config_path="config", config_name="ant_n2d", version_base="1.1")
+@hydra.main(config_path="config", config_name="ant_n2w", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
@@ -45,25 +45,23 @@ def black_box_ppo_configure(config: Configuration):
             gamma,
         ) = extract_hyperparameters_gymnasium(config)
 
-        input_size = ...
-        output_size = ...
-        n_layers = ...
-        increase_factor = ...
-        noise_level = ...
+        input_size = non_hyperparameters["feature_extractor_width"]
+        output_size = non_hyperparameters["feature_extractor_width"]
+        n_layers = non_hyperparameters["n_feature_extractor_layers"]
+        increase_factor = non_hyperparameters["increase_factor"]
+        noise_level = non_hyperparameters["noise_std"]
 
         # We always use the same seeds in here
-        training_vec_env = make_ant_vec_env(env_id=environment_name, environment_seed=non_hyperparameters["env_seed"], parralel_vec_envs=non_hyperparameters["parallel_vec_envs"], hardcore=True)
+        training_vec_env = make_ant_vec_env(env_id=environment_name, environment_seed=non_hyperparameters["env_seed"], parralel_vec_envs=non_hyperparameters["parallel_vec_envs"])
         # Check whether to wrap in monitor wrapper
         evaluation_vec_env = make_ant_vec_env(
             env_id=environment_name,
             environment_seed=non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
             parralel_vec_envs=non_hyperparameters["parallel_vec_envs"],
-            hardcore=True,
         )
         torch.cuda.torch.cuda.empty_cache()
         feature_extractor = partial(
             Net2WiderFeatureExtractor,
-            obseravtion_space=training_vec_env.observation_space,
             input_size=input_size,
             output_size=output_size,
             n_layers=n_layers,
@@ -120,13 +118,12 @@ def black_box_ppo_configure(config: Configuration):
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
             evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
-            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed,hyperparameter_str_identifier=str(extract_hyperparameters_gymnasium(config)),)
 
         evaluation_vec_env = make_ant_vec_env(
             env_id=environment_name,
             environment_seed=non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
-            parralel_vec_envs=non_hyperparameters["parallel_vec_envs"],
-            hardcore=True,
+            parralel_vec_envs=non_hyperparameters["parallel_vec_envs"]
         )
 
         callback_wrapper = FinalEvaluationWrapper(
@@ -150,7 +147,7 @@ def black_box_ppo_configure(config: Configuration):
             final_std,
             actions_per_epiosode,
             budget=grow_width_budget,
-            hyperparameter_str_indentifier=str(extract_hyperparameters_gymnasium(config)),
+            hyperparameter_str_identifier=str(extract_hyperparameters_gymnasium(config)),
         )
         if not debug_mode:
             log_results(

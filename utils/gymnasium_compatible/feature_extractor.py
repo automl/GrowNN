@@ -3,6 +3,7 @@ from gymnasium.spaces.box import Box
 from typing import List
 from torch import nn
 from utils.networks.net2deeper import Net2Deeper
+from utils.networks.net2wider import Net2Wider
 
 
 class FixedArchitectureFeaturesExtractor(BaseFeaturesExtractor):
@@ -34,5 +35,20 @@ class Net2DeeperFeatureExtractor(BaseFeaturesExtractor):
     
     def add_layer(self):
         self.net2deeper_network.add_layer()
+        return self
+    
+class Net2WiderFeatureExtractor(BaseFeaturesExtractor):
+    def __init__(self, observation_space: Box, input_size,output_size, n_layers, increase_factor, noise_level, **kwargs):
+        super(Net2WiderFeatureExtractor, self).__init__(observation_space, features_dim=output_size, **kwargs)
+        self.input_layer = nn.Linear(in_features=observation_space.shape[0], out_features=input_size)
+        self.net2wider_network = Net2Wider(input_size=input_size, output_size=output_size, n_layers=n_layers, increase_factor=increase_factor, noise_level=noise_level)
+
+    def forward(self, observations):
+        x = self.input_layer(observations)
+        x = self.net2wider_network(x)
+        return x
+    
+    def grow_width(self):
+        self.net2wider_network.increase_network_width()
         return self
 

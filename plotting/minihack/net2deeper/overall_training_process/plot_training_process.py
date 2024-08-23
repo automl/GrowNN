@@ -1,7 +1,6 @@
-from plotting.plot_utils import get_logtable, set_rc_params
 import pandas as pd
 import seaborn as sns
-from utils.plotting import training_process_style
+from utils.plotting import training_process_style, select_incumbents, get_logtable, set_rc_params
 import matplotlib.pyplot as plt
 from typing import List
 
@@ -9,20 +8,6 @@ set_rc_params()
 
 
 def get_data(database_name: str, experiment_ids: List[int]) -> pd.DataFrame:
-    def select_incumbents(smac_callbacks: pd.DataFrame) -> pd.DataFrame:
-        relevant_columns = smac_callbacks[["trial_number", "cost"]]
-
-        # Sort by trial_number to ensure proper order
-        sorted_callbacks = relevant_columns.sort_values("trial_number")
-
-        current_incumbent = float("inf")
-        incumbent_data = []
-        for index, row in sorted_callbacks.iterrows():
-            if row["cost"] < current_incumbent:
-                current_incumbent = row["cost"]
-                incumbent_data.append(row)
-        return pd.DataFrame(incumbent_data)
-
     baseline_depth_1_callback_data = get_logtable(database_name=database_name, table_name="bb_net2deeper_baseline", logtable_name="smac_callbacks")
     baseline_depth_1_callback_data = baseline_depth_1_callback_data[baseline_depth_1_callback_data["experiment_id"] == experiment_ids[0]]
     baseline_depth_1_callback_data.head()
@@ -93,6 +78,7 @@ def get_data(database_name: str, experiment_ids: List[int]) -> pd.DataFrame:
 
     return baseline_depth_1_callback_data, baseline_depth_2_callback_data, baseline_depth_4_callback_data, net2deeper_smac_callback_data_depth_4, net2deeper_smac_callback_data_depth_2
 
+
 def plot_10x10_random():
     baseline_depth_1_callback_data, baseline_depth_2_callback_data, baseline_depth_4_callback_data, net2deeper_smac_callback_data_depth_4, net2deeper_smac_callback_data_depth_2 = get_data(
         "fehring_growing_nn_new_seeded", [1, 1, 4, 1, 4]
@@ -113,10 +99,12 @@ def plot_10x10_random():
 
     plt.savefig("plotting/net2deeper/overall_training_process/net2deeper_training_process_random.png", bbox_inches="tight")
 
+
 def plot_10x10_monster():
     baseline_depth_1_callback_data, baseline_depth_2_callback_data, baseline_depth_4_callback_data, net2deeper_smac_callback_data_depth_4, net2deeper_smac_callback_data_depth_2 = get_data(
-        "fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5])
-    
+        "fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5]
+    )
+
     training_process_style()
     sns.lineplot(data=baseline_depth_1_callback_data, x="environment_interactions", y="cost", label="Baseline (1 layer)", drawstyle="steps-post")
     sns.lineplot(data=baseline_depth_2_callback_data, x="environment_interactions", y="cost", label="Baseline (2 layers)", drawstyle="steps-post")
@@ -131,8 +119,8 @@ def plot_10x10_monster():
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
-
     plt.savefig("plotting/net2deeper/overall_training_process/net2deeper_training_process_monster.png", bbox_inches="tight")
+
 
 plot_10x10_random()
 plot_10x10_monster()

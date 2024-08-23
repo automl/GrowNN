@@ -25,7 +25,7 @@ hydra:
 
     budget: 200 # The budget for SMAC
 
-    budget_variable: non_hyperparameters.feature_extractor_depth
+    budget_variable: non_hyperparameters.grow_width_budget
     saving_variable: non_hyperparameters.model_save_path
 
     search_space: ${configspace}
@@ -46,7 +46,7 @@ learning_rate: 0.000211
 max_grad_norm: 0.5
 n_epochs: 10
 n_steps: 2048
-normalize_advantage: False
+normalize_advantage: True
 vf_coef: 0.001
 gamma: 0.99
 
@@ -56,8 +56,8 @@ non_hyperparameters:
   trial_number: 0
   config_id: Null
   experiment_id: Null
-  feature_extractor_depth: 0
-  environment_id: MiniHack-Room-Random-10x10-v0
+  grow_width_budget: 0
+  environment_id: Ant-v4
   env_seed: 0
   smac_seed: 0
   model_save_path: blablabla
@@ -67,7 +67,7 @@ non_hyperparameters:
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 20
+  n_evaluation_rounds: 2
   total_timesteps: 1000000 # Defined at top with budget
 
 
@@ -77,11 +77,11 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn_new_seeded
     table:
-      name: ant_net2deeper
+      name: ant_net2wider
       keyfields: 
         environment_id:
           type: VARCHAR(50)
-        feature_extractor_depth:
+        grow_width_budget:
           type: INT
         env_seed:
           type: INT
@@ -135,7 +135,6 @@ PY_EXPERIMENTER:
         feature_extractor_output_dimension: INT
         n_feature_extractor_layers: INT
         feature_extractor_layer_width: INT
-        cnn_intermediate_dimension: INT
         final_score: FLOAT
         final_std: FLOAT
       training_process:

@@ -20,8 +20,6 @@ debug_mode = False
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
-        if config["non_hyperparameters"]["trial_number"] == 16:
-            print("Debugging")
         gym
         feature_extractor_depth = config.non_hyperparameters.feature_extractor_depth
         environment_name = config.non_hyperparameters.environment_id
@@ -132,7 +130,7 @@ def black_box_ppo_configure(config: Configuration):
             callback=callback_wrapper.get_callback(minihack_adaptation=False),
         )
 
-        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode, budget=feature_extractor_depth, hyperparameter_str_indentifier=str(extract_hyperparameters_gymnasium(config)))
+        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode, budget=feature_extractor_depth, hyperparameter_str_identifier=str(extract_hyperparameters_gymnasium(config)))
         if not debug_mode:
             log_results(
                 result_processor,

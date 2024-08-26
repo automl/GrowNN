@@ -1,4 +1,4 @@
-from plotting.plot_utils import get_logtable, set_rc_params
+from utils.plotting import get_logtable, set_rc_params
 from matplotlib import pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -133,12 +133,13 @@ def plot_10x10_random_full():
 
 
 def plot_10x10_random_depth2():
-    (_, baseline_depth_2_training_process_data, _, _, net2edeper_depth_2_training_process_concat_dataframe) = get_data(
+    (baseline_depth_1_training_process_data, baseline_depth_2_training_process_data, _, _, net2edeper_depth_2_training_process_concat_dataframe) = get_data(
         "fehring_growing_nn_new_seeded", [1, 1, 4, 1, 4]
     )
 
     training_process_style()
 
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 1", linestyle="-")
     sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 2", linestyle="--")
     sns.lineplot(data=net2edeper_depth_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 2", linestyle=":")
 
@@ -157,12 +158,13 @@ def plot_10x10_random_depth2():
 
 
 def plot_10x10_random_depth4():
-    (_, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
+    (baseline_depth_1_training_process_data, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
         "fehring_growing_nn_new_seeded", [1, 1, 4, 1, 4]
     )
 
     training_process_style()
 
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 1", linestyle="-")
     sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 4", linestyle="-.")
     sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 4", linestyle=":")
 
@@ -215,12 +217,13 @@ def plot_10x10_monster_full():
 
 
 def plot_10x10_monster_depth2():
-    (_, baseline_depth_2_training_process_data, _, _, net2edeper_depth_2_training_process_concat_dataframe) = get_data(
+    (baseline_depth_1_training_process_data, baseline_depth_2_training_process_data, _, _, net2edeper_depth_2_training_process_concat_dataframe) = get_data(
         "fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5]
     )
 
     training_process_style()
 
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 1", linestyle="-")
     sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 2", linestyle="--")
     sns.lineplot(data=net2edeper_depth_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 2", linestyle=":")
 
@@ -239,12 +242,12 @@ def plot_10x10_monster_depth2():
 
 
 def plot_10x10_monster_depth4():
-    (_, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
+    (baseline_depth_1_training_process_data, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
         "fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5]
     )
 
     training_process_style()
-
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 1", linestyle="-")
     sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 4", linestyle="-.")
     sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 4", linestyle=":")
 

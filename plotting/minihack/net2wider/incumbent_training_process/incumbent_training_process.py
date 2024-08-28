@@ -1,4 +1,4 @@
-from plotting.plot_utils import get_logtable, set_rc_params
+from utils.plotting import get_logtable, set_rc_params, convert_dataframe
 from matplotlib import pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -91,6 +91,18 @@ def get_data(database_name: str, experiment_ids: List[int]):
         net2wider_width_2_training_process_concat_dataframe.append(current)
     net2wider_width_2_training_process_concat_dataframe = pd.concat(net2wider_width_2_training_process_concat_dataframe)
 
+    baseline_width_1_training_process_data = baseline_width_1_training_process_data[["timestep", "worker_id", "rewards_per_episode"]]
+    baseline_width_2_training_process_data = baseline_width_2_training_process_data[["timestep", "worker_id", "rewards_per_episode"]]
+    baseline_width_4_training_process_data = baseline_width_4_training_process_data[["timestep", "worker_id", "rewards_per_episode"]]
+    net2wider_width_4_training_process_concat_dataframe = net2wider_width_4_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
+    net2wider_width_2_training_process_concat_dataframe = net2wider_width_2_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
+
+    baseline_width_1_training_process_data = convert_dataframe(baseline_width_1_training_process_data)
+    baseline_width_2_training_process_data = convert_dataframe(baseline_width_2_training_process_data)
+    baseline_width_4_training_process_data = convert_dataframe(baseline_width_4_training_process_data)
+    net2wider_width_4_training_process_concat_dataframe = convert_dataframe(net2wider_width_4_training_process_concat_dataframe)
+    net2wider_width_2_training_process_concat_dataframe = convert_dataframe(net2wider_width_2_training_process_concat_dataframe)
+
     return (
         baseline_width_1_training_process_data,
         baseline_width_2_training_process_data,
@@ -107,15 +119,15 @@ def plot_10x10_random_full():
         baseline_width_4_training_process_data,
         net2wider_width_4_training_process_concat_dataframe,
         net2wider_width_2_training_process_concat_dataframe,
-    ) = get_data("fehring_growing_nn_new_seeded", [1, 2, 5, 8, 9])
+    ) = get_data("fehring_growing_nn_new_seeded", [1, 2, 7, 8, 9])
 
     training_process_style()
 
-    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="mean_cost", label="Constant Width 512", linestyle="-")
-    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="mean_cost", label="Constant Width 1024", linestyle="--")
-    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="mean_cost", label="Constant Width 4096", linestyle="-.")
-    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Wider Width 4096", linestyle=":")
-    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Wider Width 1024", linestyle=(0, (4, 1, 2, 1)))
+    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="-")
+    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="--")
+    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Constant Width 4096", linestyle="-.")
+    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 4096", linestyle=":")
+    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle=(0, (4, 1, 2, 1)))
 
     # Add vline every 500000 timesteps
     for i in range(1, int(net2wider_width_4_training_process_concat_dataframe["timestep"].max() / 500000)):
@@ -123,7 +135,7 @@ def plot_10x10_random_full():
 
     plt.title("Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
 
@@ -136,21 +148,21 @@ def plot_10x10_random_full():
 
 def plot_10x10_random_width2():
     (baseline_width_1_training_process_data, baseline_width_2_training_process_data, _, _, net2edeper_width_2_training_process_concat_dataframe) = get_data(
-        "fehring_growing_nn_new_seeded", [1, 2, 5, 8, 9]
+        "fehring_growing_nn_new_seeded", [1, 2, 7, 8, 9]
     )
 
     training_process_style()
 
-    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="mean_cost", label="Constant Width 512", linestyle="-")
-    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="mean_cost", label="Constant Width 1024", linestyle="--")
-    sns.lineplot(data=net2edeper_width_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Wider Width 1024", linestyle=":")
+    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="-")
+    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="--")
+    sns.lineplot(data=net2edeper_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle=":")
 
     for i in range(1, int(net2edeper_width_2_training_process_concat_dataframe["timestep"].max() / 1000000)):
         plt.axvline(x=i * 1000000, color="gray", linestyle="--")
 
     plt.title("Width 2, Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -161,21 +173,21 @@ def plot_10x10_random_width2():
 
 def plot_10x10_random_width4():
     (baseline_width_1_training_process_data, _, baseline_width_4_training_process_data, net2wider_width_4_training_process_concat_dataframe, _) = get_data(
-        "fehring_growing_nn_new_seeded", [1, 2, 5, 8, 9]
+        "fehring_growing_nn_new_seeded", [1, 2, 7, 8, 9]
     )
 
     training_process_style()
 
-    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="mean_cost", label="Constant Width 512", linestyle="-")
-    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="mean_cost", label="Constant Width 4096", linestyle="-.")
-    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Constant Width 4096", linestyle=":")
+    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="-")
+    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Constant Width 4096", linestyle="-.")
+    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Constant Width 4096", linestyle=":")
 
     for i in range(1, int(net2wider_width_4_training_process_concat_dataframe["timestep"].max() / 500000)):
         plt.axvline(x=i * 500000, color="gray", linestyle="--")
 
     plt.title("Width 4, Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -191,15 +203,15 @@ def plot_10x10_monster_full():
         baseline_width_4_training_process_data,
         net2wider_width_4_training_process_concat_dataframe,
         net2wider_width_2_training_process_concat_dataframe,
-    ) = get_data("fehring_growing_nn_new_seeded", [3, 2, 6, 7, 10])
+    ) = get_data("fehring_growing_nn_new_seeded", [3, 2, 8, 7, 10])
 
     training_process_style()
 
-    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="mean_cost", label="Constant Width 512", linestyle="-")
-    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="mean_cost", label="Constant Width 1024", linestyle="--")
-    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="mean_cost", label="Constant Width 4096", linestyle="-.")
-    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Wider Width 4096", linestyle=":")
-    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Wider Width 1024", linestyle=(0, (4, 1, 2, 1)))
+    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="-")
+    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="--")
+    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Constant Width 4096", linestyle="-.")
+    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 4096", linestyle=":")
+    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle=(0, (4, 1, 2, 1)))
 
     # Add vline every 500000 timesteps
     for i in range(1, int(net2wider_width_4_training_process_concat_dataframe["timestep"].max() / 500000)):
@@ -207,7 +219,7 @@ def plot_10x10_monster_full():
 
     plt.title("Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
 
@@ -220,21 +232,21 @@ def plot_10x10_monster_full():
 
 def plot_10x10_monster_width2():
     (baseline_width_1_training_process_data, baseline_width_2_training_process_data, _, _, net2edeper_width_2_training_process_concat_dataframe) = get_data(
-        "fehring_growing_nn_new_seeded", [3, 2, 6, 7, 10]
+        "fehring_growing_nn_new_seeded", [3, 2, 8, 7, 10]
     )
 
     training_process_style()
 
-    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="mean_cost", label="Constant Width 512", linestyle="-")
-    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="mean_cost", label="Constant Width 1024", linestyle="--")
-    sns.lineplot(data=net2edeper_width_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Wider Width 1024", linestyle=":")
+    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="-")
+    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="--")
+    sns.lineplot(data=net2edeper_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle=":")
 
     for i in range(1, int(net2edeper_width_2_training_process_concat_dataframe["timestep"].max() / 1000000)):
         plt.axvline(x=i * 1000000, color="gray", linestyle="--")
 
     plt.title("Width 2, Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -245,21 +257,21 @@ def plot_10x10_monster_width2():
 
 def plot_10x10_monster_width4():
     (baseline_width_1_training_process_data, _, baseline_width_4_training_process_data, net2wider_width_4_training_process_concat_dataframe, _) = get_data(
-        "fehring_growing_nn_new_seeded", [3, 2, 6, 7, 10]
+        "fehring_growing_nn_new_seeded", [3, 2, 8, 7, 10]
     )
 
     training_process_style()
 
-    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="mean_cost", label="Constant Width 512", linestyle="-")
-    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="mean_cost", label="Constant Width 4096", linestyle="-.")
-    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Wider Width 4096", linestyle=":")
+    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="-")
+    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Constant Width 4096", linestyle="-.")
+    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 4096", linestyle=":")
 
     for i in range(1, int(net2wider_width_4_training_process_concat_dataframe["timestep"].max() / 500000)):
         plt.axvline(x=i * 500000, color="gray", linestyle="--")
 
     plt.title("Width 4, Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)

@@ -84,11 +84,11 @@ def plot_10x10_random():
         "fehring_growing_nn_new_seeded", [1, 2, 7, 8, 9]
     )
     training_process_style()
-    sns.lineplot(data=baseline_width_1_callback_data, x="environment_interactions", y="cost", label="Baseline (1 layer)", drawstyle="steps-post")
-    sns.lineplot(data=baseline_width_2_callback_data, x="environment_interactions", y="cost", label="Baseline (2 layers)", drawstyle="steps-post")
-    sns.lineplot(data=baseline_width_4_callback_data, x="environment_interactions", y="cost", label="Baseline (4 layers)", drawstyle="steps-post")
-    sns.lineplot(data=net2wider_smac_callback_data_width_4, x="environment_interactions", y="cost", label="Net2Wider (4 layers)", drawstyle="steps-post")
-    sns.lineplot(data=net2wider_smac_callback_data_width_2, x="environment_interactions", y="cost", label="Net2Wider (2 layers)", drawstyle="steps-post")
+    sns.lineplot(data=baseline_width_1_callback_data, x="environment_interactions", y="cost", label="Baseline (width 512)", drawstyle="steps-post")
+    sns.lineplot(data=baseline_width_2_callback_data, x="environment_interactions", y="cost", label="Baseline (width 1024)", drawstyle="steps-post")
+    sns.lineplot(data=baseline_width_4_callback_data, x="environment_interactions", y="cost", label="Baseline (width 4096)", drawstyle="steps-post")
+    sns.lineplot(data=net2wider_smac_callback_data_width_4, x="environment_interactions", y="cost", label="Net2Wider (width 4096)", drawstyle="steps-post")
+    sns.lineplot(data=net2wider_smac_callback_data_width_2, x="environment_interactions", y="cost", label="Net2Wider (width 2048)", drawstyle="steps-post")
 
     plt.title("Optimization Process 10x10 Random", fontsize=18, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)
@@ -106,11 +106,11 @@ def plot_10x10_monster():
     )
 
     training_process_style()
-    sns.lineplot(data=baseline_width_1_callback_data, x="environment_interactions", y="cost", label="Baseline (1 layer)", drawstyle="steps-post")
-    sns.lineplot(data=baseline_width_2_callback_data, x="environment_interactions", y="cost", label="Baseline (2 layers)", drawstyle="steps-post")
-    sns.lineplot(data=baseline_width_4_callback_data, x="environment_interactions", y="cost", label="Baseline (4 layers)", drawstyle="steps-post")
-    sns.lineplot(data=net2wider_smac_callback_data_width_4, x="environment_interactions", y="cost", label="Net2Wider (4 layers)", drawstyle="steps-post")
-    sns.lineplot(data=net2wider_smac_callback_data_width_2, x="environment_interactions", y="cost", label="Net2Wider (2 layers)", drawstyle="steps-post")
+    sns.lineplot(data=baseline_width_1_callback_data, x="environment_interactions", y="cost", label="Baseline (width 512)", drawstyle="steps-post")
+    sns.lineplot(data=baseline_width_2_callback_data, x="environment_interactions", y="cost", label="Baseline (width 1024)", drawstyle="steps-post")
+    sns.lineplot(data=baseline_width_4_callback_data, x="environment_interactions", y="cost", label="Baseline (width 4096)", drawstyle="steps-post")
+    sns.lineplot(data=net2wider_smac_callback_data_width_4, x="environment_interactions", y="cost", label="Net2Wider (width 4096)", drawstyle="steps-post")
+    sns.lineplot(data=net2wider_smac_callback_data_width_2, x="environment_interactions", y="cost", label="Net2Wider (width 2048)", drawstyle="steps-post")
 
     plt.title("Optimization Process 10x10 Monster", fontsize=18, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)

@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import seaborn as sns
+import ast
 import io
 import matplotlib as mpl
 import numpy as np
@@ -110,3 +111,51 @@ def select_incumbents(smac_callbacks: pd.DataFrame) -> pd.DataFrame:
             current_incumbent = row["cost"]
             incumbent_data.append(row)
     return pd.DataFrame(incumbent_data)
+
+
+def convert_dataframe(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Given a DataFrame with columns 'timestep', 'worker_id', and 'rewards_per_episode', convert it to a DataFrame with columns 'timestep', 'worker_id' and 'episode_reward',
+    where the 'episode_reward' column contains the interquartile mean of the rewards_per_episode column.
+    """
+
+    def extract_keys(data_str):
+        # Convert string to dictionary
+
+        data_dict = ast.literal_eval(data_str)
+        dat_dict_values = data_dict.values()
+        new_values = []
+        for venc_env_number in dat_dict_values:
+            for evaluation_episode in venc_env_number:
+                new_values.append(sum(evaluation_episode))
+        # Return the dictionary (pandas will handle this correctly)
+        new_values = {i: new_values[i] for i in range(len(new_values))}
+        return pd.Series(new_values)
+
+        # Apply the function to the column
+
+    def interquartile_mean(group):
+        """Generated using GPT 4o"""
+        q1 = group.quantile(0.25)
+        q3 = group.quantile(0.75)
+        filtered = group[(group >= q1) & (group <= q3)]
+        return filtered.mean()
+
+    df_extracted = dataframe["rewards_per_episode"].apply(extract_keys)
+
+    # Combine the original DataFrame with the new one
+    df_combined = pd.concat([dataframe, df_extracted], axis=1)
+    df_combined = df_combined.set_index(["timestep", "worker_id"])
+
+    df_combined.drop("rewards_per_episode", axis=1, inplace=True)
+
+    df_combined = pd.DataFrame(df_combined.stack())
+    df_combined.reset_index(inplace=True)
+    del df_combined["level_2"]
+    df_combined.columns = ["timestep", "worker_id", "episode_reward"]
+
+    df_iqm = df_combined.groupby(["timestep", "worker_id"]).apply(interquartile_mean)
+    df_iqm = df_iqm.reset_index(drop=True)
+    df_iqm.columns = ["timestep", "worker_id", "episode_reward"]
+
+    return df_iqm

@@ -1,8 +1,8 @@
-from plotting.plot_utils import get_logtable, set_rc_params
+from utils.plotting import get_logtable, set_rc_params
 from matplotlib import pyplot as plt
 import pandas as pd
 import seaborn as sns
-from utils.plotting import training_process_style
+from utils.plotting import training_process_style, convert_dataframe
 from typing import List
 
 set_rc_params()
@@ -89,6 +89,18 @@ def get_data(database_name: str, experiment_ids: List[int]):
         net2deeper_depth_2_training_process_concat_dataframe.append(current)
     net2deeper_depth_2_training_process_concat_dataframe = pd.concat(net2deeper_depth_2_training_process_concat_dataframe)
 
+    baseline_depth_1_training_process_data = baseline_depth_1_training_process_data[["timestep", "worker_id", "rewards_per_episode"]]
+    baseline_depth_2_training_process_data = baseline_depth_2_training_process_data[["timestep", "worker_id", "rewards_per_episode"]]
+    baseline_depth_4_training_process_data = baseline_depth_4_training_process_data[["timestep", "worker_id", "rewards_per_episode"]]
+    net2deeper_depth_4_training_process_concat_dataframe = net2deeper_depth_4_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
+    net2deeper_depth_2_training_process_concat_dataframe = net2deeper_depth_2_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
+
+    baseline_depth_1_training_process_data = convert_dataframe(baseline_depth_1_training_process_data)
+    baseline_depth_2_training_process_data = convert_dataframe(baseline_depth_2_training_process_data)
+    baseline_depth_4_training_process_data = convert_dataframe(baseline_depth_4_training_process_data)
+    net2deeper_depth_4_training_process_concat_dataframe = convert_dataframe(net2deeper_depth_4_training_process_concat_dataframe)
+    net2deeper_depth_2_training_process_concat_dataframe = convert_dataframe(net2deeper_depth_2_training_process_concat_dataframe)
+
     return (
         baseline_depth_1_training_process_data,
         baseline_depth_2_training_process_data,
@@ -109,11 +121,11 @@ def plot_10x10_random_full():
 
     training_process_style()
 
-    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 1", linestyle="-")
-    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 2", linestyle="--")
-    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 4", linestyle="-.")
-    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 4", linestyle=":")
-    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 2", linestyle=(0, (4, 1, 2, 1)))
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="-")
+    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 2", linestyle="--")
+    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 4", linestyle="-.")
+    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 4", linestyle=":")
+    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle=(0, (4, 1, 2, 1)))
 
     # Add vline every 500000 timesteps
     for i in range(1, int(net2deeper_depth_4_training_process_concat_dataframe["timestep"].max() / 500000)):
@@ -121,7 +133,7 @@ def plot_10x10_random_full():
 
     plt.title("Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
 
@@ -133,21 +145,22 @@ def plot_10x10_random_full():
 
 
 def plot_10x10_random_depth2():
-    (_, baseline_depth_2_training_process_data, _, _, net2edeper_depth_2_training_process_concat_dataframe) = get_data(
+    (baseline_depth_1_training_process_data, baseline_depth_2_training_process_data, _, _, net2edeper_depth_2_training_process_concat_dataframe) = get_data(
         "fehring_growing_nn_new_seeded", [1, 1, 4, 1, 4]
     )
 
     training_process_style()
 
-    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 2", linestyle="--")
-    sns.lineplot(data=net2edeper_depth_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 2", linestyle=":")
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="-")
+    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 2", linestyle="--")
+    sns.lineplot(data=net2edeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle=":")
 
     for i in range(1, int(net2edeper_depth_2_training_process_concat_dataframe["timestep"].max() / 1000000)):
         plt.axvline(x=i * 1000000, color="gray", linestyle="--")
 
     plt.title("Depth 2, Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -157,21 +170,22 @@ def plot_10x10_random_depth2():
 
 
 def plot_10x10_random_depth4():
-    (_, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
+    (baseline_depth_1_training_process_data, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
         "fehring_growing_nn_new_seeded", [1, 1, 4, 1, 4]
     )
 
     training_process_style()
 
-    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 4", linestyle="-.")
-    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 4", linestyle=":")
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="-")
+    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 4", linestyle="-.")
+    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 4", linestyle=":")
 
     for i in range(1, int(net2deeper_depth_4_training_process_concat_dataframe["timestep"].max() / 500000)):
         plt.axvline(x=i * 500000, color="gray", linestyle="--")
 
     plt.title("Depth 4, Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -191,11 +205,11 @@ def plot_10x10_monster_full():
 
     training_process_style()
 
-    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 1", linestyle="-")
-    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 2", linestyle="--")
-    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 4", linestyle="-.")
-    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 4", linestyle=":")
-    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 2", linestyle=(0, (4, 1, 2, 1)))
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="-")
+    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 2", linestyle="--")
+    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 4", linestyle="-.")
+    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 4", linestyle=":")
+    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle=(0, (4, 1, 2, 1)))
 
     # Add vline every 500000 timesteps
     for i in range(1, int(net2deeper_depth_4_training_process_concat_dataframe["timestep"].max() / 500000)):
@@ -203,7 +217,7 @@ def plot_10x10_monster_full():
 
     plt.title("Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
 
@@ -215,21 +229,22 @@ def plot_10x10_monster_full():
 
 
 def plot_10x10_monster_depth2():
-    (_, baseline_depth_2_training_process_data, _, _, net2edeper_depth_2_training_process_concat_dataframe) = get_data(
+    (baseline_depth_1_training_process_data, baseline_depth_2_training_process_data, _, _, net2edeper_depth_2_training_process_concat_dataframe) = get_data(
         "fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5]
     )
 
     training_process_style()
 
-    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 2", linestyle="--")
-    sns.lineplot(data=net2edeper_depth_2_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 2", linestyle=":")
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="-")
+    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 2", linestyle="--")
+    sns.lineplot(data=net2edeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle=":")
 
     for i in range(1, int(net2edeper_depth_2_training_process_concat_dataframe["timestep"].max() / 1000000)):
         plt.axvline(x=i * 1000000, color="gray", linestyle="--")
 
     plt.title("Depth 2, Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -239,21 +254,21 @@ def plot_10x10_monster_depth2():
 
 
 def plot_10x10_monster_depth4():
-    (_, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
+    (baseline_depth_1_training_process_data, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
         "fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5]
     )
 
     training_process_style()
-
-    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="mean_cost", label="Constant Depth 4", linestyle="-.")
-    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="mean_cost", label="Net2Deeper Depth 4", linestyle=":")
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="-")
+    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 4", linestyle="-.")
+    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 4", linestyle=":")
 
     for i in range(1, int(net2deeper_depth_4_training_process_concat_dataframe["timestep"].max() / 500000)):
         plt.axvline(x=i * 500000, color="gray", linestyle="--")
 
     plt.title("Depth 4, Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)

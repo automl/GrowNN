@@ -7,8 +7,9 @@ defaults:
 hydra:
   sweeper:
     smac_kwargs:
-      intensifier: Not-HB
-      max_budget: 1000000 # Internal Budget of one target function run
+      intensifier: SHB
+      min_budget: 1 # Internal Budget of one target function run
+      max_budget: 4 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -18,13 +19,13 @@ hydra:
       deterministic: True # whether or nto the env is deterministic
       
       seeds: [0,1,2,3,4] # seeds passed to each worker - so we alsways have the same seeds
-      # TODO Assuming wokring with seeds makes sense, how do we go from here
+      # TODO Assuming wokring with seeds mak sense, how do we go from here
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 50 # The budget for SMAC
+    budget: 200 # The budget for SMAC
 
-    budget_variable: non_hyperparameters.total_timesteps
+    budget_variable: non_hyperparameters.feature_extractor_depth
     saving_variable: non_hyperparameters.model_save_path
 
     search_space: ${configspace}
@@ -55,19 +56,20 @@ non_hyperparameters:
   trial_number: 0
   config_id: Null
   experiment_id: Null
+  feature_extractor_depth: 0
   environment_id: Ant-v4
   env_seed: 0
   smac_seed: 0
   model_save_path: blablabla
-  feature_extractor_architecture: "[64, 64]"
+  feature_extractor_width: 64
   pi_dimension: 64
   vf_dimension: 64
-  observation_keys: [chars,]
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 80
-  total_timesteps: 1000000 # Defined at top with budget
+  n_evaluation_rounds: 20
+  total_timesteps: 250000 # Defined at top with budget
+
 
 PY_EXPERIMENTER: 
   n_jobs: 1
@@ -75,15 +77,11 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn_new_seeded
     table:
-      name: ant_bb_net2deeper_baseline
+      name: ant_net2deeper
       keyfields: 
         environment_id:
           type: VARCHAR(50)
-        feature_extractor_architecture:
-          type: VARCHAR(50)
-        pi_dimension:
-          type: INT
-        vf_dimension:
+        feature_extractor_depth:
           type: INT
         env_seed:
           type: INT
@@ -91,8 +89,12 @@ PY_EXPERIMENTER:
           type: INT
         model_save_path:
           type: VARCHAR(50)
-        observation_keys:
-          type: VARCHAR(200)
+        feature_extractor_width: 
+          type: INT
+        pi_dimension: 
+          type: INT
+        vf_dimension: 
+          type: INT
         max_episode_steps:
           type: INT
         parallel_vec_envs:
@@ -130,17 +132,18 @@ PY_EXPERIMENTER:
         normalize_advantage: BOOLEAN
         vf_coef: FLOAT
         gamma: FLOAT
-        feature_extractor_architecture: VARCHAR(50)
-        vf_dimension: INT
-        pi_dimension: INT
+        feature_extractor_output_dimension: INT
+        n_feature_extractor_layers: INT
+        feature_extractor_layer_width: INT
         final_score: FLOAT
         final_std: FLOAT
-
+        
       training_process:
         worker_id: INT
         trial_number: INT
         budget: INT
         timestep: INT
+        hyperparameter_str_identifier: VARCHAR(500)
         mean_cost: FLOAT
         mean_cost_stdev: FLOAT
         all_costs: LONGTEXT

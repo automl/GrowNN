@@ -129,27 +129,42 @@ class CustomEvaluationCallback(EvalCallback):
                 rollout_losses["value_loss"] = vf_coef * rollout_losses["value_loss"]
             result_processor.process_logs({"training_losses": {"trial_number": trial_number, "worker_number": worker_number, "n_rollout": n_rollout, **rollout_losses, **kwargs}})
 
-    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, **kwargs):
+    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, minihack_adaptation:bool=True,**kwargs):
         callback_data = np.load("logs/evaluations.npz")
 
         for timestep, result, _, actions_per_episode, rewards_per_episode in zip(*callback_data.values(), self.actions_per_episodes, self.rewards_per_episodes):
             mean_cost = np.mean(result)
             mean_cost_stdev = np.std(result)
-            result_processor.process_logs(
-                {
-                    "training_process": {
-                        "worker_id": worker_number,
-                        "trial_number": trial_number,
-                        "timestep": timestep,
-                        "mean_cost": mean_cost,
-                        "mean_cost_stdev": mean_cost_stdev,
-                        "all_costs": str(result),
-                        "actions_per_episode": str(actions_per_episode),
-                        "rewards_per_episode": str(rewards_per_episode),
-                        **kwargs,
-                    }
-                },
-            )
+            if minihack_adaptation:
+                result_processor.process_logs(
+                    {
+                        "training_process": {
+                            "worker_id": worker_number,
+                            "trial_number": trial_number,
+                            "timestep": timestep,
+                            "mean_cost": mean_cost,
+                            "mean_cost_stdev": mean_cost_stdev,
+                            "all_costs": str(result),
+                            "actions_per_episode": str(actions_per_episode),
+                            "rewards_per_episode": str(rewards_per_episode),
+                            **kwargs,
+                        }
+                    },
+                )
+            else:
+                result_processor.process_logs(
+                    {
+                        "training_process": {
+                            "worker_id": worker_number,
+                            "trial_number": trial_number,
+                            "timestep": timestep,
+                            "mean_cost": mean_cost,
+                            "mean_cost_stdev": mean_cost_stdev,
+                            "all_costs": str(result),
+                            **kwargs,
+                        }
+                    },
+                )
 
     def _on_rollout_end(self) -> None:
         return self.losses.append(deepcopy(self.logger.name_to_value))

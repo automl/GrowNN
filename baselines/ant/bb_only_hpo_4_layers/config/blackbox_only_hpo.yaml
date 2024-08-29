@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  #- slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -75,7 +75,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn_new_seeded
     table:
-      name: bb-ant-net2deeper
+      name: ant_bb_net2deeper_baseline
       keyfields: 
         environment_id:
           type: VARCHAR(50)
@@ -168,7 +168,7 @@ PY_EXPERIMENTER:
         end_states: LONGTEXT
         rewards_per_episode: LONGTEXT
         actions_per_episode: LONGTEXT
-      
+
       training_losses:
         trial_number: INT
         budget: INT
@@ -181,6 +181,7 @@ PY_EXPERIMENTER:
         value_loss: FLOAT
         approx_kl: FLOAT
         clip_fraction: FLOAT
+        std: FLOAT
         loss: FLOAT
         explained_variance: FLOAT
         clip_range: FLOAT

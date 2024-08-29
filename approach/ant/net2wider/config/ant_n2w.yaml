@@ -194,6 +194,7 @@ PY_EXPERIMENTER:
         value_loss: FLOAT
         approx_kl: FLOAT
         clip_fraction: FLOAT
+        std: FLOAT
         loss: FLOAT
         explained_variance: FLOAT
         clip_range: FLOAT

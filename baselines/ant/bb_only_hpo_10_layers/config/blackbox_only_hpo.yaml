@@ -59,7 +59,7 @@ non_hyperparameters:
   env_seed: 0
   smac_seed: 0
   model_save_path: blablabla
-  feature_extractor_architecture: "[64, 64]"
+  feature_extractor_architecture: "[64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64]"
   pi_dimension: 64
   vf_dimension: 64
   observation_keys: [chars,]
@@ -168,7 +168,7 @@ PY_EXPERIMENTER:
         end_states: LONGTEXT
         rewards_per_episode: LONGTEXT
         actions_per_episode: LONGTEXT
-      
+
       training_losses:
         trial_number: INT
         budget: INT

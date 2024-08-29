@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  #- slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -59,7 +59,7 @@ non_hyperparameters:
   env_seed: 0
   smac_seed: 0
   model_save_path: blablabla
-  feature_extractor_architecture: "[64, 64, 64]"
+  feature_extractor_architecture: "[64, 64 ,64]"
   pi_dimension: 64
   vf_dimension: 64
   observation_keys: [chars,]
@@ -75,7 +75,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn_new_seeded
     table:
-      name: bb-ant-net2deeper
+      name: ant_bb_net2deeper_baseline
       keyfields: 
         environment_id:
           type: VARCHAR(50)
@@ -181,6 +181,7 @@ PY_EXPERIMENTER:
         value_loss: FLOAT
         approx_kl: FLOAT
         clip_fraction: FLOAT
+        std: FLOAT
         loss: FLOAT
         explained_variance: FLOAT
         clip_range: FLOAT

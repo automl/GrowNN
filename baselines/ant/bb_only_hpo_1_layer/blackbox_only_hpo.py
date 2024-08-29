@@ -17,7 +17,7 @@ debug_mode = False
 
 
 @hydra.main(config_path="config", config_name="blackbox_only_hpo", version_base="1.1")
-def black_box_ppo_configure(config: Configuration):
+def ant_bb_1(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
         gym
@@ -90,10 +90,17 @@ def black_box_ppo_configure(config: Configuration):
             log_path="./logs",
         )
         # For Soem Reason the policynet has a input dimension of 1
-        model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
+        try:
+            training_diverged = False
+            model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
+        except ValueError:
+            training_diverged = True
         if not debug_mode:
             evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
-            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, minihack_adaptation=False)
+
+        if training_diverged:
+            return 3000
 
         evaluation_vec_env = make_ant_vec_env(
             env_id=environment_name,
@@ -106,6 +113,7 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["n_evaluation_episodes"],
         )
+
         final_score, final_std, actions_per_epiosode = evaluate_policy(
             model,
             evaluation_vec_env,
@@ -161,4 +169,4 @@ def black_box_ppo_configure(config: Configuration):
 
 
 if __name__ == "__main__":
-    black_box_ppo_configure()
+    ant_bb_1()

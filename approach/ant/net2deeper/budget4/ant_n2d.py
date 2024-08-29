@@ -17,7 +17,7 @@ debug_mode = False
 
 
 @hydra.main(config_path="config", config_name="ant_n2d", version_base="1.1")
-def black_box_ppo_configure(config: Configuration):
+def ant_n2d_4(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
         gym
@@ -101,10 +101,26 @@ def black_box_ppo_configure(config: Configuration):
             log_path="./logs",
         )
         # For Soem Reason the policynet has a input dimension of 1
-        model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
+        try:
+            training_diverged = False
+            model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
+        except ValueError:
+            training_diverged = True
         if not debug_mode:
             evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
-            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, hyperparameter_str_identifier=str(extract_hyperparameters_gymnasium(config)))
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, minihack_adaptation=False, hyperparameter_str_identifier=str(extract_hyperparameters_gymnasium(config)))
+
+        
+        final_save_path = get_model_save_path_gymnasium(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
+        if not os.path.exists(final_save_path):
+            os.makedirs(final_save_path)
+
+        model.save(os.path.join(final_save_path, "model"))
+
+        if training_diverged:
+            
+            return 3000
+
 
         evaluation_vec_env = make_ant_vec_env(
             env_id=environment_name,
@@ -167,11 +183,6 @@ def black_box_ppo_configure(config: Configuration):
                 },
             )
 
-        final_save_path = get_model_save_path_gymnasium(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
-        if not os.path.exists(final_save_path):
-            os.makedirs(final_save_path)
-
-        model.save(os.path.join(final_save_path, "model"))
 
         model.policy = None
         torch.cuda.empty_cache()
@@ -187,4 +198,4 @@ def black_box_ppo_configure(config: Configuration):
 
 
 if __name__ == "__main__":
-    black_box_ppo_configure()
+    ant_n2d_4()

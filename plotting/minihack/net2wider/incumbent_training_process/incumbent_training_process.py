@@ -280,9 +280,9 @@ def plot_10x10_monster_width4():
     plt.savefig("plotting/minihack/net2wider/incumbent_training_process/incumbent_training_process_monster_10x10_width4.png", bbox_inches="tight")
 
 
-plot_10x10_random_full()
-plot_10x10_random_width2()
-plot_10x10_random_width4()
+#plot_10x10_random_full()
+#plot_10x10_random_width2()
+#plot_10x10_random_width4()
 plot_10x10_monster_full()
 plot_10x10_monster_width2()
 plot_10x10_monster_width4()

@@ -42,11 +42,11 @@ def get_data(database_name: str, experiment_ids: List[int]) -> pd.DataFrame:
     ]
     max_trial_number
 
-    baseline_depth_1_callback_data["environment_interactions"] = baseline_depth_1_callback_data["trial_number"] * 2000000 + 2000000
-    baseline_depth_2_callback_data["environment_interactions"] = baseline_depth_2_callback_data["trial_number"] * 2000000 + 2000000
-    baseline_depth_4_callback_data["environment_interactions"] = baseline_depth_4_callback_data["trial_number"] * 2000000 + 2000000
-    net2deeper_smac_callback_data_depth_4["environment_interactions"] = net2deeper_smac_callback_data_depth_4["trial_number"] * 500000 + 500000
-    net2deeper_smac_callback_data_depth_2["environment_interactions"] = net2deeper_smac_callback_data_depth_2["trial_number"] * 1000000 + 1000000
+    baseline_depth_1_callback_data["environment_interactions"] = baseline_depth_1_callback_data["trial_number"] * 2000000
+    baseline_depth_2_callback_data["environment_interactions"] = baseline_depth_2_callback_data["trial_number"] * 2000000
+    baseline_depth_4_callback_data["environment_interactions"] = baseline_depth_4_callback_data["trial_number"] * 2000000
+    net2deeper_smac_callback_data_depth_4["environment_interactions"] = net2deeper_smac_callback_data_depth_4["trial_number"] * 500000
+    net2deeper_smac_callback_data_depth_2["environment_interactions"] = net2deeper_smac_callback_data_depth_2["trial_number"] * 1000000
 
     max_interactions = 50 * 2000000
     baseline_depth_1_callback_data = pd.concat(
@@ -97,7 +97,7 @@ def plot_10x10_random():
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
-    plt.savefig("plotting/net2deeper/overall_training_process/net2deeper_training_process_random.png", bbox_inches="tight")
+    plt.savefig("plotting/minihack/net2deeper/overall_training_process/net2deeper_training_process_random.png", bbox_inches="tight")
 
 
 def plot_10x10_monster():
@@ -119,7 +119,7 @@ def plot_10x10_monster():
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
-    plt.savefig("plotting/net2deeper/overall_training_process/net2deeper_training_process_monster.png", bbox_inches="tight")
+    plt.savefig("plotting/minihack/net2deeper/overall_training_process/net2deeper_training_process_monster.png", bbox_inches="tight")
 
 
 plot_10x10_random()

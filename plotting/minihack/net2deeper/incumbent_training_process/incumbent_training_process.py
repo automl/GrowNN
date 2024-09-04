@@ -2,7 +2,7 @@ from utils.plotting import get_logtable, set_rc_params
 from matplotlib import pyplot as plt
 import pandas as pd
 import seaborn as sns
-from utils.plotting import training_process_style, convert_dataframe
+from utils.plotting import training_process_style, convert_rewards_per_episode_to_means
 from typing import List
 
 set_rc_params()
@@ -95,11 +95,11 @@ def get_data(database_name: str, experiment_ids: List[int]):
     net2deeper_depth_4_training_process_concat_dataframe = net2deeper_depth_4_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
     net2deeper_depth_2_training_process_concat_dataframe = net2deeper_depth_2_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
 
-    baseline_depth_1_training_process_data = convert_dataframe(baseline_depth_1_training_process_data)
-    baseline_depth_2_training_process_data = convert_dataframe(baseline_depth_2_training_process_data)
-    baseline_depth_4_training_process_data = convert_dataframe(baseline_depth_4_training_process_data)
-    net2deeper_depth_4_training_process_concat_dataframe = convert_dataframe(net2deeper_depth_4_training_process_concat_dataframe)
-    net2deeper_depth_2_training_process_concat_dataframe = convert_dataframe(net2deeper_depth_2_training_process_concat_dataframe)
+    baseline_depth_1_training_process_data = convert_rewards_per_episode_to_means(baseline_depth_1_training_process_data)
+    baseline_depth_2_training_process_data = convert_rewards_per_episode_to_means(baseline_depth_2_training_process_data)
+    baseline_depth_4_training_process_data = convert_rewards_per_episode_to_means(baseline_depth_4_training_process_data)
+    net2deeper_depth_4_training_process_concat_dataframe = convert_rewards_per_episode_to_means(net2deeper_depth_4_training_process_concat_dataframe)
+    net2deeper_depth_2_training_process_concat_dataframe = convert_rewards_per_episode_to_means(net2deeper_depth_2_training_process_concat_dataframe)
 
     return (
         baseline_depth_1_training_process_data,

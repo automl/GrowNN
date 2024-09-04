@@ -48,9 +48,9 @@ def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], apprao
 
 def plot_one_million_interactions():
     database_name = "fehring_growing_nn_new_seeded"
-    baseline_experiment_ids = {"Baseline (1 layer)": 1, "Baseline (2 layers)": 2, "Baseline (4 layers)": 3, "Baseline (8 layers)": 5, "Baseline (6 layers)": 6}
+    baseline_experiment_ids = {"Baseline (2 layers)": 18, "Baseline (4 layers)": 19, "Baseline (8 layers)": 20}
 
-    appraoch_experiment_ids = {"Net2Deeper Depth 4": 1}
+    appraoch_experiment_ids = {"Net2Deeper (4 layers)": 9, "Net2Deeper (7 layers)": 10}
 
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 
@@ -73,7 +73,7 @@ def plot_one_million_interactions():
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
-    plt.ylim(-1000, 200)
+    plt.ylim(-1800, 200)
 
     plt.savefig("plotting/ant/overall_training_process/ant_training_process", bbox_inches="tight")
 

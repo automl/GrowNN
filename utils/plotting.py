@@ -5,6 +5,7 @@ import seaborn as sns
 import ast
 import io
 import matplotlib as mpl
+import os
 import numpy as np
 import pandas as pd
 from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -148,6 +149,48 @@ def convert_dataframe(dataframe: pd.DataFrame) -> pd.DataFrame:
     df_combined = df_combined.set_index(["timestep", "worker_id"])
 
     df_combined.drop("rewards_per_episode", axis=1, inplace=True)
+
+    df_combined = pd.DataFrame(df_combined.stack())
+    df_combined.reset_index(inplace=True)
+    del df_combined["level_2"]
+    df_combined.columns = ["timestep", "worker_id", "episode_reward"]
+
+    df_iqm = df_combined.groupby(["timestep", "worker_id"]).apply(interquartile_mean)
+    df_iqm = df_iqm.reset_index(drop=True)
+    df_iqm.columns = ["timestep", "worker_id", "episode_reward"]
+
+    return df_iqm
+
+
+def convert_dataframe_gym(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    Given a DataFrame with columns 'timestep', 'worker_id', and 'all_costs', convert it to a DataFrame with columns 'timestep', 'worker_id' and 'episode_reward',
+    where the 'episode_reward' column contains the interquartile mean of the rewards_per_episode column.
+    """
+
+    def extract_keys(data_str):
+        # Convert string to dictionary
+
+        data_dict = ast.literal_eval(",".join(data_str[1:-1].split()))
+
+        return pd.Series(data_dict)
+
+        # Apply the function to the column
+
+    def interquartile_mean(group):
+        """Generated using GPT 4o"""
+        q1 = group.quantile(0.25)
+        q3 = group.quantile(0.75)
+        filtered = group[(group >= q1) & (group <= q3)]
+        return filtered.mean()
+
+    df_extracted = dataframe["all_costs"].apply(extract_keys)
+
+    # Combine the original DataFrame with the new one
+    df_combined = pd.concat([dataframe, df_extracted], axis=1)
+    df_combined = df_combined.set_index(["timestep", "worker_id"])
+
+    df_combined.drop("all_costs", axis=1, inplace=True)
 
     df_combined = pd.DataFrame(df_combined.stack())
     df_combined.reset_index(inplace=True)

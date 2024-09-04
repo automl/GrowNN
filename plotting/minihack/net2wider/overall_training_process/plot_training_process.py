@@ -42,11 +42,11 @@ def get_data(database_name: str, experiment_ids: List[int]) -> pd.DataFrame:
     ]
     max_trial_number
 
-    baseline_width_1_callback_data["environment_interactions"] = baseline_width_1_callback_data["trial_number"] * 2000000 + 2000000
-    baseline_width_2_callback_data["environment_interactions"] = baseline_width_2_callback_data["trial_number"] * 2000000 + 2000000
-    baseline_width_4_callback_data["environment_interactions"] = baseline_width_4_callback_data["trial_number"] * 2000000 + 2000000
-    net2wider_smac_callback_data_width_4["environment_interactions"] = net2wider_smac_callback_data_width_4["trial_number"] * 500000 + 500000
-    net2wider_smac_callback_data_width_2["environment_interactions"] = net2wider_smac_callback_data_width_2["trial_number"] * 1000000 + 1000000
+    baseline_width_1_callback_data["environment_interactions"] = baseline_width_1_callback_data["trial_number"] * 2000000 
+    baseline_width_2_callback_data["environment_interactions"] = baseline_width_2_callback_data["trial_number"] * 2000000 
+    baseline_width_4_callback_data["environment_interactions"] = baseline_width_4_callback_data["trial_number"] * 2000000 
+    net2wider_smac_callback_data_width_4["environment_interactions"] = net2wider_smac_callback_data_width_4["trial_number"] * 500000 
+    net2wider_smac_callback_data_width_2["environment_interactions"] = net2wider_smac_callback_data_width_2["trial_number"] * 1000000 
 
     max_interactions = 50 * 2000000
     baseline_width_1_callback_data = pd.concat(

@@ -9,7 +9,7 @@ hydra:
     smac_kwargs:
       intensifier: SHB
       min_budget: 1 # Internal Budget of one target function run
-      max_budget: 4 # Internal Budget of one target function run
+      max_budget: 2 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5

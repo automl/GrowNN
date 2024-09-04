@@ -106,9 +106,14 @@ def ant_n2d_2(config: Configuration):
             model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         except ValueError:
             training_diverged = True
-        if not debug_mode:
-            evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
-            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, minihack_adaptation=False, hyperparameter_str_identifier=str(extract_hyperparameters_gymnasium(config)))
+        
+        try:
+            if not debug_mode:
+                evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
+                evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed, minihack_adaptation=False, hyperparameter_str_identifier=str(extract_hyperparameters_gymnasium(config)))
+        except FileNotFoundError:
+            pass
+
 
         final_save_path = get_model_save_path_gymnasium(config.non_hyperparameters.model_save_path, config, feature_extractor_depth, seed)
         if not os.path.exists(final_save_path):

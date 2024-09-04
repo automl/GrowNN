@@ -130,10 +130,9 @@ class CustomEvaluationCallback(EvalCallback):
                 rollout_losses["value_loss"] = vf_coef * rollout_losses["value_loss"]
             result_processor.process_logs({"training_losses": {"trial_number": trial_number, "worker_number": worker_number, "n_rollout": n_rollout, **rollout_losses, **kwargs}})
 
-    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, minihack_adaptation:bool=True,**kwargs):
+    def log_results(self, result_processor: ResultProcessor, trial_number: int, worker_number: int, minihack_adaptation: bool = True, **kwargs):
         try:
             callback_data = np.load("logs/evaluations.npz")
-        
 
             for timestep, result, _, actions_per_episode, rewards_per_episode in zip(*callback_data.values(), self.actions_per_episodes, self.rewards_per_episodes):
                 mean_cost = np.mean(result)
@@ -155,6 +154,14 @@ class CustomEvaluationCallback(EvalCallback):
                         },
                     )
                 else:
+                    overall_actions = list()
+                    for env in range(len(actions_per_episode)):
+                        for episode in range(len(actions_per_episode[env])):
+                            sum_of_actions = 0
+                            for step in range(len(actions_per_episode[env][episode])):
+                                sum_of_actions += np.absolute(actions_per_episode[env][episode][step]).sum()
+                            overall_actions.append(sum_of_actions / len(actions_per_episode[env][episode]))
+
                     result_processor.process_logs(
                         {
                             "training_process": {
@@ -164,6 +171,8 @@ class CustomEvaluationCallback(EvalCallback):
                                 "mean_cost": mean_cost,
                                 "mean_cost_stdev": mean_cost_stdev,
                                 "all_costs": str(result),
+                                "action_sizes": str(overall_actions),
+                                "action_sizes_mean": np.mean(overall_actions),
                                 **kwargs,
                             }
                         },
@@ -196,7 +205,7 @@ class FinalEvaluationWrapper:
         # Going into `done`
         self._rewards_in_current_episode = [deepcopy([]) for i in range(n_envs)]
 
-    def get_callback(self, minihack_adaptation:bool=True):
+    def get_callback(self, minihack_adaptation: bool = True):
         """
         Creates a callback function used for the final evaluation.
         """
@@ -230,7 +239,7 @@ class FinalEvaluationWrapper:
                 elif end_status not in (-1, 0, 1, 2):
                     raise ValueError(f"Unknown end_status {end_status}")
             self._current_end_status = [locals_dict["infos"][i]["end_status"] for i in range(self.n_envs)]
-        
+
         def _standard_callback(locals_dict, globals_dict, env_number: int):
             done = locals_dict["dones"][env_number]
             current_reward = locals_dict["rewards"][env_number]
@@ -244,8 +253,7 @@ class FinalEvaluationWrapper:
                 self.episode_lengths.append(locals_dict["current_lengths"][env_number])
                 self.rewards_per_episode.append(self._rewards_in_current_episode[env_number])
                 self._rewards_in_current_episode[env_number] = []
-                
-        
+
         if minihack_adaptation:
             return _minihack_callback
         else:

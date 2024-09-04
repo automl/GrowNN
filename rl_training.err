@@ -1,0 +1,79 @@
+Module for Miniconda3, version 4.10.3 loaded
+2024-08-26 09:28:27,881  | py-experimenter - WARNING  | No values given for keyfield environment_id
+2024-08-26 09:28:27,882  | py-experimenter - WARNING  | No values given for keyfield feature_extractor_architecture
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield pi_dimension
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield vf_dimension
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield env_seed
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield smac_seed
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield model_save_path
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield observation_keys
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield max_episode_steps
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield parallel_vec_envs
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield seed
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield n_evaluation_episodes
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield n_evaluation_rounds
+2024-08-26 09:28:27,883  | py-experimenter - WARNING  | No values given for keyfield total_timesteps
+2024-08-26 09:28:27,884  | py-experimenter - WARNING  | No values given for keyfield smac_budget
+2024-08-26 09:28:27,884  | py-experimenter - INFO     | Found 15 keyfields
+2024-08-26 09:28:27,884  | py-experimenter - INFO     | Found 2 resultfields
+2024-08-26 09:28:27,885  | py-experimenter - INFO     | Found 5 logtables
+2024-08-26 09:28:27,885  | py-experimenter - INFO     | Found logtable ant_bb_net2deeper_baseline__configurations
+2024-08-26 09:28:27,885  | py-experimenter - INFO     | Found logtable ant_bb_net2deeper_baseline__training_process
+2024-08-26 09:28:27,885  | py-experimenter - INFO     | Found logtable ant_bb_net2deeper_baseline__smac_callbacks
+2024-08-26 09:28:27,885  | py-experimenter - INFO     | Found logtable ant_bb_net2deeper_baseline__final_evaluation_callback
+2024-08-26 09:28:27,885  | py-experimenter - INFO     | Found logtable ant_bb_net2deeper_baseline__training_losses
+2024-08-26 09:28:27,885  | py-experimenter - WARNING  | No custom section defined in config
+2024-08-26 09:28:27,885  | py-experimenter - WARNING  | No codecarbon section defined in config
+2024-08-26 09:28:27,892  | py-experimenter - INFO     | 0 keys loaded from agent
+2024-08-26 09:28:27,892  | py-experimenter - INFO     | 0 key(s) loaded
+2024-08-26 09:28:28,315  | py-experimenter - INFO     | Connecting to gateway: apollo.ai.uni-hannover.de:22 as user 'fehring'
+2024-08-26 09:28:28,332  | paramiko.transport - INFO     | Connected (version 2.0, client OpenSSH_8.9p1)
+2024-08-26 09:28:28,457  | paramiko.transport - INFO     | Authentication (publickey) successful!
+2024-08-26 09:28:28,458  | py-experimenter - ERROR    | Problem setting SSH Forwarder up: Couldn't open tunnel 127.0.0.1:3306 <> 127.0.0.1:3306 might be in use or destination not reachable
+2024-08-26 09:28:28,458  | py-experimenter - WARNING  | Failed at creating SSH tunnel. Maybe the tunnel is already active in other process?
+2024-08-26 09:28:28,458  | py-experimenter - WARNING  | An error occurred while opening tunnels.
+2024-08-26 09:28:28,459  | py-experimenter - WARNING  | It looks like you didn't call the .stop() before the SSHTunnelForwarder obj was collected by the garbage collector! Running .stop(force=True)
+2024-08-26 09:28:28,459  | py-experimenter - INFO     | Closing all open connections...
+2024-08-26 09:28:28,459  | py-experimenter - WARNING  | Tunnels are not started. Please .start() first!
+2024-08-26 09:28:28,459  | py-experimenter - INFO     | Closing ssh transport
+2024-08-26 09:28:28,525  | py-experimenter - INFO     | Initialized and connected to database
+2024-08-26 09:28:28,783  | py-experimenter - INFO     | Table ant_bb_net2deeper_baseline created.
+2024-08-26 09:28:29,016  | py-experimenter - INFO     | Experiment with id 1 successfully added to database for immediate execution.
+Error executing job with overrides: ['batch_size=64', 'ent_coef=0.186169408634305', 'learning_rate=0.0001640649322125342', 'n_epochs=8', 'non_hyperparameters.config_id=1', 'non_hyperparameters.total_timesteps=2000000', 'non_hyperparameters.model_save_path=/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/fehring_growing_nn_new_seeded/ant_bb_net2deeper_baseline/1', 'non_hyperparameters.experiment_id=1', 'seed=0', 'non_hyperparameters.trial_number=0']
+Error executing job with overrides: ['batch_size=64', 'ent_coef=0.186169408634305', 'learning_rate=0.0001640649322125342', 'n_epochs=8', 'non_hyperparameters.config_id=1', 'non_hyperparameters.total_timesteps=2000000', 'non_hyperparameters.model_save_path=/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/fehring_growing_nn_new_seeded/ant_bb_net2deeper_baseline/1', 'non_hyperparameters.experiment_id=1', 'seed=1', 'non_hyperparameters.trial_number=0']
+Error executing job with overrides: ['batch_size=64', 'ent_coef=0.186169408634305', 'learning_rate=0.0001640649322125342', 'n_epochs=8', 'non_hyperparameters.config_id=1', 'non_hyperparameters.total_timesteps=2000000', 'non_hyperparameters.model_save_path=/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/fehring_growing_nn_new_seeded/ant_bb_net2deeper_baseline/1', 'non_hyperparameters.experiment_id=1', 'seed=2', 'non_hyperparameters.trial_number=0']
+Error executing job with overrides: ['batch_size=64', 'ent_coef=0.186169408634305', 'learning_rate=0.0001640649322125342', 'n_epochs=8', 'non_hyperparameters.config_id=1', 'non_hyperparameters.total_timesteps=2000000', 'non_hyperparameters.model_save_path=/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/fehring_growing_nn_new_seeded/ant_bb_net2deeper_baseline/1', 'non_hyperparameters.experiment_id=1', 'seed=3', 'non_hyperparameters.trial_number=0']
+Error executing job with overrides: ['batch_size=64', 'ent_coef=0.186169408634305', 'learning_rate=0.0001640649322125342', 'n_epochs=8', 'non_hyperparameters.config_id=1', 'non_hyperparameters.total_timesteps=2000000', 'non_hyperparameters.model_save_path=/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/fehring_growing_nn_new_seeded/ant_bb_net2deeper_baseline/1', 'non_hyperparameters.experiment_id=1', 'seed=4', 'non_hyperparameters.trial_number=0']
+Error executing job with overrides: ['batch_size=64', 'ent_coef=0.186169408634305', 'learning_rate=0.0001640649322125342', 'n_epochs=8', 'non_hyperparameters.config_id=1', 'non_hyperparameters.total_timesteps=2000000', 'non_hyperparameters.model_save_path=/mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/fehring_growing_nn_new_seeded/ant_bb_net2deeper_baseline/1', 'non_hyperparameters.experiment_id=1', 'seed=0', 'non_hyperparameters.trial_number=0']
+2024-08-26 09:55:28,601  | py-experimenter - ERROR    | Traceback (most recent call last):
+  File "/mnt/home/lfehring/.conda/envs/rl-architecture/lib/python3.8/site-packages/py_experimenter/experimenter.py", line 433, in _execute_experiment
+    final_status = experiment_function(keyfield_values, result_processor, self.config.custom_configuration.custom_values)
+  File "/mnt/home/lfehring/MasterThesis/architectures-in-rl/hydra_plugins/hydra_smac_sweeper/smac_sweeper_backend.py", line 138, in _sweep
+    incumbent = smac.run(True, result_processor.experiment_id)
+  File "/mnt/home/lfehring/MasterThesis/architectures-in-rl/hydra_plugins/hydra_smac_sweeper/hydra_smac.py", line 317, in run
+    performances, costs = self.run_configs(configs, config_ids, budgets, seeds, experiment_id, trial_numbers)  # Add PyExperimetner ID
+  File "/mnt/home/lfehring/MasterThesis/architectures-in-rl/hydra_plugins/hydra_smac_sweeper/hydra_smac.py", line 210, in run_configs
+    performances.append(np.mean([res[j * k + k].return_value for k in range(len(self.seeds))]))
+  File "/mnt/home/lfehring/MasterThesis/architectures-in-rl/hydra_plugins/hydra_smac_sweeper/hydra_smac.py", line 210, in <listcomp>
+    performances.append(np.mean([res[j * k + k].return_value for k in range(len(self.seeds))]))
+  File "/mnt/home/lfehring/.conda/envs/rl-architecture/lib/python3.8/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/mnt/home/lfehring/MasterThesis/architectures-in-rl/hydra_plugins/hydra_smac_sweeper/hydra_smac.py", line 201, in run_configs
+    res[j].return_value
+  File "/mnt/home/lfehring/.conda/envs/rl-architecture/lib/python3.8/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/mnt/home/lfehring/.conda/envs/rl-architecture/lib/python3.8/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "baselines/ant/bb_only_hpo_1_layer/blackbox_only_hpo.py", line 159, in black_box_ppo_configure
+    result = experimenter.attach(black_box_ppo_execute, config.non_hyperparameters.experiment_id)
+  File "/mnt/home/lfehring/.conda/envs/rl-architecture/lib/python3.8/site-packages/py_experimenter/experimenter.py", line 365, in attach
+    return experiment_function(result_processor)
+  File "baselines/ant/bb_only_hpo_1_layer/blackbox_only_hpo.py", line 95, in black_box_ppo_execute
+    evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
+  File "/mnt/home/lfehring/MasterThesis/architectures-in-rl/utils/stable_baselines_callback.py", line 130, in log_losses
+    result_processor.process_logs({"training_losses": {"trial_number": trial_number, "worker_number": worker_number, "n_rollout": n_rollout, **rollout_losses, **kwargs}})
+  File "/mnt/home/lfehring/.conda/envs/rl-architecture/lib/python3.8/site-packages/py_experimenter/result_processor.py", line 79, in process_logs
+    raise InvalidLogFieldError("Invalid logtable entries. See logs for more information")
+py_experimenter.exceptions.InvalidLogFieldError: Invalid logtable entries. See logs for more information
+
+2024-08-26 09:55:28,810  | py-experimenter - INFO     | Experiment with id 1 successfully executed.

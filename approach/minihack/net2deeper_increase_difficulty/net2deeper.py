@@ -21,6 +21,7 @@ budget_level_dict: dict = {
     3: 10,
     4: 10,
     5: 15,
+    6: 15
 }
 
 

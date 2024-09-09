@@ -149,6 +149,8 @@ PY_EXPERIMENTER:
         all_costs: LONGTEXT
         actions_per_episode: LONGTEXT
         rewards_per_episode: LONGTEXT
+        action_sizes: VARCHAR(5000)
+        action_sizes_mean: FLOAT
 
       smac_callbacks:
         trial_number: INT

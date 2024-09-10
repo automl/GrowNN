@@ -140,7 +140,7 @@ def black_box_ppo_configure(config: Configuration):
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
 
         evaluation_vec_env = make_minihack_vec_env(
-            environment_name,
+            non_hyperparameters["inc_diff_environment_id"],
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["parallel_vec_envs"],

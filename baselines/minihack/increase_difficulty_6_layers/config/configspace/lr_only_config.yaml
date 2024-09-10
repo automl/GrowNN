@@ -1,0 +1,19 @@
+hyperparameters:
+  learning_rate:
+    log: true
+    type: uniform_float
+    lower: 1.0e-04
+    upper: 0.01
+  n_feature_extractor_layers:
+    lower: 1
+    type: uniform_int
+    upper: 10
+  feature_extractor_layer_widht:
+    type: categorical
+    choices:
+    - 32
+    - 64
+    - 128
+    - 256
+    - 512
+    - 1024

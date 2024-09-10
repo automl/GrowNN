@@ -50,7 +50,7 @@ def plot_one_million_interactions():
     database_name = "fehring_growing_nn_new_seeded"
     baseline_experiment_ids = {"Baseline (2 layers)": 18, "Baseline (4 layers)": 19, "Baseline (8 layers)": 20}
 
-    appraoch_experiment_ids = {"Net2Deeper (4 layers)": 9, "Net2Deeper (7 layers)": 10}
+    appraoch_experiment_ids = {"Net2Deeper (4 layers)": 9, "Net2Deeper (8 layers)": 22}
 
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 

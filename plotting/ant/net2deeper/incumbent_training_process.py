@@ -90,7 +90,7 @@ def plot_incumbent_interactions_8_layers():
     }
 
     appraoch_experiment_ids = {
-        "Net2Deeper (7 layers)": 10,
+        "Net2Deeper (8 layers)": 22,
     }
 
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
@@ -118,7 +118,7 @@ def plot_incumbent_interactions_8_layers():
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
-    plt.savefig("plotting/ant/net2deeper/incumbent_training_process_7_layers", bbox_inches="tight")
+    plt.savefig("plotting/ant/net2deeper/incumbent_training_process_8_layers", bbox_inches="tight")
 
 
 plot_incumbent_interactions_4_layers()

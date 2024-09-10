@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=rl_training
+#SBATCH --job-name=baseline_increase_difficulty
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=8GB
 #SBATCH --time=72:00:00

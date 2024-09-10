@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=n2d_train
+#SBATCH --job-name=increase_difficulty
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16GB
 #SBATCH --time=72:00:00

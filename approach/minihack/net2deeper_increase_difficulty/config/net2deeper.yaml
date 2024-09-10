@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  # - slurm
+  - slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -9,7 +9,7 @@ hydra:
     smac_kwargs:
       intensifier: SHB
       min_budget: 1 # Internal Budget of one target function run
-      max_budget: 5 # Internal Budget of one target function run
+      max_budget: 6 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -23,7 +23,7 @@ hydra:
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 200 # The budget for SMAC
+    budget: 400 # The budget for SMAC
 
     budget_variable: non_hyperparameters.feature_extractor_depth
     saving_variable: non_hyperparameters.model_save_path
@@ -78,7 +78,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn_new_seeded
     table:
-      name: incrase_difficulty
+      name: increase_difficulty
       keyfields: 
         environment_name:
           type: VARCHAR(50)

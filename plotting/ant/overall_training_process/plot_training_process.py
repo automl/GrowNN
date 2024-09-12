@@ -73,7 +73,7 @@ def plot_one_million_interactions():
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
-    plt.ylim(-1800, 200)
+    plt.ylim(-2000, 200)
 
     plt.savefig("plotting/ant/overall_training_process/ant_training_process", bbox_inches="tight")
 

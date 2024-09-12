@@ -54,14 +54,14 @@ def plot_depth_4():
     training_process_style()
     average_dead_agents = get_data(database_name, table_name, 6)
     for column in average_dead_agents.columns[1:]:
-        sns.lineplot(x="index", y=column, data=average_dead_agents, label=f"Dead Agents, worker: {column}")
+        sns.lineplot(x="index", y=column, data=average_dead_agents, label=f"Worker: {column}")
 
     plt.xlabel("Timesteps")
     plt.yticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
     plt.ylabel("% Dead Agents")
 
-    plt.title("Percentage Dead Agents, Net2DeeoerNet", fontsize=18, fontweight="bold")
-    plt.legend(title="Basleines", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.title("Percentage Dead Agents, Net2Deeper Baselines Depth 4", fontsize=18, fontweight="bold")
+    plt.legend(title="Baselines", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.savefig("plotting/minihack/net2deeper/monster_action_exploration/dead_agents_depth_4.png", bbox_inches="tight")
 
@@ -73,14 +73,14 @@ def plot_depth_2():
     training_process_style()
     average_dead_agents = get_data(database_name, table_name, 3)
     for column in average_dead_agents.columns[1:]:
-        sns.lineplot(x="index", y=column, data=average_dead_agents, label=f"Dead Agents, worker: {column}")
+        sns.lineplot(x="index", y=column, data=average_dead_agents, label=f"Worker: {column}")
 
     plt.xlabel("Timesteps")
     plt.yticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
     plt.ylabel("% Dead Agents")
 
-    plt.title("Percentage Dead Agents, Net2DeeoerNet", fontsize=18, fontweight="bold")
-    plt.legend(title="Basleines", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.title("Percentage Dead Agents, Net2Deeper Baselines Depth 2", fontsize=18, fontweight="bold")
+    plt.legend(title="Baselines", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.savefig("plotting/minihack/net2deeper/monster_action_exploration/dead_agents_depth_2.png", bbox_inches="tight")
 

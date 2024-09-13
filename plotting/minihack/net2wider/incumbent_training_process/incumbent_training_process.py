@@ -1,4 +1,4 @@
-from utils.plotting import get_logtable, set_rc_params, convert_rewards_per_episode_to_means
+from utils.plotting import get_logtable, set_rc_params, convert_dataframe
 from matplotlib import pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -67,6 +67,7 @@ def get_data(database_name: str, experiment_ids: List[int]):
 
     baseline_width_1_training_process_data = baseline_width_1_training_process_data[baseline_width_1_training_process_data["trial_number"] == baseline_width1_incumbent_trial_number]
     baseline_width_2_training_process_data = baseline_width_2_training_process_data[baseline_width_2_training_process_data["trial_number"] == baseline_width2_incumbent_trial_number]
+    baseline_width_4_training_process_data = baseline_width_4_training_process_data[baseline_width_4_training_process_data["trial_number"] == baseline_width4_incumbent_trial_number]
     net2wider_width_4_training_process_data = net2wider_width_4_training_process_data_relevant[
         net2wider_width_4_training_process_data_relevant["trial_number"].isin(net2wider_width_4_incumbents_trial_numbers)
     ]
@@ -97,11 +98,11 @@ def get_data(database_name: str, experiment_ids: List[int]):
     net2wider_width_4_training_process_concat_dataframe = net2wider_width_4_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
     net2wider_width_2_training_process_concat_dataframe = net2wider_width_2_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
 
-    baseline_width_1_training_process_data = convert_rewards_per_episode_to_means(baseline_width_1_training_process_data)
-    baseline_width_2_training_process_data = convert_rewards_per_episode_to_means(baseline_width_2_training_process_data)
-    baseline_width_4_training_process_data = convert_rewards_per_episode_to_means(baseline_width_4_training_process_data)
-    net2wider_width_4_training_process_concat_dataframe = convert_rewards_per_episode_to_means(net2wider_width_4_training_process_concat_dataframe)
-    net2wider_width_2_training_process_concat_dataframe = convert_rewards_per_episode_to_means(net2wider_width_2_training_process_concat_dataframe)
+    baseline_width_1_training_process_data = convert_dataframe(baseline_width_1_training_process_data)
+    baseline_width_2_training_process_data = convert_dataframe(baseline_width_2_training_process_data)
+    baseline_width_4_training_process_data = convert_dataframe(baseline_width_4_training_process_data)
+    net2wider_width_4_training_process_concat_dataframe = convert_dataframe(net2wider_width_4_training_process_concat_dataframe)
+    net2wider_width_2_training_process_concat_dataframe = convert_dataframe(net2wider_width_2_training_process_concat_dataframe)
 
     return (
         baseline_width_1_training_process_data,
@@ -280,9 +281,9 @@ def plot_10x10_monster_width4():
     plt.savefig("plotting/minihack/net2wider/incumbent_training_process/incumbent_training_process_monster_10x10_width4.png", bbox_inches="tight")
 
 
-# plot_10x10_random_full()
-# plot_10x10_random_width2()
-# plot_10x10_random_width4()
+plot_10x10_random_full()
+plot_10x10_random_width2()
+plot_10x10_random_width4()
 plot_10x10_monster_full()
 plot_10x10_monster_width2()
 plot_10x10_monster_width4()

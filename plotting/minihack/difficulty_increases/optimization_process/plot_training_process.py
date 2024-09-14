@@ -62,11 +62,11 @@ def plot_optimization_process():
     line_number = 0
     for approach_name, data in baseline_data.items():
         # The environment interactions column appears to be buggy
-        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-pre", linestyle=line_styles[line_number])
+        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-post", linestyle=line_styles[line_number])
         line_number += 1
 
     for approach_name, data in appraoch_data.items():
-        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-pre", linestyle=line_styles[line_number])
+        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-post", linestyle=line_styles[line_number])
 
     plt.title("Increase Difficulty", fontsize=18, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)

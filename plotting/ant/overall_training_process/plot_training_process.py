@@ -9,7 +9,6 @@ set_rc_params()
 
 def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], appraoch_experiment_ids: Dict[int, int]) -> pd.DataFrame:
     all_baseline_data = dict()
-    min_cost = float("inf")
     for nettwork_depth, baseline_experiment_id in baseline_experiment_ids.items():
         main_table = get_table(database_name=database_name, table_name="ant_bb_net2deeper_baseline")
         experiment = main_table[main_table["ID"] == baseline_experiment_id]

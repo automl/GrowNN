@@ -8,7 +8,7 @@ hydra:
   sweeper:
     smac_kwargs:
       intensifier: Not-HB
-      max_budget: 2000000 # Internal Budget of one target function run
+      max_budget: 1000000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -22,7 +22,7 @@ hydra:
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 67 # The budget for SMAC
+    budget: 50 # The budget for SMAC
 
     budget_variable: non_hyperparameters.total_timesteps
     saving_variable: non_hyperparameters.model_save_path
@@ -48,7 +48,7 @@ n_steps: 2048
 normalize_advantage: False
 vf_coef: 0.5
 feature_extractor_output_dimension: 512
-n_feature_extractor_layers: 1
+n_feature_extractor_layers: 4
 feature_extractor_layer_width: 512
 cnn_intermediate_dimension: 2
 
@@ -66,8 +66,8 @@ non_hyperparameters:
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 80
-  total_timesteps: 2000000 # Defined at top with budget
+  n_evaluation_rounds: 40
+  total_timesteps: 1000000 # Defined at top with budget
   inc_diff_total_timesteps: 1000000
   inc_diff_n_evaluation_rounds: 40
   inc_diff_environment_id: MiniHack-Room-Random-15x15-v0

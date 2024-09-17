@@ -2,7 +2,7 @@ from utils.plotting import get_logtable, set_rc_params
 from matplotlib import pyplot as plt
 import pandas as pd
 import seaborn as sns
-from utils.plotting import training_process_style, convert_rewards_per_episode_to_means
+from utils.plotting import training_process_style, convert_dataframe
 from typing import List
 
 set_rc_params()
@@ -95,11 +95,11 @@ def get_data(database_name: str, experiment_ids: List[int]):
     net2deeper_depth_4_training_process_concat_dataframe = net2deeper_depth_4_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
     net2deeper_depth_2_training_process_concat_dataframe = net2deeper_depth_2_training_process_concat_dataframe[["timestep", "worker_id", "rewards_per_episode"]]
 
-    baseline_depth_1_training_process_data = convert_rewards_per_episode_to_means(baseline_depth_1_training_process_data)
-    baseline_depth_2_training_process_data = convert_rewards_per_episode_to_means(baseline_depth_2_training_process_data)
-    baseline_depth_4_training_process_data = convert_rewards_per_episode_to_means(baseline_depth_4_training_process_data)
-    net2deeper_depth_4_training_process_concat_dataframe = convert_rewards_per_episode_to_means(net2deeper_depth_4_training_process_concat_dataframe)
-    net2deeper_depth_2_training_process_concat_dataframe = convert_rewards_per_episode_to_means(net2deeper_depth_2_training_process_concat_dataframe)
+    baseline_depth_1_training_process_data = convert_dataframe(baseline_depth_1_training_process_data)
+    baseline_depth_2_training_process_data = convert_dataframe(baseline_depth_2_training_process_data)
+    baseline_depth_4_training_process_data = convert_dataframe(baseline_depth_4_training_process_data)
+    net2deeper_depth_4_training_process_concat_dataframe = convert_dataframe(net2deeper_depth_4_training_process_concat_dataframe)
+    net2deeper_depth_2_training_process_concat_dataframe = convert_dataframe(net2deeper_depth_2_training_process_concat_dataframe)
 
     return (
         baseline_depth_1_training_process_data,
@@ -160,7 +160,7 @@ def plot_10x10_random_depth2():
 
     plt.title("Depth 2, Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -185,7 +185,7 @@ def plot_10x10_random_depth4():
 
     plt.title("Depth 4, Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -217,7 +217,7 @@ def plot_10x10_monster_full():
 
     plt.title("Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
 
@@ -244,7 +244,7 @@ def plot_10x10_monster_depth2():
 
     plt.title("Depth 2, Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)

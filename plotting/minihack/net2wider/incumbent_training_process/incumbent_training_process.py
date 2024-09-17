@@ -136,7 +136,7 @@ def plot_10x10_random_full():
 
     plt.title("Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
 
@@ -163,7 +163,7 @@ def plot_10x10_random_width2():
 
     plt.title("Width 2, Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -188,7 +188,7 @@ def plot_10x10_random_width4():
 
     plt.title("Width 4, Incumbent Training Process - Minihack Room Random 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -220,7 +220,7 @@ def plot_10x10_monster_full():
 
     plt.title("Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
 
@@ -247,7 +247,7 @@ def plot_10x10_monster_width2():
 
     plt.title("Width 2, Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -272,7 +272,7 @@ def plot_10x10_monster_width4():
 
     plt.title("Width 4, Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
     plt.xlabel("Timestep", fontsize=14)
-    plt.ylabel("IQM of Evaluation Episode Reward", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)

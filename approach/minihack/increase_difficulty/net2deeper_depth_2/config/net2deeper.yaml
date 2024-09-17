@@ -69,7 +69,7 @@ non_hyperparameters:
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
   n_evaluation_rounds: 20
-  total_timesteps: 500000
+  total_timesteps: 1000000
 
 PY_EXPERIMENTER: 
   n_jobs: 1

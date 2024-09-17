@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=increase_difficulty
+#SBATCH --job-name=increase_difficulty_four_end
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16GB
 #SBATCH --time=72:00:00
@@ -13,4 +13,4 @@ export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-
 # Run the Python script with specified module
 
 # Run the Python script with specified module
-python approach/minihack/net2deeper_increase_difficulty/net2deeper.py -m 
+python approach/minihack/increase_difficulty/net2deeper_depth_4_end/increase_difficulty_four_end.py -m 

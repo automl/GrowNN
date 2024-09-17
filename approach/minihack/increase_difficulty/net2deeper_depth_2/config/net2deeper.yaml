@@ -23,7 +23,7 @@ hydra:
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 200 # The budget for SMAC
+    budget: 100 # The budget for SMAC
 
     budget_variable: non_hyperparameters.feature_extractor_depth
     saving_variable: non_hyperparameters.model_save_path
@@ -68,8 +68,8 @@ non_hyperparameters:
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 20
-  total_timesteps: 500000
+  n_evaluation_rounds: 40
+  total_timesteps: 1000000
 
 PY_EXPERIMENTER: 
   n_jobs: 1
@@ -78,7 +78,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn_new_seeded
     table:
-      name: increase_difficulty
+      name: increase_difficulty_n2d
       keyfields: 
         environment_name:
           type: VARCHAR(50)

@@ -7,9 +7,8 @@ defaults:
 hydra:
   sweeper:
     smac_kwargs:
-      intensifier: SHB
-      min_budget: 1 # Internal Budget of one target function run
-      max_budget: 4 # Internal Budget of one target function run
+      intensifier: Not-HB
+      max_budget: 1000000 # Internal Budget of one target function run
       
       # Parralelisation Parameters
       job_array_size_limit: 5
@@ -19,13 +18,13 @@ hydra:
       deterministic: True # whether or nto the env is deterministic
       
       seeds: [0,1,2,3,4] # seeds passed to each worker - so we alsways have the same seeds
-      # TODO Assuming wokring with seeds mak sense, how do we go from here
+      # TODO Assuming wokring with seeds makes sense, how do we go from here
       # to plots that contain uncertainty? I assume that i need to log that myself, because
       # there is no inbuilt function to do so
 
-    budget: 200 # The budget for SMAC
+    budget: 50 # The budget for SMAC
 
-    budget_variable: non_hyperparameters.feature_extractor_depth
+    budget_variable: non_hyperparameters.total_timesteps
     saving_variable: non_hyperparameters.model_save_path
 
     search_space: ${configspace}
@@ -49,7 +48,7 @@ n_steps: 2048
 normalize_advantage: False
 vf_coef: 0.5
 feature_extractor_output_dimension: 512
-n_feature_extractor_layers: 1
+n_feature_extractor_layers: 2
 feature_extractor_layer_width: 512
 cnn_intermediate_dimension: 2
 
@@ -57,10 +56,9 @@ cnn_intermediate_dimension: 2
 seed: 0 
 non_hyperparameters:
   trial_number: 0
-  experiment_id: Null
   config_id: Null
-  feature_extractor_depth: 0
-  environment_name: "MiniHack-Room-Random-&x&-v0"
+  experiment_id: Null
+  environment_id: MiniHack-Room-Random-10x10-v0
   env_seed: 0
   smac_seed: 0
   model_save_path: blablabla
@@ -68,22 +66,22 @@ non_hyperparameters:
   max_episode_steps: Null # TODO should this be a relevant hp?
   parallel_vec_envs: 5
   n_evaluation_episodes: 10 # TODO should we make all evaluation episodes of same length to see a more relevant behaviour?
-  n_evaluation_rounds: 20
-  total_timesteps: 500000
+  n_evaluation_rounds: 40
+  total_timesteps: 1000000 # Defined at top with budget
+  inc_diff_total_timesteps: 1000000
+  inc_diff_n_evaluation_rounds: 40
+  inc_diff_environment_id: MiniHack-Room-Random-15x15-v0
 
 PY_EXPERIMENTER: 
   n_jobs: 1
-
   Database:
     provider: mysql
     database: fehring_growing_nn_new_seeded
     table:
-      name: increase_difficulty_n2d
+      name: increase_difficulty_baseline
       keyfields: 
-        environment_name:
+        environment_id:
           type: VARCHAR(50)
-        feature_extractor_depth:
-          type: INT
         env_seed:
           type: INT
         smac_seed:
@@ -104,6 +102,12 @@ PY_EXPERIMENTER:
           type: int
         total_timesteps: 
           type: int
+        inc_diff_total_timesteps:
+          type: int
+        inc_diff_n_evaluation_rounds: 
+          type: int
+        inc_diff_environment_id: 
+          type: VARCHAR(50)
         smac_budget:
           type: int
       resultfields:
@@ -111,7 +115,7 @@ PY_EXPERIMENTER:
         config: TEXT
     logtables:
       configurations:
-        environment_name: VARCHAR(50)
+        environment_id: VARCHAR(50)
         trial_number: INT
         budget: INT
         hyperparameter_str_identifier: VARCHAR(500)
@@ -134,12 +138,10 @@ PY_EXPERIMENTER:
         cnn_intermediate_dimension: INT
         final_score: FLOAT
         final_std: FLOAT
-
       training_process:
         worker_id: INT
         trial_number: INT
         budget: INT
-        hyperparameter_str_identifier: VARCHAR(500)
         timestep: INT
         mean_cost: FLOAT
         mean_cost_stdev: FLOAT

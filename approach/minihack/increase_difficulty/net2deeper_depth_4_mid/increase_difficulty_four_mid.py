@@ -18,13 +18,13 @@ debug_mode = False
 budget_level_dict: dict = {
     1: 10,
     2: 10,
-    3: 10,
+    3: 15,
     4: 15,
 }
 
 
 @hydra.main(config_path="config", config_name="net2deeper", version_base="1.1")
-def black_box_ppo_configure(config: Configuration):
+def increase_difficulty_four_mid(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
         minihack
@@ -212,4 +212,4 @@ def black_box_ppo_configure(config: Configuration):
 
 
 if __name__ == "__main__":
-    black_box_ppo_configure()
+    increase_difficulty_four_mid()

@@ -15,6 +15,7 @@ def calculate_n_dead_agents(rewards: Dict[int, List[float]]) -> int:
                     n_dead += 1 / 10
     return n_dead
 
+
 set_rc_params()
 
 
@@ -63,7 +64,7 @@ def plot_depth_4():
     plt.ylabel("% Dead Agents", fontsize=15)
 
     plt.title("Percentage Dead Agents, Net2Deeper Baselines Depth 4", fontsize=20, fontweight="bold")
-    plt.legend(title="Baselines", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Baselines", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.savefig("plotting/minihack/net2deeper/monster_action_exploration/dead_agents_depth_4.png", bbox_inches="tight")
 
@@ -82,7 +83,7 @@ def plot_depth_2():
     plt.ylabel("% Dead Agents", fontsize=15)
 
     plt.title("Percentage Dead Agents, Net2Deeper Baselines Depth 2", fontsize=20, fontweight="bold")
-    plt.legend(title="Baselines", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Baselines", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.savefig("plotting/minihack/net2deeper/monster_action_exploration/dead_agents_depth_2.png", bbox_inches="tight")
 

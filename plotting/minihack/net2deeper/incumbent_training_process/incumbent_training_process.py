@@ -135,7 +135,7 @@ def plot_10x10_random_full():
     plt.xlabel("Timestep", fontsize=15)
     plt.ylabel("IQM of Evaluation Epsiode Return", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
 
     # Add grid for better readability
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -162,7 +162,7 @@ def plot_10x10_random_depth2():
     plt.xlabel("Timestep", fontsize=15)
     plt.ylabel("IQM of Evaluation Epsiode Return", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.show()
@@ -187,7 +187,7 @@ def plot_10x10_random_depth4():
     plt.xlabel("Timestep", fontsize=15)
     plt.ylabel("IQM of Evaluation Epsiode Return", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.show()
@@ -215,11 +215,11 @@ def plot_10x10_monster_full():
     for i in range(1, int(net2deeper_depth_4_training_process_concat_dataframe["timestep"].max() / 500000)):
         plt.axvline(x=i * 500000, color="gray", linestyle="--")
 
-    plt.title("Incumbent Training Process - Minihack Room Monster 10x10", fontsize=18, fontweight="bold")
+    plt.title("Incumbent Training Process - Minihack Room Monster 10x10", fontsize=20, fontweight="bold")
     plt.xlabel("Timestep", fontsize=15)
     plt.ylabel("IQM of Evaluation Epsiode Return", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
 
     # Add grid for better readability
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -246,7 +246,7 @@ def plot_10x10_monster_depth2():
     plt.xlabel("Timestep", fontsize=14)
     plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.show()
@@ -270,7 +270,7 @@ def plot_10x10_monster_depth4():
     plt.xlabel("Timestep", fontsize=15)
     plt.ylabel("IQM of Evaluation Epsiode Return", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.show()

@@ -69,7 +69,7 @@ def plot_optimization_process():
     plt.xlabel("Environment Interactions", fontsize=15)
     plt.ylabel("Cost", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/minihack/difficulty_increases/optimization_process/training_process.png", bbox_inches="tight")

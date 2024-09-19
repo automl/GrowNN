@@ -72,11 +72,11 @@ def plot_incumbent_interactions_2_layers():
     for timestep in range(500000, 2000000, 500000):
         plt.axvline(x=timestep, color="black", linestyle="--", alpha=0.5)
 
-    plt.title("Optimization Process - Ant-v4", fontsize=18, fontweight="bold")
+    plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)
     plt.ylabel("Episode Return", fontsize=14)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/minihack/difficulty_increases/incumbent_training_process/incumbent_training_process_2_layers", bbox_inches="tight")
@@ -84,7 +84,10 @@ def plot_incumbent_interactions_2_layers():
 
 def plot_incumbent_process_4_layers_mid():
     database_name = "fehring_growing_nn_new_seeded"
-    baseline_experiment_ids = {"Baseline (4 layers); end": 3, "Baseline (4 layer); mid": 2,}
+    baseline_experiment_ids = {
+        "Baseline (4 layers); end": 3,
+        "Baseline (4 layer); mid": 2,
+    }
 
     appraoch_experiment_ids = {"Net2Deeper (4 Layers); end": 4}
 
@@ -106,11 +109,11 @@ def plot_incumbent_process_4_layers_mid():
     for timestep in range(500000, 2000000, 500000):
         plt.axvline(x=timestep, color="black", linestyle="--", alpha=0.5)
 
-    plt.title("Optimization Process - Ant-v4", fontsize=18, fontweight="bold")
+    plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)
     plt.ylabel("Episode Return", fontsize=14)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/minihack/difficulty_increases/incumbent_training_process/incumbent_training_process_4_layers_mid", bbox_inches="tight")
@@ -118,7 +121,7 @@ def plot_incumbent_process_4_layers_mid():
 
 def plot_incumbent_process_4_layers_end():
     database_name = "fehring_growing_nn_new_seeded"
-    baseline_experiment_ids = { "Baseline (1 layer); end": 6, "Baseline (4 layers); end": 3}
+    baseline_experiment_ids = {"Baseline (1 layer); end": 6, "Baseline (4 layers); end": 3}
 
     appraoch_experiment_ids = {"Net2Deeper (4 Layers); end": 2}
 
@@ -140,11 +143,11 @@ def plot_incumbent_process_4_layers_end():
     for timestep in range(500000, 2000000, 500000):
         plt.axvline(x=timestep, color="black", linestyle="--", alpha=0.5)
 
-    plt.title("Optimization Process - Ant-v4", fontsize=18, fontweight="bold")
+    plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)
     plt.ylabel("Episode Return", fontsize=14)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/minihack/difficulty_increases/incumbent_training_process/incumbent_training_process_4_layers_end", bbox_inches="tight")

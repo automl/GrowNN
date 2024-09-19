@@ -49,7 +49,7 @@ def plot_incumbent_interactions_8_layers():
     legend_labels = ["Net2Deeper (8 layers)", "Average Action Size"]
     # second value in the color palette
     legend_items = [plt.Line2D([0], [0], color="blue", linestyle="--"), plt.Line2D([0], [0], color=action_size_color, linestyle=":")]
-    plt.legend(legend_items, legend_labels, fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=2)
+    plt.legend(legend_items, legend_labels, fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=2)
     plt.grid(True, linestyle="--", alpha=0.7)
     ax = plt.gca()
     plt.xlabel("Environment Interactions", fontsize=15)

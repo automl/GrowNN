@@ -71,11 +71,11 @@ def plot_incumbent_interactions_4_layers():
     for timestep in range(500000, 2000000, 500000):
         plt.axvline(x=timestep, color="black", linestyle="--", alpha=0.5)
 
-    plt.title("Optimization Process - Ant-v4", fontsize=18, fontweight="bold")
+    plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)
     plt.ylabel("Cost", fontsize=14)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/ant/net2deeper/incumbent_training_process_4_layers", bbox_inches="tight")
@@ -111,7 +111,7 @@ def plot_incumbent_interactions_8_layers():
     plt.xlabel("Environment Interactions", fontsize=15)
     plt.ylabel("Cost", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/ant/net2deeper/incumbent_training_process_8_layers", bbox_inches="tight")

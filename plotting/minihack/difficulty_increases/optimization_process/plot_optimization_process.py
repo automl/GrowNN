@@ -50,7 +50,7 @@ def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], apprao
 
 def plot_optimization_process():
     database_name = "fehring_growing_nn_new_seeded"
-    baseline_experiment_ids = {"Baseline (1 layer); end": 6, "Baseline (1 layer); mid": 5, "Baseline (2 layers); mid": 1, "Baseline (4 layers); mid": 2, "Baseline (4 layers); end": 3}
+    baseline_experiment_ids = {"Baseline (1 layer); end": 6, "Baseline (1 layer); mid": 9, "Baseline (2 layers); mid": 1, "Baseline (4 layers); mid": 2, "Baseline (4 layers); end": 3}
 
     appraoch_experiment_ids = {"Net2Deeper (2 Layers); mid": 1, "Net2Deeper (4 Layers); mid": 2, "Net2Deeper (4 Layers); end": 4}
 
@@ -67,7 +67,7 @@ def plot_optimization_process():
 
     plt.title("Increase Difficulty", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=15)
-    plt.ylabel("Cost", fontsize=15)
+    plt.ylabel("Cost; Negative Mean Evaluation Return", fontsize=15)
 
     plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)

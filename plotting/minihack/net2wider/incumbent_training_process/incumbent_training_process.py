@@ -126,7 +126,7 @@ def plot_10x10_random_full():
 
     sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="solid")
     sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="solid")
-    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted")
+    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted", linewidth=3)
     sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Constant Width 4096", linestyle="solid")
     sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 4096", linestyle="dashed")
 
@@ -156,7 +156,7 @@ def plot_10x10_random_width2():
 
     sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="solid")
     sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="solid")
-    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted")
+    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted", linewidth=3)
 
     for i in range(1, int(net2wider_width_2_training_process_concat_dataframe["timestep"].max() / 1000000)):
         plt.axvline(x=i * 1000000, color="gray", linestyle="--")
@@ -210,7 +210,7 @@ def plot_10x10_monster_full():
 
     sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="solid")
     sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="solid")
-    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted")
+    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted", linewidth=3)
     sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Constant Width 4096", linestyle="solid")
     sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 4096", linestyle="dashed")
 
@@ -240,7 +240,7 @@ def plot_10x10_monster_width2():
 
     sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="solid")
     sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="solid")
-    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted")
+    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted", linewidth=3)
 
     for i in range(1, int(net2wider_width_2_training_process_concat_dataframe["timestep"].max() / 1000000)):
         plt.axvline(x=i * 1000000, color="gray", linestyle="--")

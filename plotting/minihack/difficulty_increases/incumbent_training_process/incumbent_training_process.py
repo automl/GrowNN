@@ -48,7 +48,7 @@ def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], apprao
 def plot_incumbent_interactions_2_layers():
     database_name = "fehring_growing_nn_new_seeded"
     baseline_experiment_ids = {
-        "Baseline (1 layer); mid": 5,
+        "Baseline (1 layer); mid": 9,
         "Baseline (2 layers); mid": 1,
     }
 
@@ -57,26 +57,27 @@ def plot_incumbent_interactions_2_layers():
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 
     training_process_style()
-    line_styles = ["-", "--", ":", "-.", (0, (1, 10)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (1, 1)), (0, (5, 1)), (0, (3, 1, 1, 1))]
 
     line_number = 0
     for approach_name, data in baseline_data.items():
         # The environment interactions column appears to be buggy
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="solid")
         line_number += 1
 
     for approach_name, data in appraoch_data.items():
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
+        # Increase Line Depth
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="dotted", linewidth=3)
         line_number += 1
 
-    for timestep in range(500000, 2000000, 500000):
-        plt.axvline(x=timestep, color="black", linestyle="--", alpha=0.5)
+    plt.axvline(x=500000, color="black", linestyle="--", alpha=0.5)
+    plt.axvline(x=1000000, color="red", linestyle="--", linewidth=3)
+    plt.axvline(x=1500000, color="black", linestyle="--", alpha=0.5)
 
-    plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
-    plt.xlabel("Environment Interactions", fontsize=14)
-    plt.ylabel("Episode Return", fontsize=14)
+    plt.title("Incumbent Training Process; Increase Difficulty Mid", fontsize=20, fontweight="bold")
+    plt.xlabel("Timesteps", fontsize=15)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/minihack/difficulty_increases/incumbent_training_process/incumbent_training_process_2_layers", bbox_inches="tight")
@@ -85,35 +86,35 @@ def plot_incumbent_interactions_2_layers():
 def plot_incumbent_process_4_layers_mid():
     database_name = "fehring_growing_nn_new_seeded"
     baseline_experiment_ids = {
-        "Baseline (4 layers); end": 3,
-        "Baseline (4 layer); mid": 2,
+        "Baseline (1 layer)": 9,
+        "Baseline (4 layer)": 2,
     }
 
-    appraoch_experiment_ids = {"Net2Deeper (4 Layers); end": 4}
+    appraoch_experiment_ids = {"Net2Deeper (4 Layers)": 4}
 
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 
     training_process_style()
-    line_styles = ["-", "--", ":", "-.", (0, (1, 10)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (1, 1)), (0, (5, 1)), (0, (3, 1, 1, 1))]
 
     line_number = 0
     for approach_name, data in baseline_data.items():
         # The environment interactions column appears to be buggy
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="solid")
         line_number += 1
 
     for approach_name, data in appraoch_data.items():
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="dashed")
         line_number += 1
 
-    for timestep in range(500000, 2000000, 500000):
-        plt.axvline(x=timestep, color="black", linestyle="--", alpha=0.5)
+    plt.axvline(x=500000, color="black", linestyle="--", alpha=0.5)
+    plt.axvline(x=1000000, color="red", linestyle="--", linewidth=3)
+    plt.axvline(x=1500000, color="black", linestyle="--", alpha=0.5)
 
-    plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
-    plt.xlabel("Environment Interactions", fontsize=14)
-    plt.ylabel("Episode Return", fontsize=14)
+    plt.title("Incumbent Training Process; Increase Difficulty Mid", fontsize=20, fontweight="bold")
+    plt.xlabel("Timesteps", fontsize=15)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/minihack/difficulty_increases/incumbent_training_process/incumbent_training_process_4_layers_mid", bbox_inches="tight")
@@ -121,33 +122,33 @@ def plot_incumbent_process_4_layers_mid():
 
 def plot_incumbent_process_4_layers_end():
     database_name = "fehring_growing_nn_new_seeded"
-    baseline_experiment_ids = {"Baseline (1 layer); end": 6, "Baseline (4 layers); end": 3}
+    baseline_experiment_ids = {"Baseline (1 layer)": 6, "Baseline (4 layers); end": 3}
 
     appraoch_experiment_ids = {"Net2Deeper (4 Layers); end": 2}
 
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 
     training_process_style()
-    line_styles = ["-", "--", ":", "-.", (0, (1, 10)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (1, 1)), (0, (5, 1)), (0, (3, 1, 1, 1))]
 
     line_number = 0
     for approach_name, data in baseline_data.items():
         # The environment interactions column appears to be buggy
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="solid")
         line_number += 1
 
     for approach_name, data in appraoch_data.items():
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="dashed")
         line_number += 1
 
-    for timestep in range(500000, 2000000, 500000):
-        plt.axvline(x=timestep, color="black", linestyle="--", alpha=0.5)
+    plt.axvline(x=500000, color="black", linestyle="--", alpha=0.5)
+    plt.axvline(x=1000000, color="black", linestyle="--", alpha=0.5)
+    plt.axvline(x=1500000, color="red", linestyle="--", linewidth=3)
 
-    plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
+    plt.title("Incumbent Training Process; Increase Difficulty End", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)
     plt.ylabel("Episode Return", fontsize=14)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/minihack/difficulty_increases/incumbent_training_process/incumbent_training_process_4_layers_end", bbox_inches="tight")

@@ -123,7 +123,8 @@ def plot_10x10_random_full():
 
     sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="solid")
     sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 2", linestyle="solid")
-    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle="dotted")
+    # change line width
+    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle="dotted", linewidth=3)
     sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 4", linestyle="solid")
     sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 4", linestyle="dashed")
 
@@ -153,7 +154,7 @@ def plot_10x10_random_depth2():
 
     sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="solid")
     sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 2", linestyle="solid")
-    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle="dotted")
+    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle="dotted", linewidth=3)
 
     for i in range(1, int(net2deeper_depth_2_training_process_concat_dataframe["timestep"].max() / 1000000)):
         plt.axvline(x=i * 1000000, color="gray", linestyle="--")
@@ -207,7 +208,7 @@ def plot_10x10_monster_full():
 
     sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="solid")
     sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 2", linestyle="solid")
-    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle="dotted")
+    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle="dotted", linewidth=3)
     sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 4", linestyle="solid")
     sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 4", linestyle="dashed")
 
@@ -237,7 +238,7 @@ def plot_10x10_monster_depth2():
 
     sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="solid")
     sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 2", linestyle="solid")
-    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle="dotted")
+    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Deeper Depth 2", linestyle="dotted", linewidth=3)
 
     for i in range(1, int(net2deeper_depth_2_training_process_concat_dataframe["timestep"].max() / 1000000)):
         plt.axvline(x=i * 1000000, color="gray", linestyle="--")

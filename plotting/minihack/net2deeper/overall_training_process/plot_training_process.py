@@ -93,13 +93,13 @@ def plot_10x10_random():
         linestyle="solid",
     )
     sns.lineplot(data=baseline_depth_2_callback_data, x="environment_interactions", y="cost", label="Baseline (2 layers)", drawstyle="steps-post", linestyle="solid")
-    sns.lineplot(data=net2deeper_smac_callback_data_depth_2, x="environment_interactions", y="cost", label="Net2Deeper (2 layers)", drawstyle="steps-post", linestyle="dotted")
+    sns.lineplot(data=net2deeper_smac_callback_data_depth_2, x="environment_interactions", y="cost", label="Net2Deeper (2 layers)", drawstyle="steps-post", linestyle="dotted", linewidth=3)
     sns.lineplot(data=baseline_depth_4_callback_data, x="environment_interactions", y="cost", label="Baseline (4 layers)", drawstyle="steps-post", linestyle="solid")
     sns.lineplot(data=net2deeper_smac_callback_data_depth_4, x="environment_interactions", y="cost", label="Net2Deeper (4 layers)", drawstyle="steps-post", linestyle="dashed")
 
     plt.title("Optimization Process 10x10 Random", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=15)
-    plt.ylabel("Cost", fontsize=15)
+    plt.ylabel("Cost; Negative Mean Evaluation Return", fontsize=15)
 
     plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -122,13 +122,13 @@ def plot_10x10_monster():
         linestyle="solid",
     )
     sns.lineplot(data=baseline_depth_2_callback_data, x="environment_interactions", y="cost", label="Baseline (2 layers)", drawstyle="steps-post", linestyle="solid")
-    sns.lineplot(data=net2deeper_smac_callback_data_depth_2, x="environment_interactions", y="cost", label="Net2Deeper (2 layers)", drawstyle="steps-post", linestyle="dotted")
+    sns.lineplot(data=net2deeper_smac_callback_data_depth_2, x="environment_interactions", y="cost", label="Net2Deeper (2 layers)", drawstyle="steps-post", linestyle="dotted", linewidth=3)
     sns.lineplot(data=baseline_depth_4_callback_data, x="environment_interactions", y="cost", label="Baseline (4 layers)", drawstyle="steps-post", linestyle="solid")
     sns.lineplot(data=net2deeper_smac_callback_data_depth_4, x="environment_interactions", y="cost", label="Net2Deeper (4 layers)", drawstyle="steps-post", linestyle="dashed")
 
     plt.title("Optimization Process 10x10 Monster", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=15)
-    plt.ylabel("Cost", fontsize=15)
+    plt.ylabel("Cost; Negative Mean Evaluation Return", fontsize=15)
 
     plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)

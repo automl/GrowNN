@@ -57,22 +57,19 @@ def plot_optimization_process():
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 
     training_process_style()
-    line_styles = ["-", "--", ":", "-.", (0, (1, 10)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (1, 1)), (0, (5, 1)), (0, (3, 1, 1, 1))]
 
-    line_number = 0
     for approach_name, data in baseline_data.items():
         # The environment interactions column appears to be buggy
-        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-post", linestyle=line_styles[line_number])
-        line_number += 1
+        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-post", linestyle="solid")
 
     for approach_name, data in appraoch_data.items():
-        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-post", linestyle=line_styles[line_number])
+        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-post", linestyle="dashed")
 
-    plt.title("Increase Difficulty", fontsize=18, fontweight="bold")
-    plt.xlabel("Environment Interactions", fontsize=14)
-    plt.ylabel("Cost", fontsize=14)
+    plt.title("Increase Difficulty", fontsize=20, fontweight="bold")
+    plt.xlabel("Environment Interactions", fontsize=15)
+    plt.ylabel("Cost", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/minihack/difficulty_increases/optimization_process/training_process.png", bbox_inches="tight")

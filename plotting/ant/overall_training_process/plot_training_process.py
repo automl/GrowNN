@@ -54,14 +54,14 @@ def plot_one_million_interactions():
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 
     training_process_style()
-    line_styles = ["-", "--", ":", "-.", (0, (1, 10)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (1, 1)), (0, (5, 1)), (0, (3, 1, 1, 1))]
+    
 
-    line_number = 0
     for approach_name, data in baseline_data.items():
         # The environment interactions column appears to be buggy
-        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-pre", linestyle=line_styles[line_number])
-        line_number += 1
+        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-pre", linestyle='solid')
 
+    line_styles = ["dashed", "dashdot"]
+    line_number = 0
     for approach_name, data in appraoch_data.items():
         sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-pre", linestyle=line_styles[line_number])
 
@@ -69,7 +69,7 @@ def plot_one_million_interactions():
     plt.xlabel("Environment Interactions", fontsize=14)
     plt.ylabel("Cost", fontsize=14)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.ylim(-2000, 200)

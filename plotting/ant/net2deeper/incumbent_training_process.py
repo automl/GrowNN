@@ -58,16 +58,14 @@ def plot_incumbent_interactions_4_layers():
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 
     training_process_style()
-    line_styles = ["-", "--", ":", "-.", (0, (1, 10)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (1, 1)), (0, (5, 1)), (0, (3, 1, 1, 1))]
 
     line_number = 0
     for approach_name, data in baseline_data.items():
         # The environment interactions column appears to be buggy
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
-        line_number += 1
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="solid")
 
     for approach_name, data in appraoch_data.items():
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="dashed")
         line_number += 1
 
     for timestep in range(500000, 2000000, 500000):
@@ -77,7 +75,7 @@ def plot_incumbent_interactions_4_layers():
     plt.xlabel("Environment Interactions", fontsize=14)
     plt.ylabel("Cost", fontsize=14)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/ant/net2deeper/incumbent_training_process_4_layers", bbox_inches="tight")
@@ -96,26 +94,24 @@ def plot_incumbent_interactions_8_layers():
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 
     training_process_style()
-    line_styles = ["-", "--", ":", "-.", (0, (1, 10)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (1, 1)), (0, (5, 1)), (0, (3, 1, 1, 1))]
 
     line_number = 0
     for approach_name, data in baseline_data.items():
         # The environment interactions column appears to be buggy
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
-        line_number += 1
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="solid")
 
     for approach_name, data in appraoch_data.items():
-        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle=line_styles[line_number])
+        sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="dashdot")
         line_number += 1
 
     for timestep in range(250000, 2000000, 250000):
         plt.axvline(x=timestep, color="black", linestyle="--", alpha=0.5)
 
-    plt.title("Optimization Process - Ant-v4", fontsize=18, fontweight="bold")
-    plt.xlabel("Environment Interactions", fontsize=14)
-    plt.ylabel("Cost", fontsize=14)
+    plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
+    plt.xlabel("Environment Interactions", fontsize=15)
+    plt.ylabel("Cost", fontsize=15)
 
-    plt.legend(title="Model Type", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.legend(title="Model Type", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
 
     plt.savefig("plotting/ant/net2deeper/incumbent_training_process_8_layers", bbox_inches="tight")

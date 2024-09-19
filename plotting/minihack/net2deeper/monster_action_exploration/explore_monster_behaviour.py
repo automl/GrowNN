@@ -1,7 +1,7 @@
 # %%
 import pandas as pd
 import seaborn as sns
-from utils.plotting import get_logtable, training_process_style
+from utils.plotting import get_logtable, training_process_style, set_rc_params
 from typing import List, Dict
 from matplotlib import pyplot as plt
 
@@ -14,6 +14,8 @@ def calculate_n_dead_agents(rewards: Dict[int, List[float]]) -> int:
                 if episode[-1] == 0:
                     n_dead += 1 / 10
     return n_dead
+
+set_rc_params()
 
 
 def get_data(database_name, table_name, experiment_id: int):
@@ -56,12 +58,12 @@ def plot_depth_4():
     for column in average_dead_agents.columns[1:]:
         sns.lineplot(x="index", y=column, data=average_dead_agents, label=f"Worker: {column}")
 
-    plt.xlabel("Timesteps")
+    plt.xlabel("Timesteps", fontsize=15)
     plt.yticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
-    plt.ylabel("% Dead Agents")
+    plt.ylabel("% Dead Agents", fontsize=15)
 
-    plt.title("Percentage Dead Agents, Net2Deeper Baselines Depth 4", fontsize=18, fontweight="bold")
-    plt.legend(title="Baselines", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.title("Percentage Dead Agents, Net2Deeper Baselines Depth 4", fontsize=20, fontweight="bold")
+    plt.legend(title="Baselines", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.savefig("plotting/minihack/net2deeper/monster_action_exploration/dead_agents_depth_4.png", bbox_inches="tight")
 
@@ -75,12 +77,12 @@ def plot_depth_2():
     for column in average_dead_agents.columns[1:]:
         sns.lineplot(x="index", y=column, data=average_dead_agents, label=f"Worker: {column}")
 
-    plt.xlabel("Timesteps")
+    plt.xlabel("Timesteps", fontsize=15)
     plt.yticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
-    plt.ylabel("% Dead Agents")
+    plt.ylabel("% Dead Agents", fontsize=15)
 
-    plt.title("Percentage Dead Agents, Net2Deeper Baselines Depth 2", fontsize=18, fontweight="bold")
-    plt.legend(title="Baselines", fontsize=12, title_fontsize=14, loc="center", bbox_to_anchor=(0.5, -0.16), ncol=3)
+    plt.title("Percentage Dead Agents, Net2Deeper Baselines Depth 2", fontsize=20, fontweight="bold")
+    plt.legend(title="Baselines", fontsize=14, title_fontsize=16, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.savefig("plotting/minihack/net2deeper/monster_action_exploration/dead_agents_depth_2.png", bbox_inches="tight")
 

@@ -5,7 +5,6 @@ import seaborn as sns
 import ast
 import io
 import matplotlib as mpl
-import os
 import numpy as np
 import pandas as pd
 from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -45,10 +44,13 @@ def set_rc_params():
     mpl.rcParams["figure.figsize"] = (6, 3)
 
     # Fontsizes
-    mpl.rcParams["xtick.labelsize"] = 10
-    mpl.rcParams["ytick.labelsize"] = 10
-    mpl.rcParams["axes.labelsize"] = 12
-    mpl.rcParams["axes.titlesize"] = 12
+    mpl.rcParams["xtick.labelsize"] = 12
+    mpl.rcParams["ytick.labelsize"] = 12
+    mpl.rcParams["axes.labelsize"] = 14
+    mpl.rcParams["axes.titlesize"] = 14
+
+    # Increase linewidth of plots
+    mpl.rcParams["lines.linewidth"] = 2
 
     # Colors
     # - Seaborn Color Palette: colorblind

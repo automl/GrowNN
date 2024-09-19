@@ -29,13 +29,13 @@ def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], apprao
 
     all_appraoch_data = dict()
     for appraoch_name, approach_experiment_id in appraoch_experiment_ids.items():
-        main_table = get_table(database_name=database_name, table_name="increase_difficulty")
+        main_table = get_table(database_name=database_name, table_name="increase_difficulty_n2d")
         experiment = main_table[main_table["ID"] == approach_experiment_id]
         max_approach_timesteps = experiment["total_timesteps"].values[0] * experiment["smac_budget"].values[0]
 
-        approach_data = get_logtable(database_name=database_name, table_name="increase_difficulty", logtable_name="smac_callbacks")
+        approach_data = get_logtable(database_name=database_name, table_name="increase_difficulty_n2d", logtable_name="smac_callbacks")
         approach_data = approach_data[approach_data["experiment_id"] == approach_experiment_id]
-        approach_data = approach_data[approach_data["budget"] == 6]
+        approach_data = approach_data[approach_data["budget"] == approach_data["budget"].max()]
         approach_data = select_incumbents(approach_data)
         approach_data["environment_interactions"] = approach_data["trial_number"] * experiment["total_timesteps"].iloc[0] + experiment["total_timesteps"].iloc[0]
         approach_data = pd.concat(
@@ -50,9 +50,9 @@ def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], apprao
 
 def plot_optimization_process():
     database_name = "fehring_growing_nn_new_seeded"
-    baseline_experiment_ids = {"Baseline (1 layers)": 2, "Baseline (4 layers)": 1}
+    baseline_experiment_ids = {"Baseline (1 layer); end": 6, "Baseline (1 layer); mid": 5, "Baseline (2 layers); mid": 1, "Baseline (4 layers); mid": 2, "Baseline (4 layers); end": 3}
 
-    appraoch_experiment_ids = {"Continue Growth (4 to 6 layers)": 3}
+    appraoch_experiment_ids = {"Net2Deeper (2 Layers); mid": 1, "Net2Deeper (4 Layers); mid": 2, "Net2Deeper (4 Layers); end": 4}
 
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 

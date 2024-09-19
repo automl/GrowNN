@@ -1,42 +1,35 @@
-import os
-from functools import partial
 import gym
-import hydra
 import minihack
-import torch
 from ConfigSpace import Configuration
-from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.ppo import PPO
-
+import hydra
+from utils import make_minihack_vec_env, extract_hyperparameters_minihack, create_pyexperimenter, log_results
 from py_experimenter.result_processor import ResultProcessor
-from utils import create_pyexperimenter, extract_hyperparameters_minihack, log_results, make_minihack_vec_env
+from stable_baselines3.common.evaluation import evaluate_policy
+from utils.stable_baselines_callback import FinalEvaluationWrapper, CustomEvaluationCallback
 from utils.minihack.feature_extractor import CustomCombinedExtractor
-from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
+import torch
+from functools import partial
+import os
 
 debug_mode = False
 
-# TODO ADapt the model path
-model_path = "//mnt/home/lfehring/MasterThesis/architectures-in-rl/smac3_output/generate_runs_2_layers/47"
 
-
-@hydra.main(config_path="config", config_name="hpo_warmstart", version_base="1.1")
+@hydra.main(config_path="config", config_name="blackbox_only_hpo", version_base="1.1")
 def black_box_ppo_configure(config: Configuration):
     def black_box_ppo_execute(result_processor: ResultProcessor):
         # Mention the used libraries because of implicit imports
         minihack
         gym
 
-        feature_extractor_depth = config.non_hyperparameters.feature_extractor_depth
+        environment_name = config.non_hyperparameters.environment_id
+
+        # We only seed the neural network. Everything else is seeded more or less constantly
         seed = config["seed"]
         set_random_seed(seed, using_cuda=True)
-        # Idea save to n_trials_seed_budget_hpohash
-        # To find the current seed, we ignore n_trials but select based on the rest
-        # Question: How do we log? We write the id into the log file. But how do we know which run is continued where
 
-        # TODO Load previously trained model
         non_hyperparameters = config["non_hyperparameters"]
-        environment_name = non_hyperparameters["environment_name"]
         (
             batch_size,
             clip_range,
@@ -54,9 +47,6 @@ def black_box_ppo_configure(config: Configuration):
             feature_extractor_layer_width,
             cnn_intermediate_dimension,
         ) = extract_hyperparameters_minihack(config)
-
-        # Todo rebuild the convert space functionality from stablebaselines to work with a reliable gym env
-        # https://github.com/DLR-RM/stable-baselines3/blob/5623d98f9d6bcfd2ab450e850c3f7b090aef5642/stable_baselines3/common/vec_env/patch_gym.py#L63
 
         # We always use the same seeds in here
         training_vec_env = make_minihack_vec_env(
@@ -76,7 +66,6 @@ def black_box_ppo_configure(config: Configuration):
             non_hyperparameters["max_episode_steps"],
         )
         torch.cuda.torch.cuda.empty_cache()
-
         feature_extractor = partial(
             CustomCombinedExtractor,
             cnn_intermediate_dimension=cnn_intermediate_dimension,
@@ -84,7 +73,6 @@ def black_box_ppo_configure(config: Configuration):
             feature_extractor_layer_width=feature_extractor_layer_width,
             feature_extractor_output_dimension=feature_extractor_output_dimension,
         )
-
         model = PPO(
             policy="MultiInputPolicy",
             env=training_vec_env,
@@ -113,19 +101,46 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             log_path="./logs",
         )
-        model.set_parameters(os.path.join(model_path, str(seed), "model"), exact_match=False)
-
-        # If momentum reset rebuild optimizer
-        if config["momentum_reset"]:
-            model.policy.optimizer = model.policy.optimizer.__class__(model.policy.parameters(), lr=learning_rate)
-
+        # For Soem Reason the policynet has a input dimension of 1
         model.learn(total_timesteps=non_hyperparameters["total_timesteps"], callback=evaluation_callback)
         if not debug_mode:
             evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
             evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
 
+        new_training_vec_env = make_minihack_vec_env(
+            non_hyperparameters["inc_diff_environment_id"],
+            non_hyperparameters["observation_keys"],
+            non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
+            non_hyperparameters["parallel_vec_envs"],
+            non_hyperparameters["max_episode_steps"],
+        )
+
+        new_evaluation_vec_env = make_minihack_vec_env(
+            non_hyperparameters["inc_diff_environment_id"],
+            non_hyperparameters["observation_keys"],
+            non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
+            non_hyperparameters["parallel_vec_envs"],
+            non_hyperparameters["max_episode_steps"],
+        )
+
+        model.set_env(new_training_vec_env)
+        evaluation_callback = CustomEvaluationCallback(
+            new_evaluation_vec_env,
+            n_eval_episodes=non_hyperparameters["n_evaluation_episodes"],
+            eval_freq=non_hyperparameters["inc_diff_total_timesteps"] / non_hyperparameters["inc_diff_n_evaluation_rounds"] / non_hyperparameters["parallel_vec_envs"],
+            deterministic=True,
+            render=False,
+            log_path="./logs",
+        )
+
+        model.learn(total_timesteps=non_hyperparameters["inc_diff_total_timesteps"], callback=evaluation_callback, reset_num_timesteps=False)
+
+        if not debug_mode:
+            evaluation_callback.log_losses(result_processor, non_hyperparameters["trial_number"], seed, ent_coef, vf_coef)
+            evaluation_callback.log_results(result_processor, non_hyperparameters["trial_number"], seed)
+
         evaluation_vec_env = make_minihack_vec_env(
-            environment_name,
+            non_hyperparameters["inc_diff_environment_id"],
             non_hyperparameters["observation_keys"],
             non_hyperparameters["env_seed"] + non_hyperparameters["parallel_vec_envs"],
             non_hyperparameters["parallel_vec_envs"],
@@ -145,9 +160,9 @@ def black_box_ppo_configure(config: Configuration):
             render=False,
             callback=callback_wrapper.get_callback(),
         )
-        if not debug_mode:
-            callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode)
 
+        callback_wrapper.process_results(non_hyperparameters["trial_number"], seed, final_score, final_std, actions_per_epiosode)
+        if not debug_mode:
             log_results(
                 result_processor,
                 {
@@ -155,8 +170,7 @@ def black_box_ppo_configure(config: Configuration):
                         "worker_number": seed,  # Currently the same as the workerseed
                         "worker_seed": seed,
                         "trial_number": non_hyperparameters["trial_number"],
-                        "budget": feature_extractor_depth,
-                        "environment_name": environment_name,
+                        "environment_id": environment_name,
                         "batch_size": batch_size,
                         "clip_range": clip_range,
                         "clip_range_vf": clip_range_vf,
@@ -168,12 +182,18 @@ def black_box_ppo_configure(config: Configuration):
                         "n_steps": n_steps,
                         "normalize_advantage": normalize_advantage,
                         "vf_coef": vf_coef,
-                        "momentum_reset": config["momentum_reset"],
+                        "feature_extractor_output_dimension": feature_extractor_output_dimension,
+                        "n_feature_extractor_layers": n_feature_extractor_layers,
+                        "feature_extractor_layer_width": feature_extractor_layer_width,
+                        "cnn_intermediate_dimension": cnn_intermediate_dimension,
+                        "final_score": final_score,
                         "final_score": final_score,
                         "final_std": final_std,
                     }
                 },
             )
+
+        model.save(os.path.join(non_hyperparameters["model_save_path"], str(non_hyperparameters["trial_number"]), str(seed), "model"))
 
         model.policy = None
         torch.cuda.empty_cache()

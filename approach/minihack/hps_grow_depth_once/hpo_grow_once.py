@@ -11,7 +11,7 @@ from stable_baselines3.ppo import PPO
 
 from py_experimenter.result_processor import ResultProcessor
 from utils import create_pyexperimenter, extract_hyperparameters_minihack, log_results, make_minihack_vec_env, get_model_save_path_minihack
-from utils.networks.feature_extractor import Net2DeeperFeatureExtractor
+from utils.minihack.feature_extractor import Net2DeeperFeatureExtractor
 from utils.stable_baselines_callback import CustomEvaluationCallback, FinalEvaluationWrapper
 
 debug_mode = False

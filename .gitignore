@@ -17,3 +17,4 @@ slurm_logs
 build
 ssh_files/kissi/error_on_*
 ssh_files/kissi/result_on_*
+fehring_growing_nn_new_seeded

@@ -48,8 +48,8 @@ def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], apprao
 def plot_incumbent_interactions_2_layers():
     database_name = "fehring_growing_nn_new_seeded"
     baseline_experiment_ids = {
-        "Baseline (1 layer); mid": 9,
-        "Baseline (2 layers); mid": 1,
+        "Baseline (1 layer)": 9,
+        "Baseline (2 layers)": 1,
     }
 
     appraoch_experiment_ids = {"Net2Deeper (2 Layers); mid": 1}
@@ -69,9 +69,7 @@ def plot_incumbent_interactions_2_layers():
         sns.lineplot(x="timestep", y="episode_reward", data=data, label=f"{approach_name}", linestyle="dotted", linewidth=3)
         line_number += 1
 
-    plt.axvline(x=500000, color="black", linestyle="--", alpha=0.5)
     plt.axvline(x=1000000, color="red", linestyle="--", linewidth=3)
-    plt.axvline(x=1500000, color="black", linestyle="--", alpha=0.5)
 
     plt.title("Incumbent Training Process; Increase Difficulty Mid", fontsize=20, fontweight="bold")
     plt.xlabel("Timesteps", fontsize=15)
@@ -122,9 +120,9 @@ def plot_incumbent_process_4_layers_mid():
 
 def plot_incumbent_process_4_layers_end():
     database_name = "fehring_growing_nn_new_seeded"
-    baseline_experiment_ids = {"Baseline (1 layer)": 6, "Baseline (4 layers); end": 3}
+    baseline_experiment_ids = {"Baseline (1 layer)": 6, "Baseline (4 layers)": 3}
 
-    appraoch_experiment_ids = {"Net2Deeper (4 Layers); end": 2}
+    appraoch_experiment_ids = {"Net2Deeper (4 Layers)": 2}
 
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
 

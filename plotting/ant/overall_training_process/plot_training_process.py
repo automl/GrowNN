@@ -57,12 +57,12 @@ def plot_one_million_interactions():
 
     for approach_name, data in baseline_data.items():
         # The environment interactions column appears to be buggy
-        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-pre", linestyle="solid")
+        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-post", linestyle="solid")
 
     line_styles = ["dashed", "dashdot"]
     line_number = 0
     for approach_name, data in appraoch_data.items():
-        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-pre", linestyle=line_styles[line_number])
+        sns.lineplot(x="environment_interactions", y="cost", data=data, label=f"{approach_name}", drawstyle="steps-post", linestyle=line_styles[line_number])
 
     plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)

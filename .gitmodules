@@ -1,0 +1,6 @@
+[submodule "SMAC3"]
+	path = SMAC3
+	url = https://github.com/LukasFehring/SMAC3-for-GNN.git
+[submodule "minihack"]
+	path = minihack
+	url = https://github.com/LukasFehring/minihack.git

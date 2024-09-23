@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - slurm
+  #- slurm
   - configspace: small_space_config
   - override hydra/sweeper: SMAC
 
@@ -75,7 +75,7 @@ PY_EXPERIMENTER:
     provider: mysql
     database: fehring_growing_nn_new_seeded
     table:
-      name: ant_bb_net2deeper_baseline
+      name: test
       keyfields: 
         environment_id:
           type: VARCHAR(50)

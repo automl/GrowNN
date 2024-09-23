@@ -7,3 +7,6 @@
 [submodule "nle"]
 	path = nle
 	url = https://github.com/LukasFehring/nle.git
+[submodule "py_experimenter"]
+	path = py_experimenter
+	url = https://github.com/tornede/py_experimenter.git

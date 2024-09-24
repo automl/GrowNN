@@ -1,5 +1,5 @@
-# Master Thesis: Growing With Experience; Growing Neural Networks in Deep Reinforcement Learning
-This repository holds the code for the Master Thesis: `Growing With Experience; Growing Neural Networks in Deep Reinforcement Learning`. Our repository contains the code of all experiments conducted for this thesis, and the code to create the plots.
+# Master Thesis: Growing With Experience: Growing Neural Networks in Deep Reinforcement Learning
+This repository holds the code for the Master Thesis: `Growing With Experience: Growing Neural Networks in Deep Reinforcement Learning`. Our repository contains the code of all experiments conducted for this thesis, and the code to create the plots.
 
 ![Results on the Ant environment as shown in the thesis](plotting/ant/overall_training_process/ant_training_process.png)
 
@@ -66,7 +66,7 @@ The main codebase is organized into the following directories:
 We explain the execution of experiments by an example rooted in `approach/ant/budget4`. Each experiment is split into: Firstly the `config` directory, a python run script, and a shell file.
 
 ### Config Directory
-The config directory contains a main file, in this case `ant_n2d.yaml` which mainly configures the parameters provided to the hypersweeper, the py_experimenter configuration and additional parameters used for execution. 
+The `config` directory contains a main file, in this case `ant_n2d.yaml` which mainly configures the parameters provided to the hypersweeper, the py_experimenter configuration and additional parameters used for execution. 
 
 #### Main Yaml file
 The main `yaml` file is split into three section: 
@@ -75,9 +75,9 @@ The `defaults` section contains basic configuration options
 ```yaml
 defaults:
   - _self_
-  - slurm     # Make this a comment if not executing on a slurm cluster
+  - slurm                           # Make this a comment if not executing on a slurm cluster
   - configspace: small_space_config # references the used  configspace in configspace/small_space_config
-  - override hydra/sweeper: SMAC # Use the hypersweeper
+  - override hydra/sweeper: SMAC    # Use the hypersweeper
 ```
 
 From `hydra_sweeper`to`PY_EXPERIMENTER` the experiments are defined. All adaptations here might lead to problems.
@@ -91,7 +91,7 @@ PY_EXPERIMENTER:
     table:
       name: ant_net2deeper                      #Configure the table name
 ```
-For an in depth understanding of additional conten refer to the [docs](https://tornede.github.io/py_experimenter/usage/experiment_configuration_file.html#) or contact us.
+For an in depth understanding of additional content refer to the [docs](https://tornede.github.io/py_experimenter/usage/experiment_configuration_file.html#) or contact us.
 
 #### Python Run Script
 To execute the code locally you need to execute and configure the yaml configuration not to use slurm

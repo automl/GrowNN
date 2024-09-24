@@ -3,12 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import seaborn as sns
 import ast
-import io
 import matplotlib as mpl
-import numpy as np
 import pandas as pd
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-from PIL import Image
 from py_experimenter.experimenter import PyExperimenter
 
 

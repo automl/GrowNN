@@ -1,5 +1,9 @@
 # Master Thesis: Growing With Experience; Growing Neural Networks in Deep Reinforcement Learning
-This repository holds the code for the Master Thesis: `Growing With Experience; Growing Neural Networks in Deep Reinforcement Learning`.
+This repository holds the code for the Master Thesis: `Growing With Experience; Growing Neural Networks in Deep Reinforcement Learning`. Our repository contains the code of all experiments conducted for this thesis, and the code to create the plots.
+
+![Results on the Ant environemnt as shown in the thesis](plotting/ant/overall_training_process/ant_training_process.png)
+
+To execute the code, you are required to offer a connection to a mysql or sqlite database that allows for overlapping databse transactions. 
 
 In the following we first provide an installation guide, to then explain the repositories structure, and lastly explain how experiments can be run.
 
@@ -48,7 +52,7 @@ The main codebase is organized into the following directories:
     
 - **baselines**: Stores the run files for baseline experiments, structured similarly to the `approach` directory.
 
-- **config**: Shold ontains the configuration files for `py_experimenter`.
+- **config**: Shold ontains the configuration files for `py_experimenter`. To utilize `mysql` you need to first create `config/database_credentials.yml` as described in [the documentation](https://tornede.github.io/py_experimenter/usage/experiment_configuration_file.html)
 
 - **hydra_plugins**: Contains early versions of the hypersweeper code.
 
@@ -57,3 +61,48 @@ The main codebase is organized into the following directories:
 - **test**: Holds elementary test cases for various network morphisms.
 
 - **utils**: Contains network implementations and additional utility files.
+
+## Execute Experiments 
+We explain the execution of experiments by an example rooted in `approach/ant/budget4`. Each experiment is split into: Firstly the `config` directory, a python run schipt, and a shell file.
+
+### Config Directory
+The config directory contains a main file, in this caes `ant_n2d.yaml` which mainly configures the parameters provided to the hypersweeper, the py_experimenter configuration and additional parameters used for execution. 
+
+#### Main Yaml file
+The main `yaml` file is split into three section: 
+
+The `defaults` section contains basic configuration options
+```yaml
+defaults:
+  - _self_
+  - slurm     # Make this a comment if not executing on a slurm cluster
+  - configspace: small_space_config # references the used  configspace in configspace/small_space_config
+  - override hydra/sweeper: SMAC # Use the hypersweeper
+```
+
+From `hydra_sweeper` t `PY_EXPERIMENTER` the experiemtns are defined. All adaptations here might lead to problems.
+
+The `PY_EXPERIMENTER` section configures the py_experimenter as shown in the [docs](https://tornede.github.io/py_experimenter/usage/experiment_configuration_file.html#). The most important adaptation options here are the following fields.
+```yaml
+PY_EXPERIMENTER: 
+  Database:
+    provider: mysql                             #Configure to use mysql or sqlite
+    database: fehring_growing_nn_new_seeded     #Configure the database name
+    table:
+      name: ant_net2deeper                      #Configure the table name
+```
+For an in depth understanding of additional conten refer to the [docs](https://tornede.github.io/py_experimenter/usage/experiment_configuration_file.html#) or contact us.
+
+#### Python Run Script
+To execute the code locally you need to exectue and configure the yaml configuraiton not to use slurm
+```bash
+export PYTHONPATH="$PYTHONPATH:/path/to/outer/cwd"
+python run/script/name -m
+```
+
+#### Run on Cluster
+Tp execute experiments on a cluster run
+```bash
+sbatch path/to/sh/script.sh
+```
+This will start a job with the ressources as defined in the `sh` script. It will iteratively schedule worker jobs according to the ressources specified in `slurm.yaml`.

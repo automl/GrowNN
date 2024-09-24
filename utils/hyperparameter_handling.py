@@ -5,6 +5,9 @@ import json
 
 
 def extract_hyperparameters_minihack(config: DictConfig) -> Tuple:
+    """
+    Extracts the hyperparameters from the config file for experiments with the MiniHack environment
+    """
     batch_size = config["batch_size"]
     clip_range = config["clip_range"]
     clip_range_vf = None if config["clip_range_vf"] == "None" else config["clip_range_vf"]
@@ -41,6 +44,9 @@ def extract_hyperparameters_minihack(config: DictConfig) -> Tuple:
 
 
 def extract_hyperparameters_gymnasium(config: DictConfig) -> Tuple:
+    """
+    Extracts the hyperparameters from the config file for experiments with environments compatible with the Gymnasium framework.
+    """
     batch_size = config["batch_size"]
     clip_range = config["clip_range"]
     clip_range_vf = None if config["clip_range_vf"] == "None" else config["clip_range_vf"]
@@ -77,10 +83,16 @@ def extract_increase_width_hyperparameters(config: DictConfig) -> Tuple:
 
 
 def get_model_save_path_minihack(model_save_path: str, config: DictConfig, budget, seed) -> str:
+    """
+    Rerturns the path to the directory where the model is saved.
+    """
     return os.path.join(model_save_path, str(extract_hyperparameters_minihack(config)), str(budget), str(seed))
 
 
 def get_model_save_path_gymnasium(model_save_path: str, config: DictConfig, budget, seed) -> str:
+    """
+    Rerturns the path to the directory where the model is saved.
+    """
     return os.path.join(model_save_path, str(extract_hyperparameters_gymnasium(config)), str(budget), str(seed))
 
 

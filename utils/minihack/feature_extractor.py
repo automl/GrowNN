@@ -14,6 +14,10 @@ from utils.networks.net2wider import Net2Wider
 
 class OneHotEncoder(nn.Module):
     # Written with the Help of ChatGPT
+    """
+    OneHotEncoder class. This class is used to encode the observation space into a one-hot encoding.
+    """
+
     def __init__(self, num_classes, shape):
         super(OneHotEncoder, self).__init__()
         self.num_classes = num_classes
@@ -28,67 +32,6 @@ class OneHotEncoder(nn.Module):
             x = x.view(-1, self.shape[0], self.shape[1], self.num_classes)
             x = x.permute(0, 3, 1, 2)
         return x
-
-
-class NoCNNFeatureExtractor(BaseFeaturesExtractor):
-    def __init__(self, observation_space: gym.spaces.Dict, n_feature_extractor_layers: int, feature_extractor_layer_width: int, feature_extractor_output_dimension: int):
-        super(NoCNNFeatureExtractor, self).__init__(observation_space, features_dim=1)
-        self.shape = observation_space["chars"].shape
-        self.n_feature_extractor_layers = n_feature_extractor_layers
-        self.feature_extractor_layer_width = feature_extractor_layer_width
-        self.feature_extractor_output_dimension = feature_extractor_output_dimension
-        self.build_feature_extractor(observation_space)
-
-    def build_feature_extractor(self, observation_space: gym.spaces.Dict):
-        extractors = {}
-
-        total_concat_size = 0
-        # We need to know size of the output of this extractor,
-        # so go over all the spaces and compute output feature sizes
-        for key, subspace in observation_space.spaces.items():
-            if key == "chars":
-                # Assume the chars are 2D grid of integers
-                # Transform them to one-hot encoding - resulting in
-                extractors[key] = nn.Sequential(
-                    nn.Flatten(),
-                )
-                total_concat_size += observation_space["chars"].shape[0] * observation_space["chars"].shape[1]
-
-            else:
-                raise NotImplementedError("Image observation not supported")
-
-        self.extractors = nn.ModuleDict(extractors)
-        self.downscaling = self.downscaling = nn.Sequential(
-            nn.Linear(total_concat_size, self.feature_extractor_layer_width),
-            nn.ReLU(),
-        )
-        self.linear_layers = nn.Sequential()
-        for layer_number in range(self.n_feature_extractor_layers):
-            input_size = self.feature_extractor_layer_width
-            if layer_number == self.n_feature_extractor_layers - 1:
-                output_size = self.feature_extractor_output_dimension
-            else:
-                output_size = self.feature_extractor_layer_width
-            self.linear_layers.add_module(f"linear_{layer_number}", nn.Linear(input_size, output_size))
-            self.linear_layers.add_module(f"ReLu_{layer_number}", nn.ReLU())
-
-        ##### KEEEEEP THIS AT ALL COST, BECAUSE STABLE BASELIENS USES IT FOR SOME REASON
-        self._features_dim = self.feature_extractor_output_dimension
-        ##### KEEEEEP THIS AT ALL COST, BECAUSE STABLE BASELIENS USES IT FOR SOME REASON
-
-    def forward(self, observations) -> th.Tensor:
-        encoded_tensor_list = []
-
-        # self.extractors contain nn.Modules that do all the processing.
-        for key, extractor in self.extractors.items():
-            encoded_tensor_list.append(extractor(observations[key]))
-
-        # Concatenate the extracted features
-        encoded_tensor = th.cat(encoded_tensor_list, dim=1)
-        encoded_tensor = self.downscaling(encoded_tensor)
-        encoded_tensor = self.linear_layers(encoded_tensor)
-        # Return a (B, self._features_dim) PyTorch tensor, where B is batch dimension.
-        return encoded_tensor
 
 
 class AbstractFeatureExtractor(BaseFeaturesExtractor, abc.ABC):
@@ -325,6 +268,14 @@ class Net2DeeperFeatureExtractor(AbstractFeatureExtractor):
 
 
 class Net2WiderFeatureExtractor(AbstractFeatureExtractor):
+    """
+    Custom feature extractor for the MultiInputPolicy. The width of the network is increased by called interventions
+
+    First the input is processed by a onehot encoder, followed by a CNN layer, and one linear layer used for downscaling.
+    The output is then processed by a number of linear of depth n_feature_extractor_layers, which are increased in widht..
+    The last layer has `feature_extractor_output_dimension` units.
+    """
+
     def __init__(
         self,
         observation_space: gym.spaces.Dict,
@@ -335,6 +286,15 @@ class Net2WiderFeatureExtractor(AbstractFeatureExtractor):
         increase_factor: float,
         noise_level: float,
     ):
+        """
+        Constructor for the Net2WiderFeatureExtractor class.
+        :param observation_space: The observation space of the environment
+        :type observation_space: Box
+        :param cnn_intermediate_dimension: The number of neurons in the CNN layer
+        :type cnn_intermediate_dimension: int
+        :param n_feature_extractor_layers: The number of layers of the feature extractor
+        :type n_feature_extractor_layers: int
+        """
         self.increase_factor = increase_factor
         self.noise_level = noise_level
         super().__init__(

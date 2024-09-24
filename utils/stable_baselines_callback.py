@@ -13,7 +13,7 @@ import logging
 
 class CustomEvaluationCallback(EvalCallback):
     """
-    Builds on standard eval Callback. Idea to track the different losses and percentage of solved episodes additionally
+    Builds on standard eval Callback. Idea to track the different losses and percentage of solved episodes additionally.
     """
 
     def __init__(self, *args, **kwargs):
@@ -186,6 +186,10 @@ class CustomEvaluationCallback(EvalCallback):
 
 
 class FinalEvaluationWrapper:
+    """
+    Wrapper to evaluate the final results of the model. Adaptation of the standard Stable Baselines3 EvalCallback.
+    """
+
     def __init__(self, result_processor: ResultProcessor, n_envs: int, n_episodes: int) -> None:
         self.result_processor: ResultProcessor = result_processor
         self.n_envs = n_envs

@@ -6,6 +6,9 @@ import os
 
 
 def create_pyexperimenter(config: OmegaConf, use_ssh_tunnel: bool = True) -> PyExperimenter:
+    """
+    Create a PyExperimenter object with the given configuration
+    """
     if "nhwpfehl" in os.getcwd():
         credentials_file_path = "/bigwork/nhwpfehl/architectures-in-rl/config/database_credentials.yml"
     elif "mnt" in os.getcwd():
@@ -29,6 +32,9 @@ def create_pyexperimenter(config: OmegaConf, use_ssh_tunnel: bool = True) -> PyE
 
 
 def log_results(result_processor: ResultProcessor, logs: Dict, max_counter: int = 10, counter=0):
+    """
+    Log the results of the given logs with the given result processor
+    """
     # I need to wrap the funciton, becaue the executed jobs may be distributed on various nodes
     # If so there needs to be a seperate ssh passthrough on every node, however they might be
     # closed in one thread finishes before the other, meaning I need to reclose them

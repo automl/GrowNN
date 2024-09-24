@@ -3,17 +3,19 @@ from typing import List, Optional
 from stable_baselines3.common.vec_env import DummyVecEnv
 import minihack
 from nle import nethack
-from stable_baselines3.common.env_util import make_vec_env
+
 
 def make_minihack_env(env_id: str, observation_keys: List[str], max_episode_steps: Optional[int], environment_seed: int):
     """
-    From https://stable-baselines3.readthedocs.io/en/master/guide/examples.html#multiprocessing-unleashing-the-power-of-vectorized-environments
-    Utility function for multiprocessed env.
-
-    :param env_id: the environment ID
-    :param num_env: the number of environments you wish to have in subprocesses
-    :param seed: the inital seed for RNG
-    :param rank: index of the subprocess
+    Create a MiniHack environment with the given parameters
+    :param env_id: The id of the environment
+    :type env_id: str
+    :param observation_keys: The keys of the observations
+    :type observation_keys: List[str]
+    :param max_episode_steps: The maximum number of steps per episode
+    :type max_episode_steps: Optional[int]
+    :param environment_seed: The seed of the environment
+    :type environment_seed: int
     """
     minihack
     MOVE_ACTIONS = tuple(nethack.CompassDirection)
@@ -21,15 +23,10 @@ def make_minihack_env(env_id: str, observation_keys: List[str], max_episode_step
     def _init():
         nonlocal max_episode_steps
         if max_episode_steps is None:
-            # if "Room" in env_id:
-            #    grid_size = int(env_id.split("-")[-2].split("x")[0])
-            #    max_episode_steps = grid_size * grid_size * 4
-            #    env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps = max_episode_steps,actions=MOVE_ACTIONS)
-            # else:
             env = gym.make(env_id, observation_keys=observation_keys, actions=MOVE_ACTIONS)
         else:
             env = gym.make(env_id, observation_keys=observation_keys, max_episode_steps=max_episode_steps, actions=MOVE_ACTIONS)
-        # env.reset(seed=environment_seed)
+        # Force Create a Random Number Generator in MiniHack. I added this to ensure reproducibility
         env.create_np_rng(environment_seed)
         return env
 
@@ -37,4 +34,17 @@ def make_minihack_env(env_id: str, observation_keys: List[str], max_episode_step
 
 
 def make_minihack_vec_env(env_id: str, observation_keys: List[str], environment_seed: int, parralel_vec_envs: int, max_episode_steps: int):
+    """
+    Create a MiniHack vectorized environment with the given parameters
+    :param env_id: The id of the environment
+    :type env_id: str
+    :param observation_keys: The keys of the observations
+    :type observation_keys: List[str]
+    :param environment_seed: The seed of the environment
+    :type environment_seed: int
+    :param parralel_vec_envs: The number of parallel environments
+    :type parralel_vec_envs: int
+    :param max_episode_steps: The maximum number of steps per episode
+    :type max_episode_steps: int
+    """
     return DummyVecEnv([make_minihack_env(env_id, observation_keys, max_episode_steps, environment_seed + i) for i in range(parralel_vec_envs)])

@@ -73,7 +73,7 @@ def plot_incumbent_interactions_4_layers():
 
     plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)
-    plt.ylabel("Cost", fontsize=14)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)
@@ -109,7 +109,7 @@ def plot_incumbent_interactions_8_layers():
 
     plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=15)
-    plt.ylabel("Cost; Negative Mean Evaluation Return", fontsize=15)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=15)
 
     plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)

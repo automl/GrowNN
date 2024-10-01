@@ -66,7 +66,7 @@ def plot_one_million_interactions():
 
     plt.title("Optimization Process - Ant-v4", fontsize=20, fontweight="bold")
     plt.xlabel("Environment Interactions", fontsize=14)
-    plt.ylabel("Cost", fontsize=14)
+    plt.ylabel("Cost; Negative Mean Evaluation Return", fontsize=14)
 
     plt.legend(title="Model Type", fontsize=12, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
     plt.grid(True, linestyle="--", alpha=0.7)

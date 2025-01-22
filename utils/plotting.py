@@ -8,6 +8,15 @@ import pandas as pd
 from py_experimenter.experimenter import PyExperimenter
 
 
+def format_func(value, tick_number):
+    if value >= 1e6:
+        return f"{value / 1e6:.2f}M"
+    elif value >= 1e3:
+        return f"{value / 1e3:.2f}K"
+    else:
+        return str(int(value))
+
+
 def training_process_style():
     """
     Set the style of the plot to be used for the training process.
@@ -15,15 +24,7 @@ def training_process_style():
     palette = sns.color_palette("colorblind")
     sns.set_palette(palette)
     plt.tight_layout()
-    plt.figure(figsize=(12, 8))
-
-    def format_func(value, tick_number):
-        if value >= 1e6:
-            return f"{value / 1e6:.2f}M"
-        elif value >= 1e3:
-            return f"{value / 1e3:.2f}K"
-        else:
-            return str(int(value))
+    plt.figure(figsize=(15, 7))
 
     plt.gca().xaxis.set_major_formatter(FuncFormatter(format_func))
 
@@ -52,10 +53,10 @@ def set_rc_params():
     mpl.rcParams["figure.figsize"] = (6, 3)
 
     # Fontsizes
-    mpl.rcParams["xtick.labelsize"] = 12
-    mpl.rcParams["ytick.labelsize"] = 12
-    mpl.rcParams["axes.labelsize"] = 14
-    mpl.rcParams["axes.titlesize"] = 14
+    mpl.rcParams["xtick.labelsize"] = 22
+    mpl.rcParams["ytick.labelsize"] = 22
+    mpl.rcParams["axes.labelsize"] = 18
+    mpl.rcParams["axes.titlesize"] = 18
 
     # Increase linewidth of plots
     mpl.rcParams["lines.linewidth"] = 2

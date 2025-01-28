@@ -12,3 +12,4 @@ smac
 gymnasium[mujoco]
 hydra-core
 configspace==0.7.1
+seaborn

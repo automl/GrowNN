@@ -124,27 +124,26 @@ def plot_10x10_random_full():
 
     training_process_style()
 
-    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="solid")
-    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="solid")
-    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted", linewidth=3)
-    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Constant Width 4096", linestyle="solid")
-    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 4096", linestyle="dashed")
+    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Static (2x width)", linestyle="solid")
+    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="GrowNN (2x width)", linestyle="dotted", linewidth=3)
+    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Static (4x width)", linestyle="solid")
+    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="GrowNN (4x width)", linestyle="dashed")
+    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Static ", linestyle="solid")
 
     # Add vline every 500000 timesteps
     for i in range(1, int(net2wider_width_4_training_process_concat_dataframe["timestep"].max() / 500000)):
         plt.axvline(x=i * 500000, color="gray", linestyle="--")
 
-    plt.title("Incumbent Training Process - Minihack Room Random 10x10", fontsize=20, fontweight="bold")
-    plt.xlabel("Timestep", fontsize=15)
-    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=15)
+    plt.xlabel("Environment Interactions", fontsize=25)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=25)
 
-    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=25, title_fontsize=25, loc="center", bbox_to_anchor=(0.45, -0.31), ncol=3)
 
     # Add grid for better readability
     plt.grid(True, linestyle="--", alpha=0.7)
 
-    plt.show()
-    plt.savefig("plotting/minihack/net2wider/incumbent_training_process/incumbent_training_process_random_10x10.png", bbox_inches="tight")
+    plt.savefig("plotting/minihack/net2wider/incumbent_training_process/incumbent_training_process_random_10x10.pdf", bbox_inches="tight", pad_inches=0.3)
+    plt.clf()
 
 
 def plot_10x10_random_width2():
@@ -206,29 +205,26 @@ def plot_10x10_monster_full():
         net2wider_width_2_training_process_concat_dataframe,
     ) = get_data("fehring_growing_nn_new_seeded", [3, 2, 8, 7, 10])
 
-    training_process_style()
-
-    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Constant Width 512", linestyle="solid")
-    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Constant Width 1024", linestyle="solid")
-    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 1024", linestyle="dotted", linewidth=3)
-    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Constant Width 4096", linestyle="solid")
-    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="Net2Wider Width 4096", linestyle="dashed")
+    sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Static (2x width)", linestyle="solid")
+    sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="GrowNN (2x width)", linestyle="dotted", linewidth=3)
+    sns.lineplot(data=baseline_width_4_training_process_data, x="timestep", y="episode_reward", label="Static (4x width)", linestyle="solid")
+    sns.lineplot(data=net2wider_width_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="GrowNN (4x width)", linestyle="dashed")
+    sns.lineplot(data=baseline_width_1_training_process_data, x="timestep", y="episode_reward", label="Static", linestyle="solid")
 
     # Add vline every 500000 timesteps
-    for i in range(1, int(net2wider_width_4_training_process_concat_dataframe["timestep"].max() / 500000)):
+    for i in range(1, int(net2wider_width_4_training_process_concat_dataframe["timestep"].max() / 500000)):#
         plt.axvline(x=i * 500000, color="gray", linestyle="--")
 
-    plt.title("Incumbent Training Process - Minihack Room Monster 10x10", fontsize=20, fontweight="bold")
-    plt.xlabel("Timestep", fontsize=15)
-    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=15)
+    plt.xlabel("Environment Interactions", fontsize=25)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=25)
 
-    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=25, title_fontsize=25, loc="center", bbox_to_anchor=(0.45, -0.31), ncol=3)
 
     # Add grid for better readability
     plt.grid(True, linestyle="--", alpha=0.7)
 
-    plt.show()
-    plt.savefig("plotting/minihack/net2wider/incumbent_training_process/incumbent_training_process_monster_10x10.png", bbox_inches="tight")
+    plt.savefig("plotting/minihack/net2wider/incumbent_training_process/incumbent_training_process_monster_10x10.pdf", bbox_inches="tight", pad_inches=0.3)
+    plt.clf()
 
 
 def plot_10x10_monster_width2():
@@ -281,9 +277,9 @@ def plot_10x10_monster_width4():
     plt.savefig("plotting/minihack/net2wider/incumbent_training_process/incumbent_training_process_monster_10x10_width4.png", bbox_inches="tight")
 
 
-plot_10x10_random_full()
-plot_10x10_random_width2()
-plot_10x10_random_width4()
+# plot_10x10_random_full()
+#plot_10x10_random_width2()
+#plot_10x10_random_width4()
 plot_10x10_monster_full()
-plot_10x10_monster_width2()
-plot_10x10_monster_width4()
+#plot_10x10_monster_width2()
+#plot_10x10_monster_width4()

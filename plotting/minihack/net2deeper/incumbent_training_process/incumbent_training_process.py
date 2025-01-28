@@ -203,27 +203,25 @@ def plot_10x10_monster_full():
 
     training_process_style()
 
-    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 1", linestyle="solid")
-    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 2", linestyle="solid")
-    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="GrowNN Depth 2", linestyle="dotted", linewidth=3)
-    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="episode_reward", label="Constant Depth 4", linestyle="solid")
-    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="GrowNN Depth 4", linestyle="dashed")
+    sns.lineplot(data=baseline_depth_2_training_process_data, x="timestep", y="episode_reward", label="Static (2 layers)", linestyle="solid")
+    sns.lineplot(data=net2deeper_depth_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="GrowNN (2 layers)", linestyle="dotted", linewidth=3)
+    sns.lineplot(data=baseline_depth_4_training_process_data, x="timestep", y="episode_reward", label="Static (4 layers)", linestyle="solid")
+    sns.lineplot(data=net2deeper_depth_4_training_process_concat_dataframe, x="timestep", y="episode_reward", label="GrowNN (4 layers)", linestyle="dashed")
+    sns.lineplot(data=baseline_depth_1_training_process_data, x="timestep", y="episode_reward", label="Static (1 layer) ", linestyle="solid")
 
     # Add vline every 500000 timesteps
     for i in range(1, int(net2deeper_depth_4_training_process_concat_dataframe["timestep"].max() / 500000)):
         plt.axvline(x=i * 500000, color="gray", linestyle="--")
 
-    plt.title("Incumbent Training Process - Minihack Room Monster 10x10", fontsize=20, fontweight="bold")
-    plt.xlabel("Environment Interactions", fontsize=15)
-    plt.ylabel("IQM of Evaluation Epsiode Return", fontsize=15)
+    plt.xlabel("Environment Interactions", fontsize=25)
+    plt.ylabel("IQM of Evaluation Episode Returns", fontsize=25)
 
-    plt.legend(title="Model Type", fontsize=16, title_fontsize=18, loc="center", bbox_to_anchor=(0.5, -0.18), ncol=3)
+    plt.legend(title="Model Type", fontsize=25, title_fontsize=25, loc="center", bbox_to_anchor=(0.45, -0.31), ncol=3)
 
     # Add grid for better readability
     plt.grid(True, linestyle="--", alpha=0.7)
 
-    plt.show()
-    plt.savefig("plotting/minihack/net2deeper/incumbent_training_process/incumbent_training_process_monster_10x10.png", bbox_inches="tight")
+    plt.savefig("plotting/minihack/net2deeper/incumbent_training_process/incumbent_training_process_monster_10x10.pdf", bbox_inches="tight", pad_inches=0.3)
 
 
 def plot_10x10_monster_depth2():
@@ -278,6 +276,6 @@ def plot_10x10_monster_depth4():
 plot_10x10_random_full()
 # plot_10x10_random_depth2()
 # plot_10x10_random_depth4()
-# plot_10x10_monster_full()
+plot_10x10_monster_full()
 # plot_10x10_monster_depth2()
 # plot_10x10_monster_depth4()

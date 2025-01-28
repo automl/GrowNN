@@ -1,16 +1,16 @@
 # Master Thesis: Growing With Experience: Growing Neural Networks in Deep Reinforcement Learning
 This repository holds the code for the Master Thesis: `Growing With Experience: Growing Neural Networks in Deep Reinforcement Learning`. Our repository contains the code of all experiments conducted for this thesis, and the code to create the plots.
 
-![Results on the Ant environment as shown in the thesis](plotting/ant/overall_training_process/ant_training_process.png)
+![Results on the Ant environment as shown in the thesis](plotting/ant/net2deeper/both_in_one.pdf)
 
 To execute the code, you are required to offer a connection to a MySQL or SQLite database that allows for overlapping database transactions. 
 
 In the following we first provide an installation guide, to then explain the repositories structure, and lastly explain how experiments can be run.
 
 ## Installation
-1. To install our environment, you first need to clone our implementation and all dependencies using
+1. To install our environment, you first need to clone our implementation
 ```bash
-git clone https://github.com/automl-private/architectures-in-rl.git --recursive
+git clone https://github.com/automl-private/architectures-in-rl.git
 ```
 2. Then, create a new Anaconda environment, possibly using
 ```bash

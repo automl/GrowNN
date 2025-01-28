@@ -18,15 +18,11 @@ conda create -n network_growing python=3.8.19
 ```
 3. Next, install the NetHack learning environment. If you encounter issues refer to the documentation at https://github.com/facebookresearch/nle
 ```bash
+conda install cmake
 pip install ./nle
 ```
-4. To install py_experimenter you first need to adapt `./py_experimenter/py_project.toml` to 
-```toml
-[tool.poetry.dependencies]
-python = "^3.8"
-```
 
-5. Next, install MiniHack, PyExperimenter, StableBaselines3 and SMAC3 using 
+4. Next, install MiniHack, PyExperimenter, StableBaselines3 and SMAC3 using 
 ```bash
 pip install ./minihack
 pip install ./SMAC3
@@ -34,7 +30,7 @@ pip install ./py_experimenter
 pip install ./stable-baselines3
 ```
 
-6. Lastly install the local repo and dependencies using
+5. Lastly install the local repo and dependencies using
 ```bash
 pip install .
 pip install -r requirements.txt

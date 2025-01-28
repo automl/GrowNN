@@ -5,7 +5,7 @@ This repository holds the code for the ICML submission: `Growing with Experience
 
 To execute the code, you are required to offer a connection to a MySQL or SQLite database that allows for overlapping database transactions. 
 
-In the following we first provide an installation guide, to then explain the repositories structure, and lastly explain how experiments can be run.
+In the following we first provide an installation guide, to then explain the repositories structure, and lastly explain how experiments can be run. Note that we opted not to use submodules for easier anonymisation.
 
 ## Installation
 1. To install our environment, you first need to clone our implementation

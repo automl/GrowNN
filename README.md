@@ -1,7 +1,7 @@
 # Growing with Experience: Growing Neural Networks in Deep RL
 This repository holds the code for the ICML submission: `Growing with Experience: Growing Neural Networks in Deep RL`. Our repository contains the code of all experiments conducted for this project, and the code to create the plots.
 
-![Results on the Ant environment as shown in the paper](plotting/ant/net2deeper/both_in_one.pdf)
+![Results on the Ant environment as shown in the paper](plotting/ant/net2deeper/both_in_one.png)
 
 To execute the code, you are required to offer a connection to a MySQL or SQLite database that allows for overlapping database transactions. 
 

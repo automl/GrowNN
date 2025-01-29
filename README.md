@@ -83,7 +83,7 @@ The `PY_EXPERIMENTER` section configures the py_experimenter as shown in the [do
 PY_EXPERIMENTER: 
   Database:
     provider: mysql                             #Configure to use MySQL or SQLite
-    database: fehring_growing_nn_new_seeded     #Configure the database name
+    database: growing_nn_new_seeded     #Configure the database name
     table:
       name: ant_net2deeper                      #Configure the table name
 ```

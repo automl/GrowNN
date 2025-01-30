@@ -14,7 +14,7 @@ class AbstractPrior:
 
     This class is adapted from RoBO:
 
-    Klein, A. and Falkner, S. and Mansur, N. and Hutter, F.
+    Klein, A. and ###, S. and Mansur, N. and ###, F.
     RoBO: A Flexible and Robust Bayesian Optimization Framework in Python
     In: NIPS 2017 Bayesian Optimization Workshop
 

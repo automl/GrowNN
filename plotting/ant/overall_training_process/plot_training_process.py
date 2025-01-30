@@ -46,7 +46,7 @@ def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], apprao
 
 
 def plot_one_million_interactions():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {"Baseline (2 layers)": 18, "Baseline (4 layers)": 19, "Baseline (8 layers)": 20}
 
     appraoch_experiment_ids = {"Net2Deeper (4 layers)": 9, "Net2Deeper (8 layers)": 22}

@@ -81,7 +81,7 @@ def get_data(database_name: str, experiment_ids: List[int]) -> pd.DataFrame:
 
 def plot_10x10_random():
     baseline_depth_1_callback_data, baseline_depth_2_callback_data, baseline_depth_4_callback_data, net2deeper_smac_callback_data_depth_4, net2deeper_smac_callback_data_depth_2 = get_data(
-        "fehring_growing_nn_new_seeded", [1, 1, 4, 1, 4]
+        "###_growing_nn_new_seeded", [1, 1, 4, 1, 4]
     )
     training_process_style()
     sns.lineplot(
@@ -109,7 +109,7 @@ def plot_10x10_random():
 
 def plot_10x10_monster():
     baseline_depth_1_callback_data, baseline_depth_2_callback_data, baseline_depth_4_callback_data, net2deeper_smac_callback_data_depth_4, net2deeper_smac_callback_data_depth_2 = get_data(
-        "fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5]
+        "###_growing_nn_new_seeded", [8, 3, 6, 6, 5]
     )
 
     training_process_style()

@@ -31,7 +31,7 @@ class GaussianProcess(AbstractGaussianProcess):
     the marginal log likelihood.
 
     This code is based on the implementation of RoBO:
-    Klein, A. and Falkner, S. and Mansur, N. and Hutter, F.
+    Klein, A. and ###, S. and Mansur, N. and ###, F.
     RoBO: A Flexible and Robust Bayesian Optimization Framework in Python
     In: NIPS 2017 Bayesian Optimization Workshop
 

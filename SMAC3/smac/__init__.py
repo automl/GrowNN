@@ -4,8 +4,8 @@ import traceback
 name = "SMAC3"
 package_name = "smac"
 author = (
-    "\tMarius Lindauer, Katharina Eggensperger, Matthias Feurer, André Biedenkapp, "
-    "Difan Deng,\n\tCarolin Benjamins, Tim Ruhkopf, René Sass and Frank Hutter"
+    "\t### ###, ### ###, ### ###, André ###, "
+    "### ###,\n\t### ###, ###, ### Sass and ### ###"
 )
 
 author_email = "fh@cs.uni-freiburg.de"
@@ -16,9 +16,9 @@ project_urls = {
     "Source Code": "https://github.com/https://github.com/automl/smac",
 }
 copyright = f"""
-    Copyright {datetime.date.today().strftime('%Y')}, Marius Lindauer, Katharina Eggensperger,
-    Matthias Feurer, André Biedenkapp, Difan Deng, Carolin Benjamins, Tim Ruhkopf, René Sass
-    and Frank Hutter"""
+    Copyright {datetime.date.today().strftime('%Y')}, ### ###, ### ###,
+    ### ###, André ###, ### ###, ### ###, ###, ### Sass
+    and ### ###"""
 version = "2.1.0"
 
 

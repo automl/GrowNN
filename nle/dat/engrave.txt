@@ -74,7 +74,7 @@ Watch out, there's a gnome with a wand of death behind that door!
 # Misc fun
 This square deliberately left blank.
 
-# Viking graffiti
+# Viking ###fiti
 Haermund Hardaxe carved these runes
 
 # Advertising

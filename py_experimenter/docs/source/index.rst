@@ -53,7 +53,7 @@ Thereby, ``PyExperimenter`` alleviates the aforementioned overhead and allows ex
    authors
    license
    changelog
-   Repository <https://github.com/tornede/py_experimenter/>
+   Repository <https://github.com/###/py_experimenter/>
 
 ----------------
 Acknowledgements

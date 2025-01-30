@@ -10,7 +10,7 @@ In the following we first provide an installation guide, to then explain the rep
 ## Installation
 1. To install our environment, you first need to clone our implementation
 ```bash
-git clone https://github.com/automl-private/architectures-in-rl.git
+git clone ###
 ```
 2. Then, create a new Anaconda environment, possibly using
 ```bash
@@ -48,7 +48,7 @@ The main codebase is organized into the following directories:
     
 - **baselines**: Stores the run files for baseline experiments, structured similarly to the `approach` directory.
 
-- **config**: Shold ontains the configuration files for `py_experimenter`. To utilize `MySQL` you need to first create `config/database_credentials.yml` as described in [the documentation](https://tornede.github.io/py_experimenter/usage/experiment_configuration_file.html)
+- **config**: Shold ontains the configuration files for `py_experimenter`. To utilize `MySQL` you need to first create `config/database_credentials.yml` as described in [the documentation](https://###.github.io/py_experimenter/usage/experiment_configuration_file.html)
 
 - **hydra_plugins**: Contains early versions of the hypersweeper code.
 
@@ -78,7 +78,7 @@ defaults:
 
 From `hydra_sweeper`to`PY_EXPERIMENTER` the experiments are defined. All adaptations here might lead to problems.
 
-The `PY_EXPERIMENTER` section configures the py_experimenter as shown in the [docs](https://tornede.github.io/py_experimenter/usage/experiment_configuration_file.html#). The most important adaptation options here are the following fields.
+The `PY_EXPERIMENTER` section configures the py_experimenter as shown in the [docs](https://###.github.io/py_experimenter/usage/experiment_configuration_file.html#). The most important adaptation options here are the following fields.
 ```yaml
 PY_EXPERIMENTER: 
   Database:
@@ -87,7 +87,7 @@ PY_EXPERIMENTER:
     table:
       name: ant_net2deeper                      #Configure the table name
 ```
-For an in depth understanding of additional content refer to the [docs](https://tornede.github.io/py_experimenter/usage/experiment_configuration_file.html#) or contact us.
+For an in depth understanding of additional content refer to the [docs](https://###.github.io/py_experimenter/usage/experiment_configuration_file.html#) or contact us.
 
 #### Python Run Script
 To execute the code locally you need to execute and configure the yaml configuration not to use slurm

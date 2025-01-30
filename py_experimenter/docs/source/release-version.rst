@@ -92,4 +92,4 @@ Release Version to PyPi
 .. _pypi: https://pypi.org/
 .. _pypi_token: https://pypi.org/manage/account/token/
 .. _pypi_pyexperimenter: https://pypi.org/project/py-experimenter/
-.. _github_changelog: https://github.com/tornede/py_experimenter/blob/main/CHANGELOG.rst
+.. _github_changelog: https://github.com/###/py_experimenter/blob/main/CHANGELOG.rst

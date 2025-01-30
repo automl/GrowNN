@@ -29,8 +29,8 @@ If you use SMAC, please cite our `JMLR paper <https://jmlr.org/papers/v23/21-088
 
 .. code-block:: text
 
-    @article{lindauer-jmlr22a,
-             author  = {Marius Lindauer and Katharina Eggensperger and Matthias Feurer and André Biedenkapp and Difan Deng and Carolin Benjamins and Tim Ruhkopf and René Sass and Frank Hutter},
+    @article{###-jmlr22a,
+             author  = {### ### and ### ### and ### ### and André ### and ### ### and ### ### and ### and ### Sass and ### ###},
              title   = {SMAC3: A Versatile Bayesian Optimization Package for Hyperparameter Optimization},
              journal = {Journal of Machine Learning Research},
              year    = {2022},
@@ -44,7 +44,7 @@ For the original idea, we refer to:
 
 .. code-block:: text
 
-   Hutter, F. and Hoos, H. H. and Leyton-Brown, K.
+   ###, F. and Hoos, H. H. and Leyton-Brown, K.
    Sequential Model-Based Optimization for General Algorithm Configuration
    In: Proceedings of the conference on Learning and Intelligent OptimizatioN (LION 5)
 

@@ -33,7 +33,7 @@ class MCMCGaussianProcess(AbstractGaussianProcess):
 
     This code is based on the implementation of RoBO:
 
-    Klein, A. and Falkner, S. and Mansur, N. and Hutter, F.
+    Klein, A. and ###, S. and Mansur, N. and ###, F.
     RoBO: A Flexible and Robust Bayesian Optimization Framework in Python
     In: NIPS 2017 Bayesian Optimization Workshop
 
@@ -206,7 +206,7 @@ class MCMCGaussianProcess(AbstractGaussianProcess):
                 # https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12681
 
                 # Do not require the installation of NUTS for SMAC
-                # This requires NUTS from https://github.com/mfeurer/NUTS
+                # This requires NUTS from https://github.com/m###/NUTS
                 import nuts.nuts  # type: ignore
 
                 # Perform initial fit to the data to obtain theta0
@@ -410,7 +410,7 @@ class MCMCGaussianProcess(AbstractGaussianProcess):
 
         m = mu.mean(axis=0)
 
-        # See the Algorithm Runtime Prediction paper by Hutter et al.
+        # See the Algorithm Runtime Prediction paper by ### et al.
         # for the derivation of the total variance
         v = np.var(mu, axis=0) + np.mean(var, axis=0)
 

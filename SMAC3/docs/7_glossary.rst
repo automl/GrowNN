@@ -91,7 +91,7 @@ Glossary
     Random Online Adaptive Racing
         Random Online Adaptive Racing. A simple model-free instantiation of the general :term:`SMBO` framework.
         It selects configurations uniformly at random and iteratively compares them against the current incumbent
-        using the intensification mechanism. See `SMAC extended <https://ai.dmi.unibas.ch/research/reading_group/hutter-et-al-tr2010.pdf>`_
+        using the intensification mechanism. See `SMAC extended <https://ai.dmi.unibas.ch/research/reading_group/###-et-al-tr2010.pdf>`_
         chapter 3.2 for details.
 
     Target Function

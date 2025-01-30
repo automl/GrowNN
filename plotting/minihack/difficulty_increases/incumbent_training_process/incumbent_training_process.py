@@ -46,7 +46,7 @@ def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], apprao
 
 
 def plot_incumbent_interactions_2_layers():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {
         "Baseline (1 layer)": 9,
         "Baseline (2 layers)": 1,
@@ -82,7 +82,7 @@ def plot_incumbent_interactions_2_layers():
 
 
 def plot_incumbent_process_4_layers_mid():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {
         "Baseline (1 layer)": 9,
         "Baseline (4 layer)": 2,
@@ -119,7 +119,7 @@ def plot_incumbent_process_4_layers_mid():
 
 
 def plot_incumbent_process_4_layers_end():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {"Baseline (1 layer)": 6, "Baseline (4 layers)": 3}
 
     appraoch_experiment_ids = {"Net2Deeper (4 Layers)": 2}

@@ -269,14 +269,14 @@ Deprecations:
 Others:
 ^^^^^^^
 - Updated GitHub issue templates
-- Fix typo in gym patch error message (@lukashass)
+- Fix typo in gym patch error message (@###hass)
 - Refactor ``test_spaces.py`` tests
 
 Documentation:
 ^^^^^^^^^^^^^^
 - Fixed callback example (@BertrandDecoster)
 - Fixed policy network example (@kyle-he)
-- Added mobile-env as new community project (@stefanbschneider)
+- Added mobile-env as new community project (@###bschneider)
 - Added [DeepNetSlice](https://github.com/AlexPasqua/DeepNetSlice) to community projects (@AlexPasqua)
 
 
@@ -398,7 +398,7 @@ New Features:
 - Added multiprocessing support for ``HerReplayBuffer``
 - ``HerReplayBuffer`` now supports all datatypes supported by ``ReplayBuffer``
 - Provide more helpful failure messages when validating the ``observation_space`` of custom gym environments using ``check_env`` (@FieteO)
-- Added ``stats_window_size`` argument to control smoothing in rollout logging (@jonasreiher)
+- Added ``stats_window_size`` argument to control smoothing in rollout logging (@###reiher)
 
 
 `SB3-Contrib`_
@@ -1638,6 +1638,6 @@ And all the contributors:
 @carlosluis @arjun-kg @tlpss @JonathanKuelz @Gabo-Tor @iwishiwasaneagle
 @Melanol @qgallouedec @francescoluciano @jlp-ue @burakdmb @timothe-chaumont @honglu2875
 @anand-bala @hughperkins @sidney-tio @AlexPasqua @dominicgkerr @Akhilez @Rocamonde @tobirohrer @ZikangXiong @ReHoss
-@DavyMorgan @luizapozzobon @Bonifatius94 @theSquaredError @harveybellini @DavyMorgan @FieteO @jonasreiher @npit @WeberSamuel @troiganto
-@lutogniew @lbergmann1 @lukashass @BertrandDecoster @pseudo-rnd-thoughts @stefanbschneider @kyle-he @PatrickHelm @corentinlger
+@DavyMorgan @luizapozzobon @Bonifatius94 @theSquaredError @harveybellini @DavyMorgan @FieteO @###reiher @npit @WeberSamuel @troiganto
+@lutogniew @lbergmann1 @###hass @BertrandDecoster @pseudo-rnd-thoughts @###bschneider @kyle-he @PatrickHelm @corentinlger
 @marekm4 @stagoverflow @rushitnshah @markscsmith @NickLucche

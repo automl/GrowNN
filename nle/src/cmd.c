@@ -4535,7 +4535,7 @@ boolean initial;
             ++updated;
         }
         /* swap_yz mode (only applicable for !num_pad); intended for
-           QWERTZ keyboard used in Central Europe, particularly Germany */
+           QWERTZ keyboard used in Central Europe, particularly ### */
         flagtemp = (iflags.num_pad_mode & 1) ? !Cmd.num_pad : FALSE;
         if (flagtemp != Cmd.swap_yz) {
             Cmd.swap_yz = flagtemp;

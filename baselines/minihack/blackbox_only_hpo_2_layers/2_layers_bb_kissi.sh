@@ -8,9 +8,9 @@
 #SBATCH --error=%x.err
 
 # Navigate to the project directory
-cd /mnt/home/lfehring/MasterThesis/architectures-in-rl
+cd /mnt/home/l###/MasterThesis/architectures-in-rl
 module load Miniconda3
 conda activate rl-architecture
-export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-rl"
+export PYTHONPATH="$PYTHONPATH:/mnt/home/l###/MasterThesis/architectures-in-rl"
 # Run the Python script with specified module
 python baselines/minihack/blackbox_only_hpo_2_layers/2_layers_bb.py -m

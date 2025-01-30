@@ -73,7 +73,7 @@ PY_EXPERIMENTER:
   n_jobs: 1
   Database:
     provider: mysql
-    database: fehring_growing_nn_new_seeded
+    database: ###_growing_nn_new_seeded
     table:
       name: incumbent_gen_2_layers
       keyfields: 

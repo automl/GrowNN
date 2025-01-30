@@ -53,7 +53,7 @@ Makefile.tcc:	enviornment.
 
 engrave.c:	engravings burned or engraved into the floor (as opposed to
 		those made with finger or marker) can be felt out when blind.
-		(inspired by Stefan Wrammerfors).
+		(inspired by ### Wrammerfors).
 
 mon.c:		fixed "monster looked at a strange trap" bug for 16 bit
 		machines (long vs. int problem reported by mike@cimcor). 

@@ -51,7 +51,7 @@ def get_data(database_name, table_name, experiment_id: int):
 
 
 def plot_depth_4():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     table_name = "bb_net2deeper_baseline_4"
 
     training_process_style()
@@ -70,7 +70,7 @@ def plot_depth_4():
 
 
 def plot_depth_2():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     table_name = "incumbent_gen_2_layers"
 
     training_process_style()

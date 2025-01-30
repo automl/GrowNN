@@ -43,7 +43,7 @@ typedef struct tty_record {
 
     GWorldPtr its_window_world;
     BitMap its_bits;
-    GrafPtr offscreen_port;
+    ###Ptr offscreen_port;
     GWorldPtr offscreen_world;
 #if CLIP_RECT_ONLY
     Rect invalid_rect;

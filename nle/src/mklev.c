@@ -854,7 +854,7 @@ makelevel()
             (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, somex(croom),
                              somey(croom), TRUE, FALSE);
 
-        /* maybe make some graffiti */
+        /* maybe make some ###fiti */
         if (!rn2(27 + 3 * abs(depth(&u.uz)))) {
             char buf[BUFSZ];
             const char *mesg = random_engraving(buf);

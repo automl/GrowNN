@@ -196,7 +196,7 @@ free_bits(tty_record *record)
                 ClosePort(record->offscreen_port);
                 s_err = dispose_ptr(record->offscreen_port);
                 if (!s_err) {
-                    record->offscreen_port = (GrafPtr) 0;
+                    record->offscreen_port = (###Ptr) 0;
                 }
             }
         }
@@ -367,7 +367,7 @@ alloc_bits(tty_record *record)
                               * record->its_bits.bounds.bottom);
         if (!s_err) {
             s_err = alloc_ptr((void **) &(record->offscreen_port),
-                              sizeof(GrafPort));
+                              sizeof(###Port));
         }
         if (!s_err) {
             OpenPort(record->offscreen_port);
@@ -388,14 +388,14 @@ save_port(tty_record *record, void *save)
 {
     GWorldPtr gw;
     GDHandle gh;
-    GrafPtr gp;
+    ###Ptr gp;
 
     if (record->uses_gworld) {
         GetGWorld(&gw, &gh);
         *(GWorldPtr *) save = gw;
     } else {
         GetPort(&gp);
-        *(GrafPtr *) save = gp;
+        *(###Ptr *) save = gp;
     }
 }
 
@@ -417,7 +417,7 @@ use_port(tty_record *record, void *port)
                 UnlockPixels(pix_map);
         }
     } else {
-        SetPort((GrafPtr) port);
+        SetPort((###Ptr) port);
     }
 }
 

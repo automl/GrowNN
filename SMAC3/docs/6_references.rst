@@ -7,7 +7,7 @@ References
     https://jmlr.org/papers/v18/16-558.html
 
 
-.. [HSSL22] Carl Hvarfner, Danny Stoll, Artur Souza, Marius Lindauer, Frank Hutter, Luigi Nardi; 
+.. [HSSL22] Carl Hvarfner, Danny Stoll, Artur Souza, ### ###, ### ###, Luigi Nardi; 
     πBO: Augmenting Acquisition Functions with User Beliefs for Bayesian Optimization; 
     https://arxiv.org/pdf/2204.11051.pdf
 

@@ -12,4 +12,4 @@ Do you have further questions or a problem with ``PyExperimenter`` and don't kno
 3. If you could not find anything related, please :ref:`create a help issue <contribute_create_issue>`. 
 
 
-.. _github_py_experimenter_issues: https://github.com/tornede/py_experimenter/issues
+.. _github_py_experimenter_issues: https://github.com/###/py_experimenter/issues

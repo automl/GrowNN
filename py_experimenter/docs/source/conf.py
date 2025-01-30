@@ -18,8 +18,8 @@ from recommonmark.parser import CommonMarkParser
 
 # -- Project information -----------------------------------------------------
 project = "PyExperimenter"
-copyright = "2022, Tanja Tornede, Alexander Tornede, Lukas Fehring, Lukas Gehring, Helena Graf, Jonas Hanselle, Felix Mohr, Marcel Wever"
-author = "Tanja Tornede, Alexander Tornede, Lukas Fehring, Lukas Gehring, Helena Graf, Jonas Hanselle, Felix Mohr, Marcel Wever"
+copyright = "2022, ### ###, ### ###, ### ###, ### ###, ### ###, ### ###, ### ###, ### ###"
+author = "### ###, ### ###, ### ###, ### ###, ### ###, ### ###, ### ###, ### ###"
 
 # The full version, including alpha/beta/rc tags
 release = "1.0"

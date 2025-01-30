@@ -455,7 +455,7 @@ Since many urgent features were already taken care of in 0.14.0, this release ma
 * Support for Successive Halving and Hyperband as new instensification/racing strategies.
 * Improve the SMAC architecture by moving from an architecture where new candidates are passed to the racing algorithm 
   to an architecture where the racing algorithm requests new candidates, which is necessary to implement the
-  [BOHB](http://proceedings.mlr.press/v80/falkner18a.html) algorithm (#551).
+  [BOHB](http://proceedings.mlr.press/v80/###18a.html) algorithm (#551).
 * Source code is now PEP8 compliant. PEP8 compliance is checked by travis-ci (#565).
 * Source code is now annotated with type annotation and checked with mypy.
 

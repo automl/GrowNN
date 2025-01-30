@@ -20,4 +20,4 @@ Improvement
 Help 
         Describe the problem you are facing and provide a code example (is suitable). And add the ``help wanted`` label to your issue.
 
-.. _github_py_experimenter_issues: https://github.com/tornede/py_experimenter/issues
+.. _github_py_experimenter_issues: https://github.com/###/py_experimenter/issues

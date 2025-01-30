@@ -476,7 +476,7 @@ ask_filter(DialogRef wind, EventRecord *event, DialogItemIndex *item)
 void
 mac_askname()
 {
-    GrafPtr oldport;
+    ###Ptr oldport;
     DialogRef askdialog;
     short i, j, item, type;
     Handle handle;

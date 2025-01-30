@@ -370,7 +370,7 @@ InitMac(void)
     for (i = 0; i < 5; i++)
         MoreMasters();
 
-    InitGraf(&qd.thePort);
+    Init###(&qd.thePort);
     InitFonts();
     InitWindows();
     InitMenus();
@@ -1644,7 +1644,7 @@ mac_doprev_message(void)
 static void
 draw_growicon_vert_only(WindowPtr wind)
 {
-    GrafPtr org_port;
+    ###Ptr org_port;
     RgnHandle org_clip = NewRgn();
     Rect r;
 
@@ -2228,7 +2228,7 @@ BaseEvent(EventHandlerCallRef nexthandler, EventRef event, void *userdata)
 	}
 
 	case kEventClassMouse: {
-		CGrafPtr saveport;
+		C###Ptr saveport;
 		GDHandle savedev;
 		Point pt;
 
@@ -2254,7 +2254,7 @@ BaseEvent(EventHandlerCallRef nexthandler, EventRef event, void *userdata)
 			return (noErr);
 
 		case kEventWindowHandleContentClick: {
-			CGrafPtr saveport;
+			C###Ptr saveport;
 			GDHandle savedev;
 			Point pt;
 			UInt32 modifiers;
@@ -2295,7 +2295,7 @@ macClickTerm(EventRecord *theEvent, WindowPtr theWindow)
 static void
 macCursorTerm(EventRecord *theEvent, WindowPtr theWindow, RgnHandle mouseRgn)
 {
-    GrafPtr gp;
+    ###Ptr gp;
     Point where = theEvent->where;
     Rect r = { 0, 0, 1, 1 };
 
@@ -2523,7 +2523,7 @@ MsgEvent(EventHandlerCallRef nexthandler, EventRef event, void *userdata)
 			return (noErr);
 
 		case kEventWindowHandleContentClick: {
-			CGrafPtr saveport;
+			C###Ptr saveport;
 			GDHandle savedev;
 			Point pt;
 
@@ -2742,7 +2742,7 @@ MenwEvent(EventHandlerCallRef nexthandler, EventRef event, void *userdata)
 			return (noErr);
 
 		case kEventWindowHandleContentClick: {
-			CGrafPtr saveport;
+			C###Ptr saveport;
 			GDHandle savedev;
 			Point pt;
 

@@ -9,12 +9,12 @@ def create_pyexperimenter(config: OmegaConf, use_ssh_tunnel: bool = True) -> PyE
     """
     Create a PyExperimenter object with the given configuration
     """
-    if "nhwpfehl" in os.getcwd():
-        credentials_file_path = "/bigwork/nhwpfehl/architectures-in-rl/config/database_credentials.yml"
+    if "###" in os.getcwd():
+        credentials_file_path = "/bigwork/###/architectures-in-rl/config/database_credentials.yml"
     elif "mnt" in os.getcwd():
-        credentials_file_path = "/mnt/home/lfehring/MasterThesis/architectures-in-rl/config/database_credentials.yml"
+        credentials_file_path = "/mnt/home/l###/###/architectures-in-rl/config/database_credentials.yml"
     else:
-        credentials_file_path = "/home/lukas/Desktop/architectures-in-rl/config/database_credentials.yml"
+        credentials_file_path = "/home/###/Desktop/architectures-in-rl/config/database_credentials.yml"
         use_ssh_tunnel = False
 
     py_experimenter_config = OmegaConf.create({"PY_EXPERIMENTER": config["PY_EXPERIMENTER"]})

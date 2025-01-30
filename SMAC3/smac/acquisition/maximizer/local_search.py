@@ -320,7 +320,7 @@ class LocalSearch(AbstractAcquisitionMaximizer):
                 # Return all configurations in a one-exchange neighborhood.
                 #
                 #     The method is implemented as defined by:
-                #     Frank Hutter, Holger H. Hoos and Kevin Leyton-Brown
+                #     ### ###, Holger H. Hoos and Kevin Leyton-Brown
                 #     Sequential Model-Based Optimization for General Algorithm Configuration
                 #     In Proceedings of the conference on Learning and Intelligent
                 #     Optimization(LION 5)

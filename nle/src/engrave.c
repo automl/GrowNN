@@ -347,7 +347,7 @@ int x, y;
         case MARK:
             if (!Blind) {
                 sensed = 1;
-                pline("There's some graffiti on the %s here.", surface(x, y));
+                pline("There's some ###fiti on the %s here.", surface(x, y));
             }
             break;
         case ENGR_BLOOD:
@@ -470,7 +470,7 @@ static NEARDATA const char styluses[] = { ALL_CLASSES, ALLOW_NONE,
 int
 doengrave()
 {
-    boolean dengr = FALSE;    /* TRUE if we wipe out the current engraving */
+    boolean ###r = FALSE;    /* TRUE if we wipe out the current engraving */
     boolean doblind = FALSE;  /* TRUE if engraving blinds the player */
     boolean doknown = FALSE;  /* TRUE if we identify the stylus */
     boolean eow = FALSE;      /* TRUE if we are overwriting oep */
@@ -695,7 +695,7 @@ doengrave()
                             type = oetype;
                         xcrypt(blengr(), buf);
                     }
-                    dengr = TRUE;
+                    ###r = TRUE;
                 }
                 break;
             case WAN_NOTHING:
@@ -734,7 +734,7 @@ doengrave()
                     if (!Blind)
                         pline_The("engraving on the %s vanishes!",
                                   surface(u.ux, u.uy));
-                    dengr = TRUE;
+                    ###r = TRUE;
                 }
                 break;
             case WAN_TELEPORTATION:
@@ -852,7 +852,7 @@ doengrave()
                     else
                         pline("%s %s.", Yobjnam2(otmp, "get"),
                               is_ice(u.ux, u.uy) ? "frosty" : "dusty");
-                    dengr = TRUE;
+                    ###r = TRUE;
                 } else
                     pline("%s can't wipe out this engraving.", Yname2(otmp));
             else
@@ -881,7 +881,7 @@ doengrave()
         } else {
             /* ensures the "cannot wipe out" case */
             type = DUST;
-            dengr = FALSE;
+            ###r = FALSE;
             teleengr = FALSE;
             buf[0] = '\0';
         }
@@ -901,7 +901,7 @@ doengrave()
         rloc_engr(oep);
         oep = (struct engr *) 0;
     }
-    if (dengr) {
+    if (###r) {
         del_engr(oep);
         oep = (struct engr *) 0;
     }
@@ -1006,7 +1006,7 @@ doengrave()
                      : (is_ice(u.ux, u.uy) ? "melt into" : "burn into"));
         break;
     case MARK:
-        everb = (oep && !eow ? "add to the graffiti on" : "scribble on");
+        everb = (oep && !eow ? "add to the ###fiti on" : "scribble on");
         break;
     case ENGR_BLOOD:
         everb = (oep && !eow ? "add to the scrawl on" : "scrawl on");
@@ -1124,7 +1124,7 @@ doengrave()
             } else if (len > 1)
                 otmp->spe -= len >> 1;
             else
-                otmp->spe -= 1; /* Prevent infinite graffiti */
+                otmp->spe -= 1; /* Prevent infinite ###fiti */
         }
         if (multi)
             nomovemsg = "You finish defacing the dungeon.";

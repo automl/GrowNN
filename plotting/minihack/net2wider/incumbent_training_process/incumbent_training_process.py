@@ -9,7 +9,7 @@ set_rc_params()
 
 
 def get_data(database_name: str, experiment_ids: List[int]):
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_width_1_callback_data = get_logtable(database_name=database_name, table_name="incumbent_gen_2_layers", logtable_name="smac_callbacks")
     baseline_width_1_training_process_data = get_logtable(database_name=database_name, table_name="incumbent_gen_2_layers", logtable_name="training_process")
 
@@ -120,7 +120,7 @@ def plot_10x10_random_full():
         baseline_width_4_training_process_data,
         net2wider_width_4_training_process_concat_dataframe,
         net2wider_width_2_training_process_concat_dataframe,
-    ) = get_data("fehring_growing_nn_new_seeded", [1, 2, 7, 8, 9])
+    ) = get_data("###_growing_nn_new_seeded", [1, 2, 7, 8, 9])
 
     training_process_style()
 
@@ -148,7 +148,7 @@ def plot_10x10_random_full():
 
 def plot_10x10_random_width2():
     (baseline_width_1_training_process_data, baseline_width_2_training_process_data, _, _, net2wider_width_2_training_process_concat_dataframe) = get_data(
-        "fehring_growing_nn_new_seeded", [1, 2, 7, 8, 9]
+        "###_growing_nn_new_seeded", [1, 2, 7, 8, 9]
     )
 
     training_process_style()
@@ -173,7 +173,7 @@ def plot_10x10_random_width2():
 
 def plot_10x10_random_width4():
     (baseline_width_1_training_process_data, _, baseline_width_4_training_process_data, net2wider_width_4_training_process_concat_dataframe, _) = get_data(
-        "fehring_growing_nn_new_seeded", [1, 2, 7, 8, 9]
+        "###_growing_nn_new_seeded", [1, 2, 7, 8, 9]
     )
 
     training_process_style()
@@ -203,7 +203,7 @@ def plot_10x10_monster_full():
         baseline_width_4_training_process_data,
         net2wider_width_4_training_process_concat_dataframe,
         net2wider_width_2_training_process_concat_dataframe,
-    ) = get_data("fehring_growing_nn_new_seeded", [3, 2, 8, 7, 10])
+    ) = get_data("###_growing_nn_new_seeded", [3, 2, 8, 7, 10])
 
     sns.lineplot(data=baseline_width_2_training_process_data, x="timestep", y="episode_reward", label="Static (2x width)", linestyle="solid")
     sns.lineplot(data=net2wider_width_2_training_process_concat_dataframe, x="timestep", y="episode_reward", label="GrowNN (2x width)", linestyle="dotted", linewidth=3)
@@ -229,7 +229,7 @@ def plot_10x10_monster_full():
 
 def plot_10x10_monster_width2():
     (baseline_width_1_training_process_data, baseline_width_2_training_process_data, _, _, net2wider_width_2_training_process_concat_dataframe) = get_data(
-        "fehring_growing_nn_new_seeded", [3, 2, 8, 7, 10]
+        "###_growing_nn_new_seeded", [3, 2, 8, 7, 10]
     )
 
     training_process_style()
@@ -254,7 +254,7 @@ def plot_10x10_monster_width2():
 
 def plot_10x10_monster_width4():
     (baseline_width_1_training_process_data, _, baseline_width_4_training_process_data, net2wider_width_4_training_process_concat_dataframe, _) = get_data(
-        "fehring_growing_nn_new_seeded", [3, 2, 8, 7, 10]
+        "###_growing_nn_new_seeded", [3, 2, 8, 7, 10]
     )
 
     training_process_style()

@@ -42,7 +42,7 @@
 # Updated by Alex Stewart (alexs.mac@gmail.com)
 #
 # *****************************************************************************
-#      Now maintained by Alexander Widerberg (widerbergaren [at] gmail.com)
+#      Now maintained by ### Widerberg (widerbergaren [at] gmail.com)
 #                      under the BSD-3-Clause license
 # *****************************************************************************
 #

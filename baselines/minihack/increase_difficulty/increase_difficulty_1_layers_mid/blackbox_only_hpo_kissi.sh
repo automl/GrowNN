@@ -6,9 +6,9 @@
 #SBATCH --time=72:00:00
 
 # Navigate to the project directory
-cd /mnt/home/lfehring/MasterThesis/architectures-in-rl
+cd /mnt/home/l###/MasterThesis/architectures-in-rl
 module load Miniconda3
 conda activate rl-architecture
-export PYTHONPATH="$PYTHONPATH:/mnt/home/lfehring/MasterThesis/architectures-in-rl"
+export PYTHONPATH="$PYTHONPATH:/mnt/home/l###/MasterThesis/architectures-in-rl"
 # Run the Python script with specified module
 python baselines/minihack/increase_difficulty/increase_difficulty_1_layers_mid/blackbox_only_hpo.py -m

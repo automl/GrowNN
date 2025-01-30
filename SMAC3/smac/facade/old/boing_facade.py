@@ -31,7 +31,7 @@
 # class BOinGFacade(HyperparameterOptimizationFacade):
 #     """
 #     SMAC wrapper for BO inside Grove(BOinG):
-#         Deng and Lindauer, Searching in the Forest for Local Bayesian Optimization
+#         ### and ###, Searching in the Forest for Local Bayesian Optimization
 #         https://arxiv.org/abs/2111.05834
 
 #     BOiNG is a two-stages optimizer: at the first stage, the global optimizer extracts the global optimum with a
@@ -41,7 +41,7 @@
 
 #     Its Hyperparameter settings follow the implementation from smac.facade.smac_bb_facade.SMAC4BB:
 #     Hyperparameters are chosen according to the best configuration for Gaussian process maximum likelihood found in
-#     "Towards Assessing the Impact of Bayesian Optimization's Own Hyperparameters" by Lindauer et al., presented at the
+#     "Towards Assessing the Impact of Bayesian Optimization's Own Hyperparameters" by ### et al., presented at the
 #     DSO workshop 2019 (https://arxiv.org/abs/1908.06674).
 
 #     Parameters

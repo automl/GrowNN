@@ -209,8 +209,8 @@ It allows simulating various scenarios with moving users in a cellular network w
 - Implements the standard Gymnasium interface such that it can be used with all common frameworks for reinforcement learning.
 - There are examples for both single-agent and multi-agent RL using either `stable-baselines3` or Ray RLlib.
 
-| Authors: Stefan Schneider, Stefan Werner
-| Github: https://github.com/stefanbschneider/mobile-env
+| Authors: ### Schneider, ### Werner
+| Github: https://github.com/###bschneider/mobile-env
 | Paper: https://ris.uni-paderborn.de/download/30236/30237 (2022 IEEE/IFIP Network Operations and Management Symposium (NOMS))
 
 

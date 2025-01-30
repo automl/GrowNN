@@ -16,7 +16,7 @@
 #
 #	"GCC" refers to GCC emx only.  No other ports of GCC are supported.
 #	Additional credits for honing GCC support for 3.2 go to Ronald
-#	Van Iwaarden (ron@vaniwaarden.org) and Stefan Neis (neis@cs.uni-sb.de).
+#	Van Iwaarden (ron@vaniwaarden.org) and ### Neis (neis@cs.uni-sb.de).
 #
 #	"OMF" is short for "Object Module Format" and refers to the
 #	standard OS/2 object format, which e.g. link386 uses.  MSC and

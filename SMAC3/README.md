@@ -118,7 +118,7 @@ If not, see [here](https://opensource.org/licenses/BSD-3-Clause).
 
 If you have trouble using SMAC, a concrete question or found a bug, please create an [issue](https://github.com/automl/SMAC3/issues). This is the easiest way to communicate about these things with us. 
 
-For all other inquiries, please write an email to smac[at]ai[dot]uni[dash]hannover[dot]de.
+For all other inquiries, please write an email to smac[at]ai[dot]uni[dash]###[dot]de.
 
 ## Miscellaneous
 
@@ -133,7 +133,7 @@ If you use SMAC in one of your research projects, please cite our
 [JMLR paper](https://jmlr.org/papers/v23/21-0888.html):
 ```
 @article{JMLR:v23:21-0888,
-  author  = {Marius Lindauer and Katharina Eggensperger and Matthias Feurer and André Biedenkapp and Difan Deng and Carolin Benjamins and Tim Ruhkopf and René Sass and Frank Hutter},
+  author  = {### ### and ### ### and ### ### and André ### and ### ### and ### ### and ### and ### Sass and ### ###},
   title   = {SMAC3: A Versatile Bayesian Optimization Package for Hyperparameter Optimization},
   journal = {Journal of Machine Learning Research},
   year    = {2022},

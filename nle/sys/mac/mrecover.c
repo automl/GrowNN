@@ -184,7 +184,7 @@ DialogTHndl thermoTHnd;
 DialogRecord dlgThermo; /* progress thermometer */
 #define DLGTHM ((DialogPtr) &dlgThermo)
 #define WNDTHM ((WindowPtr) &dlgThermo)
-#define GRFTHM ((GrafPtr) &dlgThermo)
+#define GRFTHM ((###Ptr) &dlgThermo)
 
 Point sfGetWhere;      /* top left corner of get file dialog */
 Ptr pIOBuf;            /* read/write buffer pointer */
@@ -253,7 +253,7 @@ main()
     MoreMasters();
 
     /* manager initialization */
-    InitGraf(&qd.thePort);
+    Init###(&qd.thePort);
     InitFonts();
     InitWindows();
     InitMenus();
@@ -887,7 +887,7 @@ itemizeThermo(short itemMode)
         break;
 
     case invalItem: {
-        GrafPtr oldPort;
+        ###Ptr oldPort;
 
         GetPort(&oldPort);
         SetPort(GRFTHM);

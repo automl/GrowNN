@@ -73,7 +73,7 @@ def get_data(
 
 
 def plot_incumbent_interactions_4_layers():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {
         "Static (4 layers)": 19,
     }
@@ -131,7 +131,7 @@ def plot_incumbent_interactions_4_layers():
 
 
 def plot_incumbent_interactions_8_layers():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {
         "Static (8 layers)": 20,
     }
@@ -189,7 +189,7 @@ def plot_incumbent_interactions_8_layers():
 
 
 def plot_both_in_one():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {
         "Static (5 layers)": 19,
     }
@@ -226,7 +226,7 @@ def plot_both_in_one():
     for timestep in range(500000, 2000000, 500000):
         plt.axvline(x=timestep, color="black", linestyle="--", alpha=0.5)
 
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {
         "Static (9 layers)": 20,
     }
@@ -282,7 +282,7 @@ def subplots_of_both_figures():
     fig, axs = plt.subplots(1, 2, figsize=(12, 5))
     plt.subplots_adjust(hspace=0.5)
 
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {
         "Static (4 layers)": 19,
     }

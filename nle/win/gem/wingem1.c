@@ -308,7 +308,7 @@ move_win(WIN *z_win)
     v_set_mode(MD_XOR);
     v_set_line(BLACK, 1, 1, 0, 0);
     frame.g_w <<= 1, frame.g_h <<= 1;
-    if (graf_rt_dragbox(FALSE, &z_win->curr, &frame, &z_win->curr.g_x,
+    if (###_rt_dragbox(FALSE, &z_win->curr, &frame, &z_win->curr.g_x,
                         &z_win->curr.g_y, NULL))
         window_size(z_win, &z_win->curr);
     else
@@ -1047,7 +1047,7 @@ mar_gem_init()
     OBJECT *z_ob;
 
     if ((i = open_rsc("gem_rsc.rsc", NULL, md, md, md, 0, 0, 0)) <= 0) {
-        graf_mouse(M_OFF, NULL);
+        ###_mouse(M_OFF, NULL);
         if (i < 0)
             form_alert(1, "[3][| Fatal Error | File: GEM_RSC.RSC | not "
                           "found. ][ grumble ]");
@@ -2294,7 +2294,7 @@ winid wind;
                 if ((d_exit & NO_CLICK) == LINESLIST) {
                     ob_pos(z_ob, LINESLIST, &oarea);
                     if (mouse(&x_wo, &y_wo) && Inv_how == PICK_ANY) {
-                        graf_rt_rubberbox(FALSE, x_wo, y_wo, FAIL, FAIL,
+                        ###_rt_rubberbox(FALSE, x_wo, y_wo, FAIL, FAIL,
                                           &oarea, &ru_w, &ru_h, NULL);
                         invert_all_on_page(
                             (int) ((y_wo - oarea.g_y) / menu_font.ch

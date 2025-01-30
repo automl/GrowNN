@@ -9,7 +9,7 @@ set_rc_params()
 
 
 def get_data(database_name: str, experiment_ids: List[int]):
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_depth_1_callback_data = get_logtable(database_name=database_name, table_name="bb_net2deeper_baseline", logtable_name="smac_callbacks")
     baseline_depth_1_training_process_data = get_logtable(database_name=database_name, table_name="bb_net2deeper_baseline", logtable_name="training_process")
 
@@ -117,7 +117,7 @@ def plot_10x10_random_full():
         baseline_depth_4_training_process_data,
         net2deeper_depth_4_training_process_concat_dataframe,
         net2deeper_depth_2_training_process_concat_dataframe,
-    ) = get_data("fehring_growing_nn_new_seeded", [1, 1, 4, 1, 4])
+    ) = get_data("###_growing_nn_new_seeded", [1, 1, 4, 1, 4])
 
     training_process_style()
 
@@ -144,7 +144,7 @@ def plot_10x10_random_full():
 
 def plot_10x10_random_depth2():
     (baseline_depth_1_training_process_data, baseline_depth_2_training_process_data, _, _, net2deeper_depth_2_training_process_concat_dataframe) = get_data(
-        "fehring_growing_nn_new_seeded", [1, 1, 4, 1, 4]
+        "###_growing_nn_new_seeded", [1, 1, 4, 1, 4]
     )
 
     training_process_style()
@@ -169,7 +169,7 @@ def plot_10x10_random_depth2():
 
 def plot_10x10_random_depth4():
     (baseline_depth_1_training_process_data, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
-        "fehring_growing_nn_new_seeded", [1, 1, 4, 1, 4]
+        "###_growing_nn_new_seeded", [1, 1, 4, 1, 4]
     )
 
     training_process_style()
@@ -199,7 +199,7 @@ def plot_10x10_monster_full():
         baseline_depth_4_training_process_data,
         net2deeper_depth_4_training_process_concat_dataframe,
         net2deeper_depth_2_training_process_concat_dataframe,
-    ) = get_data("fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5])
+    ) = get_data("###_growing_nn_new_seeded", [8, 3, 6, 6, 5])
 
     training_process_style()
 
@@ -226,7 +226,7 @@ def plot_10x10_monster_full():
 
 def plot_10x10_monster_depth2():
     (baseline_depth_1_training_process_data, baseline_depth_2_training_process_data, _, _, net2deeper_depth_2_training_process_concat_dataframe) = get_data(
-        "fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5]
+        "###_growing_nn_new_seeded", [8, 3, 6, 6, 5]
     )
 
     training_process_style()
@@ -251,7 +251,7 @@ def plot_10x10_monster_depth2():
 
 def plot_10x10_monster_depth4():
     (baseline_depth_1_training_process_data, _, baseline_depth_4_training_process_data, net2deeper_depth_4_training_process_concat_dataframe, _) = get_data(
-        "fehring_growing_nn_new_seeded", [8, 3, 6, 6, 5]
+        "###_growing_nn_new_seeded", [8, 3, 6, 6, 5]
     )
 
     training_process_style()

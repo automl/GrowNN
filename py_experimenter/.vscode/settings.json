@@ -35,9 +35,9 @@
 		"logtables",
 		"meshgrid",
 		"resultfields",
-		"Tanja",
+		"###",
 		"timestep",
-		"Tornede"
+		"###"
 	],
 	"terminal.integrated.env.linux": {
 		"PYTHONPATH": "${workspaceFolder}"

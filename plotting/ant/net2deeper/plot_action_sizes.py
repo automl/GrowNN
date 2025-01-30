@@ -31,7 +31,7 @@ def get_data(database_name: str, appraoch_experiment_ids: Dict[int, int]) -> pd.
 
 
 def plot_incumbent_interactions_8_layers():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
 
     appraoch_experiment_ids = {
         "Net2Deeper (8 layers)": 22,

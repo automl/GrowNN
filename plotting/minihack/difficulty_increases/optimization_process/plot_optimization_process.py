@@ -49,7 +49,7 @@ def get_data(database_name: str, baseline_experiment_ids: Dict[int, int], apprao
 
 
 def plot_optimization_process():
-    database_name = "fehring_growing_nn_new_seeded"
+    database_name = "###_growing_nn_new_seeded"
     baseline_experiment_ids = {"Baseline (1 layer); end": 6, "Baseline (1 layer); mid": 9, "Baseline (2 layers); mid": 1, "Baseline (4 layers); mid": 2, "Baseline (4 layers); end": 3}
 
     appraoch_experiment_ids = {"Net2Deeper (2 Layers); mid": 1, "Net2Deeper (4 Layers); mid": 2, "Net2Deeper (4 Layers); end": 4}

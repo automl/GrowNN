@@ -29,7 +29,7 @@ The development workflow for the ``PyExperimenter`` is based on the fork-and-bra
    
    .. code-block:: 
 
-        git remote add upstream https://github.com/tornede/py_experimenter.git
+        git remote add upstream https://github.com/###/py_experimenter.git
 
 4. Create branch: Make sure that all branches are locally available and switch to the ``develop`` branch. Then create a new branch for your changes, but please ensure to replace ``<feature_branch_name>`` with some meaningful name.
    
@@ -120,7 +120,7 @@ After all changes are made, including  :ref:`tests <contribute_unit_tests>` and 
 
 Afterwards, go to the `PyExperimenter GitHub Pull Requests <github_py_experimenter_pulls_>`_ and create a new pull request.
 
-1. Make sure to select the correct source and destination repositories and according branches. The source repository is your fork, and the source branch is the ``<feature_branch_name>``. The destination repository is ``tornede/py_experimenter`` and the destination branch is ``develop``.
+1. Make sure to select the correct source and destination repositories and according branches. The source repository is your fork, and the source branch is the ``<feature_branch_name>``. The destination repository is ``###/py_experimenter`` and the destination branch is ``develop``.
 
 2. Provide a full description of the changes you did. 
 
@@ -129,8 +129,8 @@ Afterwards, go to the `PyExperimenter GitHub Pull Requests <github_py_experiment
 
 .. _anaconda: https://docs.anaconda.com/anaconda/install/
 .. _fork_and_branch_workflow: https://blog.scottlowe.org/2015/01/27/using-fork-branch-git-workflow/
-.. _github_py_experimenter: https://github.com/tornede/py_experimenter/
-.. _github_py_experimenter_issues: https://github.com/tornede/py_experimenter/issues
-.. _github_py_experimenter_pulls: https://github.com/tornede/py_experimenter/pulls
-.. _create_database_credential_file: https://tornede.github.io/py_experimenter/usage.html#database-credential-file
+.. _github_py_experimenter: https://github.com/###/py_experimenter/
+.. _github_py_experimenter_issues: https://github.com/###/py_experimenter/issues
+.. _github_py_experimenter_pulls: https://github.com/###/py_experimenter/pulls
+.. _create_database_credential_file: https://###.github.io/py_experimenter/usage.html#database-credential-file
 .. _pandoc_installation: https://stackoverflow.com/questions/62398231/building-docs-fails-due-to-missing-pandoc

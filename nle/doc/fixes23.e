@@ -81,22 +81,22 @@ makedefs.c	Added Landmines code. (Steve Creps)
 mklev.c
 trap.c
 
-mkroom.h	Fixed item / shop probablility code. (Stefan Wrammerfors)
+mkroom.h	Fixed item / shop probablility code. (### Wrammerfors)
 shknam.c	Added additional item typ available.
 
-pray.c		Randomized time between prayers. (Stefan Wrammerfors)
+pray.c		Randomized time between prayers. (### Wrammerfors)
 
-fight.c		Fixed typo. (Stefan Wrammerfors)
+fight.c		Fixed typo. (### Wrammerfors)
 
 mhitu.c		Fixed monster special abilities usage bug.
-		(Stefan Wrammerfors)
+		(### Wrammerfors)
 
 objnam.c	Randomized max number and max bonus limits on objects
 		wished for.
-		Identified cursed items shown as such. (Stefan Wrammerfors)
+		Identified cursed items shown as such. (### Wrammerfors)
 
 topten.c	Added logfile to allow overall game tuning for balance.
-config.h	(Stefan Wrammerfors)
+config.h	(### Wrammerfors)
 
 mklev.c		moved code identifying medusa & wizard levs to eliminate
 *main.c		garbage on screen. (Izchak Miller)

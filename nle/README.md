@@ -241,7 +241,7 @@ If you use NLE in any of your work, please cite:
 @inproceedings{kuettler2020nethack,
   author    = {Heinrich K{\"{u}}ttler and
                Nantas Nardelli and
-               Alexander H. Miller and
+               ### H. Miller and
                Roberta Raileanu and
                Marco Selvatici and
                Edward Grefenstette and

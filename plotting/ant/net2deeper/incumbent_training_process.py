@@ -191,11 +191,11 @@ def plot_incumbent_interactions_8_layers():
 def plot_both_in_one():
     database_name = "fehring_growing_nn_new_seeded"
     baseline_experiment_ids = {
-        "Static (4 layers)": 19,
+        "Static (5 layers)": 19,
     }
 
     appraoch_experiment_ids = {
-        "GrowNN (4 layers)": 9,
+        "GrowNN (5 layers)": 9,
     }
 
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)
@@ -228,11 +228,11 @@ def plot_both_in_one():
 
     database_name = "fehring_growing_nn_new_seeded"
     baseline_experiment_ids = {
-        "Static (8 layers)": 20,
+        "Static (9 layers)": 20,
     }
 
     appraoch_experiment_ids = {
-        "GrowNN (8 layers)": 22,
+        "GrowNN (9 layers)": 22,
     }
 
     baseline_data, appraoch_data = get_data(database_name, baseline_experiment_ids, appraoch_experiment_ids)

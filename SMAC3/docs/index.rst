@@ -30,7 +30,7 @@ If you use SMAC, please cite our `JMLR paper <https://jmlr.org/papers/v23/21-088
 .. code-block:: text
 
     @article{###-jmlr22a,
-             author  = {### ### and ### ### and ### ### and André ### and ### ### and ### ### and ### and ### Sass and ### ###},
+             author  = {### ### and ### ### and ### ### and ###### and ### ### and ### ### and ### and ### ### and ### ###},
              title   = {SMAC3: A Versatile Bayesian Optimization Package for Hyperparameter Optimization},
              journal = {Journal of Machine Learning Research},
              year    = {2022},

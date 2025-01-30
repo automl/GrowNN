@@ -133,7 +133,7 @@ If you use SMAC in one of your research projects, please cite our
 [JMLR paper](https://jmlr.org/papers/v23/21-0888.html):
 ```
 @article{JMLR:v23:21-0888,
-  author  = {### ### and ### ### and ### ### and André ### and ### ### and ### ### and ### and ### Sass and ### ###},
+  author  = {### ### and ### ### and ### ### and ###### and ### ### and ### ### and ### and ### ### and ### ###},
   title   = {SMAC3: A Versatile Bayesian Optimization Package for Hyperparameter Optimization},
   journal = {Journal of Machine Learning Research},
   year    = {2022},

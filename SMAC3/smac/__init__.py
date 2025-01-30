@@ -4,8 +4,8 @@ import traceback
 name = "SMAC3"
 package_name = "smac"
 author = (
-    "\t### ###, ### ###, ### ###, André ###, "
-    "### ###,\n\t### ###, ###, ### Sass and ### ###"
+    "\t### ###, ### ###, ### ###, ######, "
+    "### ###,\n\t### ###, ###, ### ### and ### ###"
 )
 
 author_email = "fh@cs.uni-freiburg.de"
@@ -17,7 +17,7 @@ project_urls = {
 }
 copyright = f"""
     Copyright {datetime.date.today().strftime('%Y')}, ### ###, ### ###,
-    ### ###, André ###, ### ###, ### ###, ###, ### Sass
+    ### ###, ######, ### ###, ### ###, ###, ### ###
     and ### ###"""
 version = "2.1.0"
 
